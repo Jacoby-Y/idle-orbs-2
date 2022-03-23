@@ -593,18 +593,18 @@ var app = (function () {
     			h31 = element("h3");
     			t4 = text("Press \"Esc\" to toggle");
     			attr_dev(canvas_1, "class", "svelte-1om0tpl");
-    			add_location(canvas_1, file$2, 201, 1, 4832);
+    			add_location(canvas_1, file$2, 201, 1, 4838);
     			attr_dev(h30, "id", "cash");
     			attr_dev(h30, "class", "svelte-1om0tpl");
-    			add_location(h30, file$2, 202, 1, 4870);
+    			add_location(h30, file$2, 202, 1, 4876);
     			attr_dev(h31, "id", "toggle-txt");
     			set_style(h31, "bottom", /*$bounce_size*/ ctx[3] + "px");
     			attr_dev(h31, "class", "svelte-1om0tpl");
-    			add_location(h31, file$2, 203, 1, 4909);
+    			add_location(h31, file$2, 203, 1, 4915);
     			set_style(main_1, "opacity", /*toggled*/ ctx[2] ? "1" : "0");
     			set_style(main_1, "pointer-events", /*toggled*/ ctx[2] ? "all" : "none");
     			attr_dev(main_1, "class", "svelte-1om0tpl");
-    			add_location(main_1, file$2, 200, 0, 4723);
+    			add_location(main_1, file$2, 200, 0, 4729);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -684,7 +684,7 @@ var app = (function () {
     		orbs.free_all();
 
     		for (let i = 0; i < $orb_count; i++) {
-    			orbs.new([1000 / $orb_count * i + 1000 / $orb_count / 2, 580], [0, 0]);
+    			orbs.new([1000 / $orb_count * i + 1000 / $orb_count / 2 - 10, 580], [0, 0]);
     		}
     	};
 
@@ -815,8 +815,7 @@ var app = (function () {
     		orb_count.subscribe(set_orbs);
     		timer.subscribe(main_loop);
     		timer.subscribe(auto_bounce_loop);
-    		key_up({ key: "Escape" });
-    	});
+    	}); // key_up({ key: "Escape" });
 
     	//#endregion
     	//#region | Events

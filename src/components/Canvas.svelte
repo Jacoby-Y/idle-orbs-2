@@ -8,7 +8,7 @@
 		console.log(`Orb count: ${$orb_count}`);
 		orbs.free_all();
 		for (let i = 0; i < $orb_count; i++) {
-			orbs.new([1000/$orb_count*i+(1000/$orb_count/2), 580], [0, 0]);
+			orbs.new([1000/$orb_count*i+(1000/$orb_count/2)-10, 580], [0, 0]);
 		}
 	}
 	
@@ -145,7 +145,7 @@
 		timer.subscribe(main_loop);
 		timer.subscribe(auto_bounce_loop);
 
-		key_up({ key: "Escape" });
+		// key_up({ key: "Escape" });
 	});
 	//#endregion
 	//#region | Events

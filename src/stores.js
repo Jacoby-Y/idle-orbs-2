@@ -21,4 +21,35 @@ const timer_loop = setInterval(() => {
 	else timer.set(0);
 }, 1000/30);
 
+let deci = 0;
 export const cash = w(0);
+cash.subscribe((v)=>{
+	if (Math.floor(v) != v) {
+		deci += v - Math.floor(v);
+		if (deci >= 1) {
+			v += Math.floor(deci);
+			deci -= Math.floor(deci);
+			cash.set(v);
+		} else {
+			cash.set(Math.floor(v));
+		}
+	}
+})
+
+export const bounce_size = w(75);
+export const bounce_area_cost = w(500);
+export const collector_pos = w(250);
+export const orb_count = w(1);
+
+export const more_orbs_cost = w(100);
+export const auto_bounce = w({
+	cost: 500,
+	unlocked: false
+});
+
+export const prestige = w({
+	cost: 1e4,
+	times: 0,
+});
+
+export const orb_bonus = writable(1);

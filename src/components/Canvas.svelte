@@ -1,15 +1,28 @@
 <script>
 	import { onMount } from "svelte";
-	import { timer, cash } from "../stores.js";
+	import { timer, cash, bounce_size, collector_pos, orb_count, auto_bounce, orb_bonus } from "../stores.js";
+	import { manager, small_explosion } from "../particles.js";
+	import { sci } from "../functions.js";
+
+	const set_orbs = ()=>{
+		console.log(`Orb count: ${$orb_count}`);
+		orbs.free_all();
+		for (let i = 0; i < $orb_count; i++) {
+			orbs.new([1000/$orb_count*i+(1000/$orb_count/2), 580], [0, 0]);
+		}
+	}
 	
+	//#region | Canvas
+	let main;
 	/** @type {HTMLCanvasElement} */
 	let canvas;
 	/** @type {CanvasRenderingContext2D} */
 	let ctx;
 	let pause = false;
 
-	const orb_count = 5;
-
+	let w, h; 
+	//#endregion
+	//#region | Orbs
 	const orbs = {
 		pos: [],
 		vect: [],
@@ -34,8 +47,8 @@
 			vect[0] *= 0.99;
 			vect[1] *= 0.99;
 
-			if (pos[1] < 250 && pos[1] + vect[1] > 250) this.collect(i);
-			else if (pos[1] > 250 && pos[1] + vect[1] < 250) this.collect(i);
+			if (pos[1] < $collector_pos && pos[1] + vect[1] > $collector_pos) this.collect(i);
+			else if (pos[1] > $collector_pos && pos[1] + vect[1] < $collector_pos) this.collect(i);
 
 			if (pos[0]+20 >= canvas.width) {
 				this.col(i, 0, -1);
@@ -60,7 +73,7 @@
 			}
 		},
 		collect(i) {
-			$cash++;
+			$cash += $orb_bonus;
 		},
 		update() {
 			for (let i = 0; i < this.pos.length; i++) {
@@ -73,61 +86,122 @@
 			this.vect.push([vx, vy]);
 			this.grounded.push(false);
 		},
-		bounce() {
+		bounce(pos) {
 			for (let i = 0; i < this.pos.length; i++) {
-				if (this.pos[i][1] < 500) continue;
+				if (this.pos[i][1] < 600-$bounce_size) continue;
+				if (pos != null) this.vect[i][0] += (pos[0] - this.pos[i][0])/100;
 				this.vect[i][1] -= 30 - Math.random()*3;
-				this.vect[i][0] += Math.random()*6-3;
 				this.grounded[i] = false;
 			}
+		},
+		free(i) {
+			this.pos.splice(i, 1);
+			this.vect.splice(i, 1);
+			this.grounded.splice(i, 1);
+		},
+		free_all() {
+			this.pos = [];
+			this.vect = [];
+			this.grounded = [];
 		}
 	};
-	
+	//#endregion
+	//#region | onMount
+	const main_loop = (v)=>{
+		if (pause) return;
+		if (!visible && !toggled) {
+			orbs.update();
+			manager.update(false);
+			return;
+		}
+
+		ctx.fillStyle = "#333636";
+		ctx.fillRect(0, 0, w, h);
+		
+		ctx.fillStyle = "#33ffcc33";
+		ctx.fillRect(0, 600-$bounce_size, 1000, 600-$bounce_size);
+		draw_auto_bounce_bar();
+
+		ctx.strokeStyle = "lime";
+		ctx.beginPath();
+		ctx.moveTo(0, 250);
+		ctx.lineTo(1000, 250);
+		ctx.stroke();
+
+		manager.update();
+
+		orbs.update();
+	};
 	onMount(()=>{
 		ctx = canvas.getContext("2d");
 		
 		canvas.width = 1000;
 		canvas.height = 600;
-		const w = canvas.width;
-		const h = canvas.height;
+		w = canvas.width;
+		h = canvas.height;
 
-		for (let i = 0; i < orb_count; i++) {
-			orbs.new([1000/orb_count*i+(1000/orb_count/2), 580], [0, 0]);
-		}
-		
-		timer.subscribe((v)=>{
-			if (pause) return;
-			ctx.fillStyle = "#333";
-			ctx.fillRect(0, 0, w, h);
-			
-			ctx.fillStyle = "#33ffcc33";
-			ctx.fillRect(0, 500, 1000, 500);
+		set_orbs();
+		orb_count.subscribe(set_orbs);
+		timer.subscribe(main_loop);
+		timer.subscribe(auto_bounce_loop);
 
-			ctx.strokeStyle = "lime";
-			ctx.beginPath();
-			ctx.moveTo(0, 250);
-			ctx.lineTo(1000, 250);
-			ctx.stroke();
-
-			orbs.update();
-		});
+		key_up({ key: "Escape" });
 	});
-
-	document.body.onmousedown = (e)=>{
+	//#endregion
+	//#region | Events
+	let toggled = true;
+	/** @param {MouseEvent} e*/
+	const mouse_down = (e)=>{
 		// orbs.new([10, 10], [10, Math.random()*15]);
-		orbs.bounce();
+		const [x, y] = [e.layerX, e.layerY];
+		orbs.bounce([x, y]);
+		small_explosion(ctx, [x, y]);
 	}
-	document.body.onkeyup = (e)=>{
+	const key_up = (e)=>{
 		const k = e.key;
 		if (k == " ") pause = !pause;
-		else if (k == "d") console.log(orbs);
+		else if (k == "o") console.log(orbs);
+		else if (k == "Escape") toggled = !toggled;
+		else if (k == "c") $cash += 1000;
+		else if (k == "d") $cash += 0.3;
+		else if (k == "b") $bounce_size += 10;
+		else if (k == "r") orb_count.set(Math.ceil(Math.random()*10));
+		// console.log(e);
+	};
+	
+	$: { if (canvas != undefined) {
+		canvas.onmousedown = mouse_down;
+		document.body.onkeyup = key_up;
+	}};
+	//#endregion
+	//#region | Visibility
+	let visible = true;
+	$: {
+		if (main != undefined) {
+			main.ontransitionend = ()=> visible = toggled;
+		}
 	}
+	//#endregion
+	//#region | Auto Bounce
+	const draw_auto_bounce_bar = ()=>{
+		ctx.fillStyle = "#33ffcc11";
+		ctx.fillRect(0, 600-($bounce_size*(auto_bounce_perc)), 1000, 600-($bounce_size*(auto_bounce_perc)));
+	}
+	let auto_bounce_perc = 0;
+	$: if (!$auto_bounce.unlocked) auto_bounce_perc = 0;
+	const auto_bounce_loop = (v)=>{
+		if (!$auto_bounce.unlocked) return;
+		auto_bounce_perc = Math.ceil(v/29*100)/100;
 
+		if (v == 29) orbs.bounce(null);
+	}
+	//#endregion
 </script>
 
-<main>
+<main bind:this={main} style="opacity: {toggled ? "1" : "0"}; pointer-events: {toggled ? "all" : "none"};">
 	<canvas bind:this={canvas}></canvas>
-	<h3 id="cash">Cash: {$cash}</h3>
+	<h3 id="cash">Cash: {sci($cash)}</h3>
+	<h3 id="toggle-txt" style="bottom: {$bounce_size}px;">Press "Esc" to toggle</h3>
 </main>
 
 <style>
@@ -138,9 +212,10 @@
 		transform: translate(-50%, -50%);
 		width: 100%;
 		height: 100%;
+		transition-duration: 0.3s;
 	}
 	canvas {
-		border: 1px solid red;
+		/* border: 1px solid red; */
 		position: absolute;
 		left: 50%;
 		top: 50%;
@@ -149,7 +224,14 @@
 	#cash {
 		position: absolute;
 		left: 0; top: 0;
-		padding: 0.5rem 0.7rem;
-		color: #84f384;
+		padding: 1rem;
+		color: #1dddc3;
+	}
+	#toggle-txt {
+		position: absolute;
+		left: 0;
+		bottom: 100px;
+		padding: 0.5rem 0.6rem;
+		color: #999;
 	}
 </style>

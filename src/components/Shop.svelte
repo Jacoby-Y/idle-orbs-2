@@ -2,18 +2,19 @@
 	// import { timer, cash, bounce_size, collector_pos, orb_count } from "../stores.js";
 	import { 
 		cash,
-		more_orbs_cost, auto_bounce, orb_count, bounce_size, bounce_area_cost, orb_bonus,
+		more_orbs_cost, auto_bounce, basic_orb, bounce_size, bounce_area_cost, orb_bonus,
 		prestige,
 		timer,
 	} from "../stores.js";
 	import { sci } from "../functions.js";
 
-	//#region | More Orbs
-	const buy_more_orbs = ()=>{
-		if ($cash < $more_orbs_cost) return;
-		$cash -= $more_orbs_cost;
-		$more_orbs_cost = Math.round($more_orbs_cost * 1.5);
-		$orb_count++;
+	//#region | Buy Basic Orb
+	const buy_basic = ()=>{
+		if ($cash < $basic_orb.cost) return;
+		$cash -= $basic_orb.cost;
+		$basic_orb.cost = Math.round($basic_orb.cost * 1.5);
+		$basic_orb.amount++;
+		$basic_orb = $basic_orb;
 	}
 	//#endregion
 	//#region | Auto Bounce
@@ -44,7 +45,7 @@
 	const do_prestige = (bypass=false)=>{
 		if ($cash < $prestige.cost && bypass !== true) return;
 		$cash = 0;
-		$orb_count = 1;
+		$basic_orb.amount = 1;
 		$auto_bounce.unlocked = false;
 
 		prestige.update( v => (v.times++, v.cost = Math.round(v.cost * 1.25), v) );
@@ -56,7 +57,7 @@
 <main id="main-shop">
 	<h3 id="cash">Cash: {sci($cash)}</h3>
 	<hr id="top-hr">
-	<button on:click={buy_more_orbs}>More Orbs <b>${sci($more_orbs_cost)}</b></button>
+	<button on:click={buy_basic}>Buy a Basic Orb <b>${sci($basic_orb.cost)}</b></button>
 	<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$auto_bounce.unlocked ? "Unlocked!" : `$${sci($auto_bounce.cost)}`}</b></button>
 	<button on:click={increase_bounce_area}>Increase Bounce Area <b>${sci($bounce_area_cost)}</b></button>
 	<div></div>

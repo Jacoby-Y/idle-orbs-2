@@ -1,3 +1,6 @@
+## v0.2.3
+- Progress on different orb types
+
 ## v0.2.2
 - Quality of life and style changes
 - Code restructuring

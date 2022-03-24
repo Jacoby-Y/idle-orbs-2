@@ -39,7 +39,19 @@ cash.subscribe((v)=>{
 export const bounce_size = w(75);
 export const bounce_area_cost = w(500);
 export const collector_pos = w(250);
-export const orb_count = w(1);
+// export const orb_count = w(1);
+export const basic_orb = w({
+	amount: 1,
+	cost: 100,
+});
+export const light_orb = w({
+	amount: 0,
+	cost: 100,
+});
+export const homing_orb = w({
+	amount: 0,
+	cost: 100,
+});
 
 export const more_orbs_cost = w(100);
 export const auto_bounce = w({

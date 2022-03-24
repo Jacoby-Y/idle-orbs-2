@@ -1,7 +1,7 @@
 <script>
 	import Canvas from "./components/Canvas.svelte";
 	import Main from "./components/Main.svelte";
-	import { timer, cash, bounce_size, bounce_area_cost, collector_pos, orb_count, more_orbs_cost, auto_bounce, prestige, orb_bonus } from "./stores.js";
+	import { timer, cash, bounce_size, bounce_area_cost, collector_pos, more_orbs_cost, auto_bounce, prestige, orb_bonus } from "./stores.js";
 	import {  } from "./functions.js";
 
 	$: $orb_bonus = 1 + ($prestige.times*0.5);

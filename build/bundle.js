@@ -504,7 +504,19 @@ var app = (function () {
     const bounce_size = w(75);
     const bounce_area_cost = w(500);
     const collector_pos = w(250);
-    const orb_count = w(1);
+    // export const orb_count = w(1);
+    const basic_orb = w({
+    	amount: 1,
+    	cost: 100,
+    });
+    const light_orb = w({
+    	amount: 0,
+    	cost: 100,
+    });
+    const homing_orb = w({
+    	amount: 0,
+    	cost: 100,
+    });
 
     const more_orbs_cost = w(100);
     const auto_bounce = w({
@@ -601,18 +613,18 @@ var app = (function () {
     			h31 = element("h3");
     			t4 = text("Press \"Esc\" to toggle");
     			attr_dev(canvas_1, "class", "svelte-7mrntw");
-    			add_location(canvas_1, file$4, 201, 1, 4841);
+    			add_location(canvas_1, file$4, 375, 1, 9795);
     			attr_dev(h30, "id", "cash");
     			attr_dev(h30, "class", "svelte-7mrntw");
-    			add_location(h30, file$4, 202, 1, 4879);
+    			add_location(h30, file$4, 376, 1, 9833);
     			attr_dev(h31, "id", "toggle-txt");
     			set_style(h31, "bottom", /*$bounce_size*/ ctx[3] + "px");
     			attr_dev(h31, "class", "svelte-7mrntw");
-    			add_location(h31, file$4, 203, 1, 4918);
+    			add_location(h31, file$4, 377, 1, 9872);
     			set_style(main_1, "opacity", /*toggled*/ ctx[2] ? "1" : "0");
     			set_style(main_1, "pointer-events", /*toggled*/ ctx[2] ? "all" : "none");
     			attr_dev(main_1, "class", "svelte-7mrntw");
-    			add_location(main_1, file$4, 200, 0, 4732);
+    			add_location(main_1, file$4, 374, 0, 9686);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -620,7 +632,7 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, main_1, anchor);
     			append_dev(main_1, canvas_1);
-    			/*canvas_1_binding*/ ctx[6](canvas_1);
+    			/*canvas_1_binding*/ ctx[7](canvas_1);
     			append_dev(main_1, t0);
     			append_dev(main_1, h30);
     			append_dev(h30, t1);
@@ -628,20 +640,20 @@ var app = (function () {
     			append_dev(main_1, t3);
     			append_dev(main_1, h31);
     			append_dev(h31, t4);
-    			/*main_1_binding*/ ctx[7](main_1);
+    			/*main_1_binding*/ ctx[8](main_1);
     		},
-    		p: function update(ctx, [dirty]) {
-    			if (dirty & /*$cash*/ 16 && t2_value !== (t2_value = sci(/*$cash*/ ctx[4]) + "")) set_data_dev(t2, t2_value);
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*$cash*/ 16 && t2_value !== (t2_value = sci(/*$cash*/ ctx[4]) + "")) set_data_dev(t2, t2_value);
 
-    			if (dirty & /*$bounce_size*/ 8) {
+    			if (dirty[0] & /*$bounce_size*/ 8) {
     				set_style(h31, "bottom", /*$bounce_size*/ ctx[3] + "px");
     			}
 
-    			if (dirty & /*toggled*/ 4) {
+    			if (dirty[0] & /*toggled*/ 4) {
     				set_style(main_1, "opacity", /*toggled*/ ctx[2] ? "1" : "0");
     			}
 
-    			if (dirty & /*toggled*/ 4) {
+    			if (dirty[0] & /*toggled*/ 4) {
     				set_style(main_1, "pointer-events", /*toggled*/ ctx[2] ? "all" : "none");
     			}
     		},
@@ -649,8 +661,8 @@ var app = (function () {
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main_1);
-    			/*canvas_1_binding*/ ctx[6](null);
-    			/*main_1_binding*/ ctx[7](null);
+    			/*canvas_1_binding*/ ctx[7](null);
+    			/*main_1_binding*/ ctx[8](null);
     		}
     	};
 
@@ -671,7 +683,10 @@ var app = (function () {
     	let $cash;
     	let $orb_bonus;
     	let $collector_pos;
-    	let $orb_count;
+    	let $timer;
+    	let $basic_orb;
+    	let $homing_orb;
+    	let $light_orb;
     	validate_store(auto_bounce, 'auto_bounce');
     	component_subscribe($$self, auto_bounce, $$value => $$invalidate(5, $auto_bounce = $$value));
     	validate_store(bounce_size, 'bounce_size');
@@ -679,21 +694,28 @@ var app = (function () {
     	validate_store(cash, 'cash');
     	component_subscribe($$self, cash, $$value => $$invalidate(4, $cash = $$value));
     	validate_store(orb_bonus, 'orb_bonus');
-    	component_subscribe($$self, orb_bonus, $$value => $$invalidate(14, $orb_bonus = $$value));
+    	component_subscribe($$self, orb_bonus, $$value => $$invalidate(16, $orb_bonus = $$value));
     	validate_store(collector_pos, 'collector_pos');
-    	component_subscribe($$self, collector_pos, $$value => $$invalidate(15, $collector_pos = $$value));
-    	validate_store(orb_count, 'orb_count');
-    	component_subscribe($$self, orb_count, $$value => $$invalidate(16, $orb_count = $$value));
+    	component_subscribe($$self, collector_pos, $$value => $$invalidate(17, $collector_pos = $$value));
+    	validate_store(timer, 'timer');
+    	component_subscribe($$self, timer, $$value => $$invalidate(18, $timer = $$value));
+    	validate_store(basic_orb, 'basic_orb');
+    	component_subscribe($$self, basic_orb, $$value => $$invalidate(6, $basic_orb = $$value));
+    	validate_store(homing_orb, 'homing_orb');
+    	component_subscribe($$self, homing_orb, $$value => $$invalidate(19, $homing_orb = $$value));
+    	validate_store(light_orb, 'light_orb');
+    	component_subscribe($$self, light_orb, $$value => $$invalidate(20, $light_orb = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Canvas', slots, []);
 
     	const set_orbs = () => {
-    		console.log(`Orb count: ${$orb_count}`);
     		orbs.free_all();
 
-    		for (let i = 0; i < $orb_count; i++) {
-    			orbs.new([1000 / $orb_count * i + 1000 / $orb_count / 2 - 10, 580], [0, 0]);
+    		for (let i = 0; i < $basic_orb.amount; i++) {
+    			orbs.new(Math.round(Math.random() * 1000), 580, 0, 0, "basic");
     		}
+
+    		return;
     	};
 
     	//#region | Canvas
@@ -710,81 +732,226 @@ var app = (function () {
 
     	//#endregion
     	//#region | Orbs
+    	const distance = (pos1, pos2) => {
+    		let y = pos2.y - pos1.y;
+    		let x = pos2.x - pos1.x;
+    		return Math.sqrt(x * x + y * y);
+    	};
+
+    	const rand_width = () => {
+    		return Math.round(Math.random() * 1000);
+    	};
+
+    	const rand_height = () => {
+    		return Math.round(Math.random() * 600);
+    	};
+
+    	const rand_pos = () => {
+    		return {
+    			x: Math.round(Math.random() * 1000),
+    			y: Math.round(Math.random() * 1000)
+    		};
+    	};
+
     	const orbs = {
-    		pos: [],
-    		vect: [],
-    		grounded: [],
-    		col(i, xy, mult) {
-    			this.vect[i][xy] = Math.abs(this.vect[i][xy]) * mult;
+    		list: [],
+    		// pos: [],
+    		// vect: [],
+    		// grounded: [],
+    		col(orb, xy, mult) {
+    			xy = xy == 0 ? "vx" : "vy";
+    			orb[xy] = Math.abs(orb[xy]) * mult;
     		},
     		draw(i) {
-    			ctx.fillStyle = "aqua";
-    			ctx.fillRect(this.pos[i][0], this.pos[i][1], 20, 20);
+    			const orb = this.list[i];
+    			const type = orb.type;
+    			if (type == "basic") ctx.fillStyle = "#ffffff99"; else if (type == "light") ctx.fillStyle = "#33ffffaa"; else if (type == "homing") ctx.fillStyle = "#ff3333aa";
+    			ctx.fillRect(orb.x, orb.y, 20, 20);
+    		},
+    		basic_physics(orb) {
+    			orb.vy += 1;
+    			orb.vx *= 0.99;
+    			orb.vy *= 0.99;
+
+    			if (orb.x + 20 >= canvas.width) {
+    				this.col(orb, 0, -1);
+    				orb.x = canvas.width - 20;
+    			} else if (orb.x <= 0) {
+    				this.col(orb, 0, 1);
+    				orb.x = 0;
+    			}
+
+    			if (orb.y + 20 >= canvas.height) {
+    				this.col(orb, 1, -1);
+    				orb.vy *= 0.85;
+
+    				// if (Math.abs(orb.vy) < 10) orb.vy *= 0.85;
+    				// if (Math.abs(orb.vy) < 6) orb.vy *= 0.85;
+    				// if (Math.abs(orb.vy) < 3) (orb.vx = 0, orb.vy = 0, orb.grounded = true);
+    				if (Math.abs(orb.vy) <= 10) orb.vy *= 0.5;
+
+    				if (Math.abs(orb.vy) <= 3) orb.vy = 0;
+    				if (Math.abs(orb.vy) <= 0.5) orb.vx *= 0.9;
+    				if (Math.abs(orb.vy) == 0 && Math.abs(orb.vx) < 1) (orb.vy = 0, orb.vx = 0, orb.grounded = true);
+
+    				// console.log(orb.vy);
+    				orb.y = canvas.height - 20;
+    			} else if (orb.y <= 0) {
+    				this.col(orb, 1, 1);
+    				orb.y = 0;
+    			}
+    		},
+    		light_physics(orb) {
+    			orb.vy += 0.8;
+    			orb.vx *= 0.99;
+    			orb.vy *= 0.99;
+
+    			if (orb.x + 20 >= canvas.width) {
+    				this.col(orb, 0, -1);
+    				orb.x = canvas.width - 20;
+    			} else if (orb.x <= 0) {
+    				this.col(orb, 0, 1);
+    				orb.x = 0;
+    			}
+
+    			if (orb.y + 20 >= canvas.height) {
+    				this.col(orb, 1, -1);
+    				orb.vy *= 0.85;
+    				if (Math.abs(orb.vy) <= 7) orb.vy *= 0.5;
+    				if (Math.abs(orb.vy) < 1) (orb.vy = 0, orb.vx = 0, orb.grounded = true);
+
+    				// console.log(orb.vy);
+    				orb.y = canvas.height - 20;
+    			} else if (orb.y <= 0) {
+    				this.col(orb, 1, 1);
+    				orb.y = 0;
+    			}
+    		},
+    		homing_physics(orb) {
+    			orb.x += orb.vx;
+    			orb.y += orb.vy;
+    			orb.vx *= 0.9;
+    			orb.vy *= 0.9;
+
+    			// const ang = Math.atan2((mouse.y-10)-orb.y, (mouse.x-10)-orb.x);
+    			// orb.vx += Math.cos(ang);
+    			// orb.vy += Math.sin(ang);
+    			const push_to = (pos1, pos2, mult) => {
+    				const ang = Math.atan2(pos1.y - 10 - pos2.y, pos1.x - 10 - pos2.x);
+    				orb.vx += Math.cos(ang) * mult;
+    				orb.vy += Math.sin(ang) * mult;
+    			};
+
+    			// const mouse_dist = distance(mouse, orb);
+    			// // console.log(mouse_dist);
+    			// if (mouse_dist > 50) push_to(mouse, orb, 1);
+    			let count = 0;
+
+    			let index = -1;
+
+    			for (let i = 0; i < this.list.length; i++) {
+    				const orb2 = this.list[i];
+    				if (orb2.type != "homing") continue;
+
+    				if (orb2 == orb && index == -1) {
+    					index = count;
+    				}
+
+    				count++;
+    			}
+
+    			// console.log(count);
+    			const to_pos = {
+    				x: Math.cos(6.242 / count * index / 2 + 6.161 * ($timer / 29)) * 50 + mouse.x, //+((6.242)/count*$timer)
+    				y: Math.sin(6.242 / count * index / 2 + 6.161 * ($timer / 29)) * 50 + mouse.y, //+((6.242)/count*$timer)
+    				
+    			};
+
+    			// if (distance(orb, to_pos) < 7) (orb.x = to_pos.x, orb.y = to_pos.y);\
+    			const dist_to = distance(orb, to_pos);
+
+    			push_to(to_pos, orb, 0.5 + dist_to / 600 + index / 10);
+
+    			// for (let i = 0; i < this.list.length; i++) {
+    			// 	const orb2 = this.list[i];
+    			// 	if (orb == orb2) continue;
+    			// 	// const dist = distance(orb, orb2);
+    			// 	// if (dist < 50) push_to(orb2, orb, 5);
+    			// }
+    			if (orb.x + 20 >= canvas.width) {
+    				this.col(orb, 0, -1);
+    				orb.x = canvas.width - 20;
+    			} else if (orb.x <= 0) {
+    				this.col(orb, 0, 1);
+    				orb.x = 0;
+    			}
+
+    			if (orb.y + 20 >= canvas.height) {
+    				this.col(orb, 1, -1);
+    				orb.y = canvas.height - 20;
+    			} else if (orb.y <= 0) {
+    				this.col(orb, 1, 1);
+    				orb.y = 0;
+    			}
     		},
     		physics(i) {
-    			if (this.grounded[i]) return;
-    			const pos = this.pos[i];
-    			const vect = this.vect[i];
-    			pos[0] += vect[0];
-    			pos[1] += vect[1];
-    			vect[1] += 1;
-    			vect[0] *= 0.99;
-    			vect[1] *= 0.99;
-    			if (pos[1] < $collector_pos && pos[1] + vect[1] > $collector_pos) this.collect(i); else if (pos[1] > $collector_pos && pos[1] + vect[1] < $collector_pos) this.collect(i);
+    			// const pos = this.list[i];
+    			// const vect = this.vect[i];
+    			const orb = this.list[i];
 
-    			if (pos[0] + 20 >= canvas.width) {
-    				this.col(i, 0, -1);
-    				pos[0] = canvas.width - 20;
-    			} else if (pos[0] <= 0) {
-    				this.col(i, 0, 1);
-    				pos[0] = 0;
-    			}
-
-    			if (pos[1] + 20 >= canvas.height) {
-    				this.col(i, 1, -1);
-    				vect[1] *= 0.85;
-    				if (Math.abs(vect[1]) < 10) vect[1] *= 0.85;
-    				if (Math.abs(vect[1]) < 6) vect[1] *= 0.85;
-    				if (Math.abs(vect[1]) < 3) (vect[0] = 0, vect[1] = 0, this.grounded[i] = true);
-
-    				// console.log(vect[1]);
-    				pos[1] = canvas.height - 20;
-    			} else if (pos[1] <= 0) {
-    				this.col(i, 1, 1);
-    				pos[1] = 0;
-    			}
+    			if (orb.grounded) return;
+    			orb.x += orb.vx;
+    			orb.y += orb.vy;
+    			if (orb.y < $collector_pos && orb.y + orb.vy > $collector_pos) this.collect(i); else if (orb.y > $collector_pos && orb.y + orb.vy < $collector_pos) this.collect(i);
+    			if (orb.type == "basic") this.basic_physics(orb);
+    			if (orb.type == "light") this.light_physics(orb);
+    			if (orb.type == "homing") this.homing_physics(orb);
     		},
     		collect(i) {
     			set_store_value(cash, $cash += $orb_bonus, $cash);
     		},
     		update() {
-    			for (let i = 0; i < this.pos.length; i++) {
+    			for (let i = 0; i < this.list.length; i++) {
     				this.draw(i);
     				this.physics(i);
     			}
     		},
-    		new([x, y], [vx, vy]) {
-    			this.pos.push([x, y]);
-    			this.vect.push([vx, vy]);
-    			this.grounded.push(false);
-    		},
+    		new(x, y, vx, vy, type) {
+    			// this.pos.push([x, y]);
+    			// this.vect.push([vx, vy]);
+    			// this.grounded.push(false);
+    			// console.log(`New: ${JSON.stringify({x, y, vx, vy, type})}`);
+    			if (type == "light") light_orb.update(v => (v.amount++, v)); // console.log(this.list.reverse()[0]);
+
+    			if (type == "homing") homing_orb.update(v => (v.amount++, v));
+    			this.list.push({ x, y, vx, vy, type, grounded: false });
+    		}, // console.log(this.list.reverse()[0]);
     		bounce(pos) {
-    			for (let i = 0; i < this.pos.length; i++) {
-    				if (this.pos[i][1] < 600 - $bounce_size - 21) continue;
-    				if (pos != null) this.vect[i][0] += (pos[0] - this.pos[i][0]) / 100;
-    				this.vect[i][1] -= 30 - Math.random() * 3;
-    				this.grounded[i] = false;
+    			// for (let i = 0; i < this.pos.length; i++) {
+    			// 	if (this.pos[i][1] < 600-$bounce_size-21) continue;
+    			// 	if (pos != null) this.vect[i][0] += (pos[0] - this.pos[i][0])/100;
+    			// 	this.vect[i][1] -= 30 - Math.random()*3;
+    			// 	this.grounded[i] = false;
+    			// }
+    			for (let i = 0; i < this.list.length; i++) {
+    				const orb = this.list[i];
+    				if (orb.y < 600 - $bounce_size - 21) continue;
+    				if (pos != null) orb.vx += (pos[0] - orb.x) / 100;
+    				orb.vy -= 30 - Math.random() * 3;
+    				orb.grounded = false;
     			}
     		},
     		free(i) {
-    			this.pos.splice(i, 1);
-    			this.vect.splice(i, 1);
-    			this.grounded.splice(i, 1);
+    			// this.pos.splice(i, 1);
+    			// this.vect.splice(i, 1);
+    			// this.grounded.splice(i, 1);
+    			this.list.splice(i, 1);
     		},
     		free_all() {
-    			this.pos = [];
-    			this.vect = [];
-    			this.grounded = [];
+    			// this.pos = [];
+    			// this.vect = [];
+    			// this.grounded = [];
+    			this.list = [];
     		}
     	};
 
@@ -809,7 +976,11 @@ var app = (function () {
     		ctx.moveTo(0, 250);
     		ctx.lineTo(1000, 250);
     		ctx.stroke();
+
+    		// ctx.fillStyle = "lime";
+    		// ctx.fillRect(mouse.x, mouse.y, 5, 5);
     		manager.update();
+
     		orbs.update();
     	};
 
@@ -820,16 +991,24 @@ var app = (function () {
     		w = canvas.width;
     		h = canvas.height;
     		set_orbs();
-    		orb_count.subscribe(set_orbs);
     		timer.subscribe(main_loop);
     		timer.subscribe(auto_bounce_loop);
     	}); // key_up({ key: "Escape" });
 
     	//#endregion
     	//#region | Events
+    	const mouse = { x: 0, y: 0, hovering: false };
+
     	let toggled = true;
 
     	/** @param {MouseEvent} e*/
+    	const mouse_move = e => {
+    		[mouse.x, mouse.y] = [e.layerX, e.layerY];
+    	};
+
+    	const mouse_enter = () => mouse.hovering = true;
+    	const mouse_leave = () => mouse.hovering = false;
+
     	const mouse_down = e => {
     		// orbs.new([10, 10], [10, Math.random()*15]);
     		const [x, y] = [e.layerX, e.layerY];
@@ -840,8 +1019,8 @@ var app = (function () {
 
     	const key_up = e => {
     		const k = e.key;
-    		if (k == " ") pause = !pause; else if (k == "o") console.log(orbs); else if (k == "Escape") $$invalidate(2, toggled = !toggled); else if (k == "c") set_store_value(cash, $cash += 1000, $cash); else if (k == "d") set_store_value(cash, $cash += 0.3, $cash); else if (k == "b") set_store_value(bounce_size, $bounce_size += 10, $bounce_size); else if (k == "r") orb_count.set(Math.ceil(Math.random() * 10));
-    	}; // console.log(e);
+    		if (k == " ") pause = !pause; else if (k == "o") console.log(orbs); else if (k == "Escape") $$invalidate(2, toggled = !toggled); else if (k == "c") set_store_value(cash, $cash += 1000, $cash); else if (k == "b") set_store_value(bounce_size, $bounce_size += 10, $bounce_size); else if (k == "B") set_store_value(bounce_size, $bounce_size -= 10, $bounce_size); else if (k == "r") set_orbs(); else if (k == "1") orbs.new(rand_width(), 580, 0, 0, "basic"); else if (k == "2") orbs.new(rand_width(), rand_height(), 0, 0, "light"); else if (k == "3") orbs.new(rand_width(), rand_height(), 0, 0, "homing"); // Broken right now
+    	};
 
     	//#endregion
     	//#region | Visibility
@@ -888,9 +1067,11 @@ var app = (function () {
     		cash,
     		bounce_size,
     		collector_pos,
-    		orb_count,
     		auto_bounce,
     		orb_bonus,
+    		basic_orb,
+    		light_orb,
+    		homing_orb,
     		manager,
     		small_explosion,
     		sci,
@@ -901,9 +1082,17 @@ var app = (function () {
     		pause,
     		w,
     		h,
+    		distance,
+    		rand_width,
+    		rand_height,
+    		rand_pos,
     		orbs,
     		main_loop,
+    		mouse,
     		toggled,
+    		mouse_move,
+    		mouse_enter,
+    		mouse_leave,
     		mouse_down,
     		key_up,
     		visible,
@@ -915,7 +1104,10 @@ var app = (function () {
     		$cash,
     		$orb_bonus,
     		$collector_pos,
-    		$orb_count
+    		$timer,
+    		$basic_orb,
+    		$homing_orb,
+    		$light_orb
     	});
 
     	$$self.$inject_state = $$props => {
@@ -935,16 +1127,25 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*canvas*/ 2) {
+    		if ($$self.$$.dirty[0] & /*$basic_orb*/ 64) {
+    			{
+    				set_orbs();
+    			}
+    		}
+
+    		if ($$self.$$.dirty[0] & /*canvas*/ 2) {
     			{
     				if (canvas != undefined) {
     					$$invalidate(1, canvas.onmousedown = mouse_down, canvas);
+    					$$invalidate(1, canvas.onmousemove = mouse_move, canvas);
+    					$$invalidate(1, canvas.onmouseenter = mouse_enter, canvas);
+    					$$invalidate(1, canvas.onmouseleave = mouse_leave, canvas);
     					document.body.onkeyup = key_up;
     				}
     			}
     		}
 
-    		if ($$self.$$.dirty & /*main, toggled*/ 5) {
+    		if ($$self.$$.dirty[0] & /*main, toggled*/ 5) {
     			{
     				if (main != undefined) {
     					$$invalidate(0, main.ontransitionend = () => visible = toggled, main);
@@ -952,7 +1153,7 @@ var app = (function () {
     			}
     		}
 
-    		if ($$self.$$.dirty & /*$auto_bounce*/ 32) {
+    		if ($$self.$$.dirty[0] & /*$auto_bounce*/ 32) {
     			if (!$auto_bounce.unlocked) auto_bounce_perc = 0;
     		}
     	};
@@ -964,6 +1165,7 @@ var app = (function () {
     		$bounce_size,
     		$cash,
     		$auto_bounce,
+    		$basic_orb,
     		canvas_1_binding,
     		main_1_binding
     	];
@@ -972,7 +1174,7 @@ var app = (function () {
     class Canvas extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {});
+    		init(this, options, instance$4, create_fragment$4, safe_not_equal, {}, null, [-1, -1]);
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -990,7 +1192,7 @@ var app = (function () {
     	let main;
     	let h30;
     	let t0;
-    	let t1_value = sci(/*$cash*/ ctx[3]) + "";
+    	let t1_value = sci(/*$cash*/ ctx[4]) + "";
     	let t1;
     	let t2;
     	let hr;
@@ -999,7 +1201,7 @@ var app = (function () {
     	let t4;
     	let b0;
     	let t5;
-    	let t6_value = sci(/*$more_orbs_cost*/ ctx[6]) + "";
+    	let t6_value = sci(/*$basic_orb*/ ctx[3].cost) + "";
     	let t6;
     	let t7;
     	let button1;
@@ -1016,14 +1218,14 @@ var app = (function () {
     	let t11;
     	let b2;
     	let t12;
-    	let t13_value = sci(/*$bounce_area_cost*/ ctx[5]) + "";
+    	let t13_value = sci(/*$bounce_area_cost*/ ctx[6]) + "";
     	let t13;
     	let t14;
     	let div;
     	let t15;
     	let h31;
     	let t16;
-    	let t17_value = sci(/*$prestige*/ ctx[4].times * 50) + "";
+    	let t17_value = sci(/*$prestige*/ ctx[5].times * 50) + "";
     	let t17;
     	let t18;
     	let t19_value = (/*prest_hover*/ ctx[1] ? "(+50%)" : "") + "";
@@ -1033,7 +1235,7 @@ var app = (function () {
     	let t21;
     	let b3;
     	let t22;
-    	let t23_value = sci(/*$prestige*/ ctx[4].cost) + "";
+    	let t23_value = sci(/*$prestige*/ ctx[5].cost) + "";
     	let t23;
     	let mounted;
     	let dispose;
@@ -1048,7 +1250,7 @@ var app = (function () {
     			hr = element("hr");
     			t3 = space();
     			button0 = element("button");
-    			t4 = text("More Orbs ");
+    			t4 = text("Buy a Basic Orb ");
     			b0 = element("b");
     			t5 = text("$");
     			t6 = text(t6_value);
@@ -1079,33 +1281,33 @@ var app = (function () {
     			t23 = text(t23_value);
     			attr_dev(h30, "id", "cash");
     			attr_dev(h30, "class", "svelte-t1qr23");
-    			add_location(h30, file$3, 56, 1, 1422);
+    			add_location(h30, file$3, 57, 1, 1463);
     			attr_dev(hr, "id", "top-hr");
     			attr_dev(hr, "class", "svelte-t1qr23");
-    			add_location(hr, file$3, 57, 1, 1461);
+    			add_location(hr, file$3, 58, 1, 1502);
     			attr_dev(b0, "class", "svelte-t1qr23");
-    			add_location(b0, file$3, 58, 44, 1522);
+    			add_location(b0, file$3, 59, 46, 1565);
     			attr_dev(button0, "class", "svelte-t1qr23");
-    			add_location(button0, file$3, 58, 1, 1479);
+    			add_location(button0, file$3, 59, 1, 1520);
     			attr_dev(b1, "class", "svelte-t1qr23");
-    			add_location(b1, file$3, 59, 55, 1617);
+    			add_location(b1, file$3, 60, 55, 1660);
     			attr_dev(button1, "class", "svelte-t1qr23");
-    			add_location(button1, file$3, 59, 1, 1563);
+    			add_location(button1, file$3, 60, 1, 1606);
     			attr_dev(b2, "class", "svelte-t1qr23");
-    			add_location(b2, file$3, 60, 62, 1764);
+    			add_location(b2, file$3, 61, 62, 1807);
     			attr_dev(button2, "class", "svelte-t1qr23");
-    			add_location(button2, file$3, 60, 1, 1703);
-    			add_location(div, file$3, 61, 1, 1807);
+    			add_location(button2, file$3, 61, 1, 1746);
+    			add_location(div, file$3, 62, 1, 1850);
     			attr_dev(h31, "id", "orb-info");
     			attr_dev(h31, "class", "svelte-t1qr23");
-    			add_location(h31, file$3, 62, 1, 1820);
+    			add_location(h31, file$3, 63, 1, 1863);
     			attr_dev(b3, "class", "svelte-t1qr23");
-    			add_location(b3, file$3, 63, 63, 1984);
+    			add_location(b3, file$3, 64, 63, 2027);
     			attr_dev(button3, "class", "svelte-t1qr23");
-    			add_location(button3, file$3, 63, 1, 1922);
+    			add_location(button3, file$3, 64, 1, 1965);
     			attr_dev(main, "id", "main-shop");
     			attr_dev(main, "class", "svelte-t1qr23");
-    			add_location(main, file$3, 55, 0, 1399);
+    			add_location(main, file$3, 56, 0, 1440);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1152,7 +1354,7 @@ var app = (function () {
 
     			if (!mounted) {
     				dispose = [
-    					listen_dev(button0, "click", /*buy_more_orbs*/ ctx[7], false, false, false),
+    					listen_dev(button0, "click", /*buy_basic*/ ctx[7], false, false, false),
     					listen_dev(button1, "click", /*buy_auto_bounce*/ ctx[8], false, false, false),
     					listen_dev(button2, "click", /*increase_bounce_area*/ ctx[9], false, false, false),
     					listen_dev(button3, "click", /*do_prestige*/ ctx[10], false, false, false)
@@ -1162,17 +1364,17 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*$cash*/ 8 && t1_value !== (t1_value = sci(/*$cash*/ ctx[3]) + "")) set_data_dev(t1, t1_value);
-    			if (dirty & /*$more_orbs_cost*/ 64 && t6_value !== (t6_value = sci(/*$more_orbs_cost*/ ctx[6]) + "")) set_data_dev(t6, t6_value);
+    			if (dirty & /*$cash*/ 16 && t1_value !== (t1_value = sci(/*$cash*/ ctx[4]) + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*$basic_orb*/ 8 && t6_value !== (t6_value = sci(/*$basic_orb*/ ctx[3].cost) + "")) set_data_dev(t6, t6_value);
 
     			if (dirty & /*$auto_bounce*/ 4 && t9_value !== (t9_value = (/*$auto_bounce*/ ctx[2].unlocked
     			? "Unlocked!"
     			: `$${sci(/*$auto_bounce*/ ctx[2].cost)}`) + "")) set_data_dev(t9, t9_value);
 
-    			if (dirty & /*$bounce_area_cost*/ 32 && t13_value !== (t13_value = sci(/*$bounce_area_cost*/ ctx[5]) + "")) set_data_dev(t13, t13_value);
-    			if (dirty & /*$prestige*/ 16 && t17_value !== (t17_value = sci(/*$prestige*/ ctx[4].times * 50) + "")) set_data_dev(t17, t17_value);
+    			if (dirty & /*$bounce_area_cost*/ 64 && t13_value !== (t13_value = sci(/*$bounce_area_cost*/ ctx[6]) + "")) set_data_dev(t13, t13_value);
+    			if (dirty & /*$prestige*/ 32 && t17_value !== (t17_value = sci(/*$prestige*/ ctx[5].times * 50) + "")) set_data_dev(t17, t17_value);
     			if (dirty & /*prest_hover*/ 2 && t19_value !== (t19_value = (/*prest_hover*/ ctx[1] ? "(+50%)" : "") + "")) set_data_dev(t19, t19_value);
-    			if (dirty & /*$prestige*/ 16 && t23_value !== (t23_value = sci(/*$prestige*/ ctx[4].cost) + "")) set_data_dev(t23, t23_value);
+    			if (dirty & /*$prestige*/ 32 && t23_value !== (t23_value = sci(/*$prestige*/ ctx[5].cost) + "")) set_data_dev(t23, t23_value);
     		},
     		i: noop,
     		o: noop,
@@ -1197,34 +1399,32 @@ var app = (function () {
 
     function instance$3($$self, $$props, $$invalidate) {
     	let $auto_bounce;
-    	let $orb_count;
+    	let $basic_orb;
     	let $cash;
     	let $prestige;
     	let $bounce_size;
     	let $bounce_area_cost;
-    	let $more_orbs_cost;
     	validate_store(auto_bounce, 'auto_bounce');
     	component_subscribe($$self, auto_bounce, $$value => $$invalidate(2, $auto_bounce = $$value));
-    	validate_store(orb_count, 'orb_count');
-    	component_subscribe($$self, orb_count, $$value => $$invalidate(12, $orb_count = $$value));
+    	validate_store(basic_orb, 'basic_orb');
+    	component_subscribe($$self, basic_orb, $$value => $$invalidate(3, $basic_orb = $$value));
     	validate_store(cash, 'cash');
-    	component_subscribe($$self, cash, $$value => $$invalidate(3, $cash = $$value));
+    	component_subscribe($$self, cash, $$value => $$invalidate(4, $cash = $$value));
     	validate_store(prestige, 'prestige');
-    	component_subscribe($$self, prestige, $$value => $$invalidate(4, $prestige = $$value));
+    	component_subscribe($$self, prestige, $$value => $$invalidate(5, $prestige = $$value));
     	validate_store(bounce_size, 'bounce_size');
-    	component_subscribe($$self, bounce_size, $$value => $$invalidate(13, $bounce_size = $$value));
+    	component_subscribe($$self, bounce_size, $$value => $$invalidate(12, $bounce_size = $$value));
     	validate_store(bounce_area_cost, 'bounce_area_cost');
-    	component_subscribe($$self, bounce_area_cost, $$value => $$invalidate(5, $bounce_area_cost = $$value));
-    	validate_store(more_orbs_cost, 'more_orbs_cost');
-    	component_subscribe($$self, more_orbs_cost, $$value => $$invalidate(6, $more_orbs_cost = $$value));
+    	component_subscribe($$self, bounce_area_cost, $$value => $$invalidate(6, $bounce_area_cost = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Shop', slots, []);
 
-    	const buy_more_orbs = () => {
-    		if ($cash < $more_orbs_cost) return;
-    		set_store_value(cash, $cash -= $more_orbs_cost, $cash);
-    		set_store_value(more_orbs_cost, $more_orbs_cost = Math.round($more_orbs_cost * 1.5), $more_orbs_cost);
-    		set_store_value(orb_count, $orb_count++, $orb_count);
+    	const buy_basic = () => {
+    		if ($cash < $basic_orb.cost) return;
+    		set_store_value(cash, $cash -= $basic_orb.cost, $cash);
+    		set_store_value(basic_orb, $basic_orb.cost = Math.round($basic_orb.cost * 1.5), $basic_orb);
+    		set_store_value(basic_orb, $basic_orb.amount++, $basic_orb);
+    		basic_orb.set($basic_orb);
     	};
 
     	//#endregion
@@ -1254,7 +1454,7 @@ var app = (function () {
     	const do_prestige = (bypass = false) => {
     		if ($cash < $prestige.cost && bypass !== true) return;
     		set_store_value(cash, $cash = 0, $cash);
-    		set_store_value(orb_count, $orb_count = 1, $orb_count);
+    		set_store_value(basic_orb, $basic_orb.amount = 1, $basic_orb);
     		set_store_value(auto_bounce, $auto_bounce.unlocked = false, $auto_bounce);
     		prestige.update(v => (v.times++, v.cost = Math.round(v.cost * 1.25), v));
     	};
@@ -1276,26 +1476,25 @@ var app = (function () {
     		cash,
     		more_orbs_cost,
     		auto_bounce,
-    		orb_count,
+    		basic_orb,
     		bounce_size,
     		bounce_area_cost,
     		orb_bonus,
     		prestige,
     		timer,
     		sci,
-    		buy_more_orbs,
+    		buy_basic,
     		buy_auto_bounce,
     		increase_bounce_area,
     		prest_btn,
     		prest_hover,
     		do_prestige,
     		$auto_bounce,
-    		$orb_count,
+    		$basic_orb,
     		$cash,
     		$prestige,
     		$bounce_size,
-    		$bounce_area_cost,
-    		$more_orbs_cost
+    		$bounce_area_cost
     	});
 
     	$$self.$inject_state = $$props => {
@@ -1322,11 +1521,11 @@ var app = (function () {
     		prest_btn,
     		prest_hover,
     		$auto_bounce,
+    		$basic_orb,
     		$cash,
     		$prestige,
     		$bounce_area_cost,
-    		$more_orbs_cost,
-    		buy_more_orbs,
+    		buy_basic,
     		buy_auto_bounce,
     		increase_bounce_area,
     		do_prestige,
@@ -1545,7 +1744,7 @@ var app = (function () {
     			t = space();
     			create_component(canvas.$$.fragment);
     			attr_dev(main1, "class", "svelte-yl16dy");
-    			add_location(main1, file, 10, 0, 349);
+    			add_location(main1, file, 10, 0, 338);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1610,7 +1809,6 @@ var app = (function () {
     		bounce_size,
     		bounce_area_cost,
     		collector_pos,
-    		orb_count,
     		more_orbs_cost,
     		auto_bounce,
     		prestige,

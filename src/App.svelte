@@ -1,6 +1,6 @@
 <script>
 	import Canvas from "./components/Canvas.svelte";
-	import Shop from "./components/Shop.svelte";
+	import Main from "./components/Main.svelte";
 	import { timer, cash, bounce_size, bounce_area_cost, collector_pos, orb_count, more_orbs_cost, auto_bounce, prestige, orb_bonus } from "./stores.js";
 	import {  } from "./functions.js";
 
@@ -10,7 +10,7 @@
 
 <main>
 
-	<Shop/>
+	<Main/>
 	<Canvas/>
 
 </main>

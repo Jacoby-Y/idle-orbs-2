@@ -53,29 +53,18 @@
 
 </script>
 
-<main>
-	<div id="main-shop">
-		<h3 id="cash">Cash: {sci($cash)}</h3>
-		<hr id="top-hr">
-		<button on:click={buy_more_orbs}>More Orbs <b>${sci($more_orbs_cost)}</b></button>
-		<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$auto_bounce.unlocked ? "Unlocked!" : `$${sci($auto_bounce.cost)}`}</b></button>
-		<button on:click={increase_bounce_area}>Increase Bounce Area <b>${sci($bounce_area_cost)}</b></button>
-		<div></div>
-		<h3 id="orb-info">Orb Prestige Bonus: +{sci($prestige.times*50)}% {prest_hover ? "(+50%)" : ""}</h3>
-		<button bind:this={prest_btn} on:click={do_prestige}>Prestige <b>${sci($prestige.cost)}</b></button>
-	</div>
+<main id="main-shop">
+	<h3 id="cash">Cash: {sci($cash)}</h3>
+	<hr id="top-hr">
+	<button on:click={buy_more_orbs}>More Orbs <b>${sci($more_orbs_cost)}</b></button>
+	<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$auto_bounce.unlocked ? "Unlocked!" : `$${sci($auto_bounce.cost)}`}</b></button>
+	<button on:click={increase_bounce_area}>Increase Bounce Area <b>${sci($bounce_area_cost)}</b></button>
 	<div></div>
+	<h3 id="orb-info">Orb Prestige Bonus: +{sci($prestige.times*50)}% {prest_hover ? "(+50%)" : ""}</h3>
+	<button bind:this={prest_btn} on:click={do_prestige}>Prestige <b>${sci($prestige.cost)}</b></button>
 </main>
 
 <style>
-	main {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		display: grid;
-		grid-template-columns: 1fr 1fr;
-		grid-template-rows: 1fr;
-	}
 	button {
 		width: 100%;
 		text-align: left;

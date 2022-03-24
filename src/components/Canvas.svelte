@@ -88,7 +88,7 @@
 		},
 		bounce(pos) {
 			for (let i = 0; i < this.pos.length; i++) {
-				if (this.pos[i][1] < 600-$bounce_size) continue;
+				if (this.pos[i][1] < 600-$bounce_size-21) continue;
 				if (pos != null) this.vect[i][0] += (pos[0] - this.pos[i][0])/100;
 				this.vect[i][1] -= 30 - Math.random()*3;
 				this.grounded[i] = false;
@@ -233,5 +233,8 @@
 		bottom: 100px;
 		padding: 0.5rem 0.6rem;
 		color: #999;
+	}
+	h3 {
+		pointer-events: none;
 	}
 </style>

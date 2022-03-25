@@ -59,12 +59,4 @@ button {
 button:disabled {
 	color: #999;
 }
-
-button:not(:disabled):active {
-	background-color: #ddd;
-}
-
-button:focus {
-	border-color: #666;
-}
 /* #endregion */

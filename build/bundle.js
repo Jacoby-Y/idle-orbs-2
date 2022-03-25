@@ -479,13 +479,15 @@ var app = (function () {
     const w = writable;
     //#endregion
 
+    //#region | Timer
     const timer = writable(0);
     let ticks = 0; timer.subscribe( v => ticks = v );
     setInterval(() => {
     	if (ticks < 29) timer.update( v => v+1 );
     	else timer.set(0);
     }, 1000/30);
-
+    //#endregion
+    //#region | Cash
     let deci = 0;
     const cash = w(0);
     cash.subscribe((v)=>{
@@ -500,36 +502,65 @@ var app = (function () {
     		}
     	}
     });
-
+    //#endregion
+    //#region | Bounce and Collector
     const bounce_size = w(75);
     const bounce_area_cost = w(500);
     const collector_pos = w(250);
-    // export const orb_count = w(1);
+    //#endregion
+    //#region | Orbs
     const basic_orb = w({
     	amount: 1,
-    	cost: 100,
+    	cost: 50,
+    	value: 1
     });
     const light_orb = w({
     	amount: 0,
     	cost: 100,
+    	value: 1
     });
     const homing_orb = w({
     	amount: 0,
     	cost: 100,
+    	value: 0.5,
     });
-
-    const more_orbs_cost = w(100);
+    //#endregion
+    //#region | Shop Upgrades
+    const more_orbs_cost = w(50);
     const auto_bounce = w({
     	cost: 500,
-    	unlocked: false
+    	unlocked: false,
+    	on: true,
     });
-
+    //#endregion
+    //#region | Prestige
     const prestige = w({
     	cost: 1e4,
     	times: 0,
     });
+    //#endregion
 
     const orb_bonus = writable(1);
+
+    const unlocked_lab = w(false);
+
+    const canvas_toggled = w(true);
+    const fighting = w(false);
+    const total_monster_killed = w(0);
+
+    const mana = w(0);
+    const fight_cost = w(1e3);
+
+    const trades = w({
+    	to_light: 1,
+    	to_homing: 3,
+    });
+
+    const shifting = w(false);
+
+    // const callable = ()=>{
+
+    // }
 
     const manager = {
     	groups: [],
@@ -589,17 +620,177 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file$4 = "src/components/Canvas.svelte";
 
+    // (539:1) {#if $auto_bounce.unlocked}
+    function create_if_block_1$1(ctx) {
+    	let h3;
+    	let t0;
+    	let t1_value = (/*$auto_bounce*/ ctx[3].on ? "off" : "on") + "";
+    	let t1;
+    	let t2;
+
+    	const block = {
+    		c: function create() {
+    			h3 = element("h3");
+    			t0 = text("Press \"Tab\" to turn ");
+    			t1 = text(t1_value);
+    			t2 = text(" auto bounce");
+    			attr_dev(h3, "id", "toggle-bounce");
+    			set_style(h3, "bottom", /*$bounce_size*/ ctx[6] + "px");
+    			attr_dev(h3, "class", "svelte-1ya7rdd");
+    			add_location(h3, file$4, 539, 2, 15150);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h3, anchor);
+    			append_dev(h3, t0);
+    			append_dev(h3, t1);
+    			append_dev(h3, t2);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*$auto_bounce*/ 8 && t1_value !== (t1_value = (/*$auto_bounce*/ ctx[3].on ? "off" : "on") + "")) set_data_dev(t1, t1_value);
+
+    			if (dirty[0] & /*$bounce_size*/ 64) {
+    				set_style(h3, "bottom", /*$bounce_size*/ ctx[6] + "px");
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h3);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1$1.name,
+    		type: "if",
+    		source: "(539:1) {#if $auto_bounce.unlocked}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (542:1) {#if $fighting}
+    function create_if_block$1(ctx) {
+    	let button;
+    	let t1;
+    	let div;
+    	let h3;
+    	let t2_value = /*monster*/ ctx[5].name + "";
+    	let t2;
+    	let t3;
+    	let img;
+    	let img_src_value;
+    	let mounted;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			button = element("button");
+    			button.textContent = "Quit";
+    			t1 = space();
+    			div = element("div");
+    			h3 = element("h3");
+    			t2 = text(t2_value);
+    			t3 = space();
+    			img = element("img");
+    			attr_dev(button, "id", "quit");
+    			attr_dev(button, "class", "svelte-1ya7rdd");
+    			add_location(button, file$4, 542, 2, 15305);
+    			attr_dev(h3, "class", "svelte-1ya7rdd");
+    			add_location(h3, file$4, 551, 3, 15567);
+    			if (!src_url_equal(img.src, img_src_value = /*monster*/ ctx[5].src)) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "monster Icon");
+    			set_style(img, "width", (/*monster*/ ctx[5].pt2.y - /*monster*/ ctx[5].pt1.y) / 2 + "px");
+    			set_style(img, "height", (/*monster*/ ctx[5].pt2.y - /*monster*/ ctx[5].pt1.y) / 2 + "px");
+    			attr_dev(img, "class", "svelte-1ya7rdd");
+    			add_location(img, file$4, 552, 3, 15594);
+    			attr_dev(div, "id", "monster-info");
+    			set_style(div, "left", /*monster*/ ctx[5].pt1.x + "px");
+    			set_style(div, "top", /*monster*/ ctx[5].pt1.y + "px");
+    			set_style(div, "width", /*monster*/ ctx[5].pt2.x - /*monster*/ ctx[5].pt1.x + "px");
+    			set_style(div, "height", /*monster*/ ctx[5].pt2.y - /*monster*/ ctx[5].pt1.y + "px");
+    			attr_dev(div, "class", "svelte-1ya7rdd");
+    			add_location(div, file$4, 543, 2, 15374);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button, anchor);
+    			insert_dev(target, t1, anchor);
+    			insert_dev(target, div, anchor);
+    			append_dev(div, h3);
+    			append_dev(h3, t2);
+    			append_dev(div, t3);
+    			append_dev(div, img);
+
+    			if (!mounted) {
+    				dispose = listen_dev(button, "click", /*click_handler*/ ctx[12], false, false, false);
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty[0] & /*monster*/ 32 && t2_value !== (t2_value = /*monster*/ ctx[5].name + "")) set_data_dev(t2, t2_value);
+
+    			if (dirty[0] & /*monster*/ 32 && !src_url_equal(img.src, img_src_value = /*monster*/ ctx[5].src)) {
+    				attr_dev(img, "src", img_src_value);
+    			}
+
+    			if (dirty[0] & /*monster*/ 32) {
+    				set_style(img, "width", (/*monster*/ ctx[5].pt2.y - /*monster*/ ctx[5].pt1.y) / 2 + "px");
+    			}
+
+    			if (dirty[0] & /*monster*/ 32) {
+    				set_style(img, "height", (/*monster*/ ctx[5].pt2.y - /*monster*/ ctx[5].pt1.y) / 2 + "px");
+    			}
+
+    			if (dirty[0] & /*monster*/ 32) {
+    				set_style(div, "left", /*monster*/ ctx[5].pt1.x + "px");
+    			}
+
+    			if (dirty[0] & /*monster*/ 32) {
+    				set_style(div, "top", /*monster*/ ctx[5].pt1.y + "px");
+    			}
+
+    			if (dirty[0] & /*monster*/ 32) {
+    				set_style(div, "width", /*monster*/ ctx[5].pt2.x - /*monster*/ ctx[5].pt1.x + "px");
+    			}
+
+    			if (dirty[0] & /*monster*/ 32) {
+    				set_style(div, "height", /*monster*/ ctx[5].pt2.y - /*monster*/ ctx[5].pt1.y + "px");
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button);
+    			if (detaching) detach_dev(t1);
+    			if (detaching) detach_dev(div);
+    			mounted = false;
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block$1.name,
+    		type: "if",
+    		source: "(542:1) {#if $fighting}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
     function create_fragment$4(ctx) {
     	let main_1;
     	let canvas_1;
     	let t0;
     	let h30;
     	let t1;
-    	let t2_value = sci(/*$cash*/ ctx[4]) + "";
+    	let t2_value = sci(/*$cash*/ ctx[7]) + "";
     	let t2;
     	let t3;
     	let h31;
     	let t4;
+    	let t5;
+    	let t6;
+    	let if_block0 = /*$auto_bounce*/ ctx[3].unlocked && create_if_block_1$1(ctx);
+    	let if_block1 = /*$fighting*/ ctx[2] && create_if_block$1(ctx);
 
     	const block = {
     		c: function create() {
@@ -611,20 +802,24 @@ var app = (function () {
     			t2 = text(t2_value);
     			t3 = space();
     			h31 = element("h3");
-    			t4 = text("Press \"Esc\" to toggle");
-    			attr_dev(canvas_1, "class", "svelte-7mrntw");
-    			add_location(canvas_1, file$4, 375, 1, 9795);
+    			t4 = text("Press \"Esc\" to toggle shop");
+    			t5 = space();
+    			if (if_block0) if_block0.c();
+    			t6 = space();
+    			if (if_block1) if_block1.c();
+    			attr_dev(canvas_1, "class", "svelte-1ya7rdd");
+    			add_location(canvas_1, file$4, 535, 1, 14956);
     			attr_dev(h30, "id", "cash");
-    			attr_dev(h30, "class", "svelte-7mrntw");
-    			add_location(h30, file$4, 376, 1, 9833);
+    			attr_dev(h30, "class", "svelte-1ya7rdd");
+    			add_location(h30, file$4, 536, 1, 14994);
     			attr_dev(h31, "id", "toggle-txt");
-    			set_style(h31, "bottom", /*$bounce_size*/ ctx[3] + "px");
-    			attr_dev(h31, "class", "svelte-7mrntw");
-    			add_location(h31, file$4, 377, 1, 9872);
-    			set_style(main_1, "opacity", /*toggled*/ ctx[2] ? "1" : "0");
-    			set_style(main_1, "pointer-events", /*toggled*/ ctx[2] ? "all" : "none");
-    			attr_dev(main_1, "class", "svelte-7mrntw");
-    			add_location(main_1, file$4, 374, 0, 9686);
+    			set_style(h31, "bottom", /*$bounce_size*/ ctx[6] + "px");
+    			attr_dev(h31, "class", "svelte-1ya7rdd");
+    			add_location(h31, file$4, 537, 1, 15033);
+    			set_style(main_1, "opacity", /*$toggled*/ ctx[4] ? "1" : "0");
+    			set_style(main_1, "pointer-events", /*$toggled*/ ctx[4] ? "all" : "none");
+    			attr_dev(main_1, "class", "svelte-1ya7rdd");
+    			add_location(main_1, file$4, 534, 0, 14845);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -632,7 +827,7 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, main_1, anchor);
     			append_dev(main_1, canvas_1);
-    			/*canvas_1_binding*/ ctx[7](canvas_1);
+    			/*canvas_1_binding*/ ctx[11](canvas_1);
     			append_dev(main_1, t0);
     			append_dev(main_1, h30);
     			append_dev(h30, t1);
@@ -640,29 +835,61 @@ var app = (function () {
     			append_dev(main_1, t3);
     			append_dev(main_1, h31);
     			append_dev(h31, t4);
-    			/*main_1_binding*/ ctx[8](main_1);
+    			append_dev(main_1, t5);
+    			if (if_block0) if_block0.m(main_1, null);
+    			append_dev(main_1, t6);
+    			if (if_block1) if_block1.m(main_1, null);
+    			/*main_1_binding*/ ctx[13](main_1);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*$cash*/ 16 && t2_value !== (t2_value = sci(/*$cash*/ ctx[4]) + "")) set_data_dev(t2, t2_value);
+    			if (dirty[0] & /*$cash*/ 128 && t2_value !== (t2_value = sci(/*$cash*/ ctx[7]) + "")) set_data_dev(t2, t2_value);
 
-    			if (dirty[0] & /*$bounce_size*/ 8) {
-    				set_style(h31, "bottom", /*$bounce_size*/ ctx[3] + "px");
+    			if (dirty[0] & /*$bounce_size*/ 64) {
+    				set_style(h31, "bottom", /*$bounce_size*/ ctx[6] + "px");
     			}
 
-    			if (dirty[0] & /*toggled*/ 4) {
-    				set_style(main_1, "opacity", /*toggled*/ ctx[2] ? "1" : "0");
+    			if (/*$auto_bounce*/ ctx[3].unlocked) {
+    				if (if_block0) {
+    					if_block0.p(ctx, dirty);
+    				} else {
+    					if_block0 = create_if_block_1$1(ctx);
+    					if_block0.c();
+    					if_block0.m(main_1, t6);
+    				}
+    			} else if (if_block0) {
+    				if_block0.d(1);
+    				if_block0 = null;
     			}
 
-    			if (dirty[0] & /*toggled*/ 4) {
-    				set_style(main_1, "pointer-events", /*toggled*/ ctx[2] ? "all" : "none");
+    			if (/*$fighting*/ ctx[2]) {
+    				if (if_block1) {
+    					if_block1.p(ctx, dirty);
+    				} else {
+    					if_block1 = create_if_block$1(ctx);
+    					if_block1.c();
+    					if_block1.m(main_1, null);
+    				}
+    			} else if (if_block1) {
+    				if_block1.d(1);
+    				if_block1 = null;
+    			}
+
+    			if (dirty[0] & /*$toggled*/ 16) {
+    				set_style(main_1, "opacity", /*$toggled*/ ctx[4] ? "1" : "0");
+    			}
+
+    			if (dirty[0] & /*$toggled*/ 16) {
+    				set_style(main_1, "pointer-events", /*$toggled*/ ctx[4] ? "all" : "none");
     			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main_1);
-    			/*canvas_1_binding*/ ctx[7](null);
-    			/*main_1_binding*/ ctx[8](null);
+    			/*canvas_1_binding*/ ctx[11](null);
+    			if (if_block0) if_block0.d();
+    			if (if_block1) if_block1.d();
+    			/*main_1_binding*/ ctx[13](null);
     		}
     	};
 
@@ -678,33 +905,45 @@ var app = (function () {
     }
 
     function instance$4($$self, $$props, $$invalidate) {
+    	let $fighting;
+    	let $tmk;
+    	let $mana;
     	let $auto_bounce;
     	let $bounce_size;
+    	let $toggled;
+    	let $shifting;
     	let $cash;
-    	let $orb_bonus;
-    	let $collector_pos;
-    	let $timer;
-    	let $basic_orb;
     	let $homing_orb;
     	let $light_orb;
+    	let $basic_orb;
+    	let $collector_pos;
+    	let $timer;
+    	validate_store(fighting, 'fighting');
+    	component_subscribe($$self, fighting, $$value => $$invalidate(2, $fighting = $$value));
+    	validate_store(total_monster_killed, 'tmk');
+    	component_subscribe($$self, total_monster_killed, $$value => $$invalidate(22, $tmk = $$value));
+    	validate_store(mana, 'mana');
+    	component_subscribe($$self, mana, $$value => $$invalidate(23, $mana = $$value));
     	validate_store(auto_bounce, 'auto_bounce');
-    	component_subscribe($$self, auto_bounce, $$value => $$invalidate(5, $auto_bounce = $$value));
+    	component_subscribe($$self, auto_bounce, $$value => $$invalidate(3, $auto_bounce = $$value));
     	validate_store(bounce_size, 'bounce_size');
-    	component_subscribe($$self, bounce_size, $$value => $$invalidate(3, $bounce_size = $$value));
+    	component_subscribe($$self, bounce_size, $$value => $$invalidate(6, $bounce_size = $$value));
+    	validate_store(canvas_toggled, 'toggled');
+    	component_subscribe($$self, canvas_toggled, $$value => $$invalidate(4, $toggled = $$value));
+    	validate_store(shifting, 'shifting');
+    	component_subscribe($$self, shifting, $$value => $$invalidate(24, $shifting = $$value));
     	validate_store(cash, 'cash');
-    	component_subscribe($$self, cash, $$value => $$invalidate(4, $cash = $$value));
-    	validate_store(orb_bonus, 'orb_bonus');
-    	component_subscribe($$self, orb_bonus, $$value => $$invalidate(16, $orb_bonus = $$value));
-    	validate_store(collector_pos, 'collector_pos');
-    	component_subscribe($$self, collector_pos, $$value => $$invalidate(17, $collector_pos = $$value));
-    	validate_store(timer, 'timer');
-    	component_subscribe($$self, timer, $$value => $$invalidate(18, $timer = $$value));
-    	validate_store(basic_orb, 'basic_orb');
-    	component_subscribe($$self, basic_orb, $$value => $$invalidate(6, $basic_orb = $$value));
+    	component_subscribe($$self, cash, $$value => $$invalidate(7, $cash = $$value));
     	validate_store(homing_orb, 'homing_orb');
-    	component_subscribe($$self, homing_orb, $$value => $$invalidate(19, $homing_orb = $$value));
+    	component_subscribe($$self, homing_orb, $$value => $$invalidate(8, $homing_orb = $$value));
     	validate_store(light_orb, 'light_orb');
-    	component_subscribe($$self, light_orb, $$value => $$invalidate(20, $light_orb = $$value));
+    	component_subscribe($$self, light_orb, $$value => $$invalidate(9, $light_orb = $$value));
+    	validate_store(basic_orb, 'basic_orb');
+    	component_subscribe($$self, basic_orb, $$value => $$invalidate(10, $basic_orb = $$value));
+    	validate_store(collector_pos, 'collector_pos');
+    	component_subscribe($$self, collector_pos, $$value => $$invalidate(25, $collector_pos = $$value));
+    	validate_store(timer, 'timer');
+    	component_subscribe($$self, timer, $$value => $$invalidate(26, $timer = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Canvas', slots, []);
 
@@ -713,6 +952,14 @@ var app = (function () {
 
     		for (let i = 0; i < $basic_orb.amount; i++) {
     			orbs.new(Math.round(Math.random() * 1000), 580, 0, 0, "basic");
+    		}
+
+    		for (let i = 0; i < $light_orb.amount; i++) {
+    			orbs.new(Math.round(Math.random() * 1000), 580, 0, 0, "light");
+    		}
+
+    		for (let i = 0; i < $homing_orb.amount; i++) {
+    			orbs.new(Math.round(Math.random() * 1000), 580, 0, 0, "homing");
     		}
 
     		return;
@@ -728,6 +975,7 @@ var app = (function () {
     	let ctx;
 
     	let pause = false;
+    	let step = false;
     	let w, h;
 
     	//#endregion
@@ -755,6 +1003,7 @@ var app = (function () {
 
     	const orbs = {
     		list: [],
+    		homing: [],
     		// pos: [],
     		// vect: [],
     		// grounded: [],
@@ -762,24 +1011,41 @@ var app = (function () {
     			xy = xy == 0 ? "vx" : "vy";
     			orb[xy] = Math.abs(orb[xy]) * mult;
     		},
-    		draw(i) {
-    			const orb = this.list[i];
+    		draw(orb) {
     			const type = orb.type;
-    			if (type == "basic") ctx.fillStyle = "#ffffff99"; else if (type == "light") ctx.fillStyle = "#33ffffaa"; else if (type == "homing") ctx.fillStyle = "#ff3333aa";
+    			if (type == "basic") ctx.fillStyle = "#ffffff99"; else if (type == "light") ctx.fillStyle = "#33ffffaa"; else if (type == "homing") return;
     			ctx.fillRect(orb.x, orb.y, 20, 20);
+    		},
+    		draw_homing() {
+    			ctx.fillStyle = "#ffff33aa";
+
+    			if (this.homing.length > 201) {
+    				const range = this.homing.length;
+    				const points = 201;
+    				const gap = range / points;
+    				let total = 0;
+
+    				for (let i = 0; i < points; i++) {
+    					const orb = this.homing[Math.floor(gap * i)];
+    					if (orb == undefined) continue;
+    					ctx.fillRect(orb.x, orb.y, 20, 20);
+    					total++;
+    				}
+
+    				return total;
+    			} else {
+    				for (let i = 0; i < this.homing.length; i++) {
+    					const orb = this.homing[i];
+    					ctx.fillRect(orb.x, orb.y, 20, 20);
+    				}
+    			}
+
+    			return this.homing.length;
     		},
     		basic_physics(orb) {
     			orb.vy += 1;
     			orb.vx *= 0.99;
     			orb.vy *= 0.99;
-
-    			if (orb.x + 20 >= canvas.width) {
-    				this.col(orb, 0, -1);
-    				orb.x = canvas.width - 20;
-    			} else if (orb.x <= 0) {
-    				this.col(orb, 0, 1);
-    				orb.x = 0;
-    			}
 
     			if (orb.y + 20 >= canvas.height) {
     				this.col(orb, 1, -1);
@@ -796,9 +1062,6 @@ var app = (function () {
 
     				// console.log(orb.vy);
     				orb.y = canvas.height - 20;
-    			} else if (orb.y <= 0) {
-    				this.col(orb, 1, 1);
-    				orb.y = 0;
     			}
     		},
     		light_physics(orb) {
@@ -806,25 +1069,15 @@ var app = (function () {
     			orb.vx *= 0.99;
     			orb.vy *= 0.99;
 
-    			if (orb.x + 20 >= canvas.width) {
-    				this.col(orb, 0, -1);
-    				orb.x = canvas.width - 20;
-    			} else if (orb.x <= 0) {
-    				this.col(orb, 0, 1);
-    				orb.x = 0;
-    			}
-
     			if (orb.y + 20 >= canvas.height) {
     				this.col(orb, 1, -1);
-    				orb.vy *= 0.85;
-    				if (Math.abs(orb.vy) <= 7) orb.vy *= 0.5;
+    				if (Math.abs(orb.vy) >= 15) orb.vy *= 0.98; else orb.vy *= 0.85;
+    				if (Math.abs(orb.vy) < 15) (orb.vy *= 0.7, orb.vx *= 0.7);
+    				if (Math.abs(orb.vy) < 5) (orb.vy *= 0.7, orb.vx *= 0.7);
     				if (Math.abs(orb.vy) < 1) (orb.vy = 0, orb.vx = 0, orb.grounded = true);
 
     				// console.log(orb.vy);
     				orb.y = canvas.height - 20;
-    			} else if (orb.y <= 0) {
-    				this.col(orb, 1, 1);
-    				orb.y = 0;
     			}
     		},
     		homing_physics(orb) {
@@ -833,51 +1086,78 @@ var app = (function () {
     			orb.vx *= 0.9;
     			orb.vy *= 0.9;
 
-    			// const ang = Math.atan2((mouse.y-10)-orb.y, (mouse.x-10)-orb.x);
-    			// orb.vx += Math.cos(ang);
-    			// orb.vy += Math.sin(ang);
-    			const push_to = (pos1, pos2, mult) => {
-    				const ang = Math.atan2(pos1.y - 10 - pos2.y, pos1.x - 10 - pos2.x);
-    				orb.vx += Math.cos(ang) * mult;
-    				orb.vy += Math.sin(ang) * mult;
-    			};
+    			if (mouse.hovering) {
+    				const push_to = (pos1, pos2, mult) => {
+    					const ang = Math.atan2(pos1.y - 10 - pos2.y, pos1.x - 10 - pos2.x);
+    					orb.vx += Math.cos(ang) * mult;
+    					orb.vy += Math.sin(ang) * mult;
+    				};
 
-    			// const mouse_dist = distance(mouse, orb);
-    			// // console.log(mouse_dist);
-    			// if (mouse_dist > 50) push_to(mouse, orb, 1);
-    			let count = 0;
+    				let count = this.homing.length;
+    				let index = orb.index;
+    				const to_pos = { x: undefined, y: undefined };
 
-    			let index = -1;
-
-    			for (let i = 0; i < this.list.length; i++) {
-    				const orb2 = this.list[i];
-    				if (orb2.type != "homing") continue;
-
-    				if (orb2 == orb && index == -1) {
-    					index = count;
+    				if (index % 2 == 0) {
+    					(to_pos.x = Math.cos(6.242 / count * index + 6.282 * ($timer / 29)) * 100 + mouse.x - 10, to_pos.y = Math.cos(6.242 / count * index + 6.282 * ($timer / 29)) * 100 + mouse.y - 10);
+    				} else {
+    					(to_pos.x = Math.cos((6.282 / count * index + 6.282 * ($timer / 29)) % 6.282) * 50 + mouse.x, to_pos.y = Math.sin((6.282 / count * index + 6.282 * ($timer / 29)) % 6.282) * 50 + mouse.y);
     				}
 
-    				count++;
+    				const dist_to = distance(orb, to_pos);
+    				push_to(to_pos, orb, dist_to < 200 ? 1.2 : 2);
     			}
 
-    			// console.log(count);
-    			const to_pos = {
-    				x: Math.cos(6.242 / count * index / 2 + 6.161 * ($timer / 29)) * 50 + mouse.x, //+((6.242)/count*$timer)
-    				y: Math.sin(6.242 / count * index / 2 + 6.161 * ($timer / 29)) * 50 + mouse.y, //+((6.242)/count*$timer)
-    				
-    			};
+    			if (orb.y + 20 >= canvas.height) {
+    				this.col(orb, 1, -1);
+    				orb.y = canvas.height - 20;
+    			}
+    		},
+    		collide_monster(orb) {
+    			// c1 = 400, 200 / c2 = 600, 300
+    			const pt1 = monster.pt1;
 
-    			// if (distance(orb, to_pos) < 7) (orb.x = to_pos.x, orb.y = to_pos.y);\
-    			const dist_to = distance(orb, to_pos);
+    			const pt2 = monster.pt2;
 
-    			push_to(to_pos, orb, 0.5 + dist_to / 600 + index / 10);
+    			if (orb.y >= pt1.y - 20 && orb.y <= pt2.y) {
+    				// console.log("in horz area");
+    				if (orb.lx + 20 < pt1.x && orb.x + 20 >= pt1.x) {
+    					orb.vx = Math.abs(orb.vx) * -1;
+    					orb.x = pt1.x - 20;
+    					return true;
+    				} else if (orb.lx > pt2.x && orb.x <= pt2.x) {
+    					orb.vx = Math.abs(orb.vx);
+    					orb.x = pt2.x;
+    					return true;
+    				}
+    			}
 
-    			// for (let i = 0; i < this.list.length; i++) {
-    			// 	const orb2 = this.list[i];
-    			// 	if (orb == orb2) continue;
-    			// 	// const dist = distance(orb, orb2);
-    			// 	// if (dist < 50) push_to(orb2, orb, 5);
-    			// }
+    			if (orb.x >= pt1.x - 20 && orb.x <= pt2.x) {
+    				// console.log("in vert area");
+    				if (orb.ly + 20 < pt1.y && orb.y + 20 >= pt1.y) {
+    					orb.vy = Math.abs(orb.vy) * -1;
+    					orb.y = pt1.y - 20;
+    					if (Math.abs(orb.vx) < 0.1) orb.vx = 1;
+    					orb.vx *= 1.5;
+    					return true;
+    				} else if (orb.ly > pt2.y && orb.y <= pt2.y) {
+    					orb.vy = Math.abs(orb.vy);
+    					orb.y = pt2.y;
+    					return true;
+    				}
+    			}
+
+    			return false;
+    		},
+    		physics(orb) {
+    			if (orb.grounded) return;
+    			orb.lx = orb.x;
+    			orb.ly = orb.y;
+    			orb.x += orb.vx;
+    			orb.y += orb.vy;
+    			if (orb.type == "basic") this.basic_physics(orb);
+    			if (orb.type == "light") this.light_physics(orb);
+    			if (orb.type == "homing") this.homing_physics(orb);
+
     			if (orb.x + 20 >= canvas.width) {
     				this.col(orb, 0, -1);
     				orb.x = canvas.width - 20;
@@ -886,46 +1166,64 @@ var app = (function () {
     				orb.x = 0;
     			}
 
-    			if (orb.y + 20 >= canvas.height) {
-    				this.col(orb, 1, -1);
-    				orb.y = canvas.height - 20;
-    			} else if (orb.y <= 0) {
+    			if (orb.y <= 0) {
     				this.col(orb, 1, 1);
     				orb.y = 0;
     			}
-    		},
-    		physics(i) {
-    			// const pos = this.list[i];
-    			// const vect = this.vect[i];
-    			const orb = this.list[i];
 
-    			if (orb.grounded) return;
-    			orb.x += orb.vx;
-    			orb.y += orb.vy;
-    			if (orb.y < $collector_pos && orb.y + orb.vy > $collector_pos) this.collect(i); else if (orb.y > $collector_pos && orb.y + orb.vy < $collector_pos) this.collect(i);
-    			if (orb.type == "basic") this.basic_physics(orb);
-    			if (orb.type == "light") this.light_physics(orb);
-    			if (orb.type == "homing") this.homing_physics(orb);
-    		},
-    		collect(i) {
-    			set_store_value(cash, $cash += $orb_bonus, $cash);
-    		},
-    		update() {
-    			for (let i = 0; i < this.list.length; i++) {
-    				this.draw(i);
-    				this.physics(i);
+    			if ($fighting) {
+    				const hit = this.collide_monster(orb);
+
+    				if (hit) {
+    					monster.hit(1);
+    				}
     			}
+
+    			if (orb.y < $collector_pos && orb.ly > $collector_pos) this.collect(orb); else if (orb.y > $collector_pos && orb.ly < $collector_pos) this.collect(orb);
+    		},
+    		collect(orb) {
+    			if ($fighting) return; // ctx.fillStyle = "lime";
+    			// ctx.fillRect(orb.x+5, orb.y+5, 10, 10);
+
+    			if (orb.type == "basic") set_store_value(cash, $cash += $basic_orb.value, $cash); else if (orb.type == "light") set_store_value(cash, $cash += $light_orb.value, $cash); else if (orb.type == "homing") set_store_value(cash, $cash += $homing_orb.value, $cash);
+    		}, // ctx.fillStyle = "lime";
+    		update() {
+    			const full = this.list.concat(this.homing);
+
+    			for (let i = 0; i < full.length; i++) {
+    				const orb = full[i];
+    				this.draw(orb);
+    				this.physics(orb);
+    			}
+
+    			this.draw_homing();
     		},
     		new(x, y, vx, vy, type) {
-    			// this.pos.push([x, y]);
-    			// this.vect.push([vx, vy]);
-    			// this.grounded.push(false);
-    			// console.log(`New: ${JSON.stringify({x, y, vx, vy, type})}`);
-    			if (type == "light") light_orb.update(v => (v.amount++, v)); // console.log(this.list.reverse()[0]);
-
-    			if (type == "homing") homing_orb.update(v => (v.amount++, v));
-    			this.list.push({ x, y, vx, vy, type, grounded: false });
-    		}, // console.log(this.list.reverse()[0]);
+    			if (type == "homing") {
+    				this.homing.push({
+    					x,
+    					y,
+    					vx,
+    					vy,
+    					type,
+    					grounded: false,
+    					lx: x,
+    					ly: y,
+    					index: this.homing.length
+    				});
+    			} else {
+    				this.list.push({
+    					x,
+    					y,
+    					vx,
+    					vy,
+    					type,
+    					grounded: false,
+    					lx: x,
+    					ly: y
+    				});
+    			}
+    		},
     		bounce(pos) {
     			// for (let i = 0; i < this.pos.length; i++) {
     			// 	if (this.pos[i][1] < 600-$bounce_size-21) continue;
@@ -948,39 +1246,46 @@ var app = (function () {
     			this.list.splice(i, 1);
     		},
     		free_all() {
-    			// this.pos = [];
-    			// this.vect = [];
-    			// this.grounded = [];
     			this.list = [];
+    			this.homing = [];
     		}
     	};
 
     	//#endregion
     	//#region | onMount
     	const main_loop = v => {
-    		if (pause) return;
+    		if (pause && !step) return;
+    		if (step) step = false;
 
-    		if (!visible && !toggled) {
+    		if (!visible && !$toggled) {
     			orbs.update();
     			manager.update(false);
     			return;
     		}
 
+    		// Background
     		ctx.fillStyle = "#333636";
+
     		ctx.fillRect(0, 0, w, h);
+
+    		// Bounce Area
     		ctx.fillStyle = "#33ffcc33";
+
     		ctx.fillRect(0, 600 - $bounce_size, 1000, 600 - $bounce_size);
     		draw_auto_bounce_bar();
-    		ctx.strokeStyle = "lime";
-    		ctx.beginPath();
-    		ctx.moveTo(0, 250);
-    		ctx.lineTo(1000, 250);
-    		ctx.stroke();
 
-    		// ctx.fillStyle = "lime";
-    		// ctx.fillRect(mouse.x, mouse.y, 5, 5);
+    		// Collector Line
+    		if (!$fighting) {
+    			ctx.strokeStyle = "lime";
+    			ctx.beginPath();
+    			ctx.moveTo(0, 250);
+    			ctx.lineTo(1000, 250);
+    			ctx.stroke();
+    		} else {
+    			monster.draw();
+    		}
+
     		manager.update();
-
     		orbs.update();
     	};
 
@@ -998,8 +1303,6 @@ var app = (function () {
     	//#endregion
     	//#region | Events
     	const mouse = { x: 0, y: 0, hovering: false };
-
-    	let toggled = true;
 
     	/** @param {MouseEvent} e*/
     	const mouse_move = e => {
@@ -1019,7 +1322,17 @@ var app = (function () {
 
     	const key_up = e => {
     		const k = e.key;
-    		if (k == " ") pause = !pause; else if (k == "o") console.log(orbs); else if (k == "Escape") $$invalidate(2, toggled = !toggled); else if (k == "c") set_store_value(cash, $cash += 1000, $cash); else if (k == "b") set_store_value(bounce_size, $bounce_size += 10, $bounce_size); else if (k == "B") set_store_value(bounce_size, $bounce_size -= 10, $bounce_size); else if (k == "r") set_orbs(); else if (k == "1") orbs.new(rand_width(), 580, 0, 0, "basic"); else if (k == "2") orbs.new(rand_width(), rand_height(), 0, 0, "light"); else if (k == "3") orbs.new(rand_width(), rand_height(), 0, 0, "homing"); // Broken right now
+
+    		if (k == " ") pause = !pause; else if (k == "s") step = !step; else if (k == "Tab" && $auto_bounce.unlocked) auto_bounce.update(v => (v.on = !v.on, v)); else if (k == "Escape") set_store_value(canvas_toggled, $toggled = !$toggled, $toggled); else if (k == "o") console.log(orbs); else if (k == "d") console.log(orbs.draw_homing()); else if (k == "l") console.log(orbs.list.length + orbs.homing.length); else if (k == "a") console.log(monster); else if (k == "c") set_store_value(cash, $cash += 10000, $cash); else if (k == "b") set_store_value(bounce_size, $bounce_size += 10, $bounce_size); else if (k == "B") set_store_value(bounce_size, $bounce_size -= 10, $bounce_size); else if (k == "m") console.log(mouse); else if (k == "r") set_orbs(); else if (k == "1") basic_orb.update(v => (v.amount++, v)); else if (k == "2") light_orb.update(v => (v.amount++, v)); else if (k == "3") homing_orb.update(v => (v.amount++, v)); else if (k == "!") basic_orb.update(v => (v.amount > 0 ? v.amount-- : 0, v)); else if (k == "@") light_orb.update(v => (v.amount > 0 ? v.amount-- : 0, v)); else if (k == "#") homing_orb.update(v => (v.amount > 0 ? v.amount-- : 0, v)); else if (k == "0") homing_orb.update(v => (v.amount += 10000, v)); else if (k == "Shift") set_store_value(shifting, $shifting = false, $shifting); // Broken right now
+    		// orbs.new(rand_width(), 580, 					 0, 0, "basic");
+    		// orbs.new(rand_width(), rand_height(), 0, 0, "light");
+    		// orbs.new(rand_width(), rand_height(), 0, 0, "homing");
+    		//Array.from(Array(25000)).forEach(()=> orbs.new(rand_width(), rand_height(), 0, 0, "homing"));
+    	};
+
+    	const key_down = e => {
+    		const k = e.key;
+    		if (k == "Shift") set_store_value(shifting, $shifting = true, $shifting);
     	};
 
     	//#endregion
@@ -1036,9 +1349,133 @@ var app = (function () {
     	let auto_bounce_perc = 0;
 
     	const auto_bounce_loop = v => {
-    		if (!$auto_bounce.unlocked) return;
+    		if (!$auto_bounce.unlocked || !$auto_bounce.on) return;
     		auto_bounce_perc = Math.ceil(v / 29 * 100) / 100;
     		if (v == 29) orbs.bounce(null);
+    	};
+
+    	//#endregion
+    	//#region | Monsters
+    	const rand_in_list = list => list[Math.floor(Math.random() * list.length)];
+
+    	const monsters = {
+    		// hp: 100, worth: 1
+    		common: [
+    			// white
+    			"Zombie",
+    			"Sea Monster"
+    		],
+    		// hp: 250, worth: 3
+    		uncommon: [
+    			// light green
+    			"Stone Golem",
+    			"Young Wyvern"
+    		],
+    		// hp: 500, worth: 10
+    		rare: [
+    			// aqua
+    			"Young Dragon",
+    			"Crystal Golem"
+    		],
+    		// hp: 1000, worth: 25
+    		legendary: [
+    			// gold
+    			"Elder Dragon",
+    			"Block Head"
+    		]
+    	};
+
+    	const spawn_monster = () => {
+    		// Chances for common, uncommon, rare, legendary
+    		// 70, 20, 8, 2
+    		const rand = Math.random();
+
+    		if (rand <= 0.7) {
+    			// Common
+    			const name = rand_in_list(monsters.common);
+
+    			// console.log(`Spawning a ${name}`);
+    			$$invalidate(5, monster.max_hp = 100 * (1 + 0.2 * $tmk), monster);
+
+    			$$invalidate(5, monster.hp = monster.max_hp, monster);
+    			$$invalidate(5, monster.name = name, monster);
+    			$$invalidate(5, monster.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`, monster);
+    			$$invalidate(5, monster.worth = 1, monster);
+    		} else if (rand <= 0.9) {
+    			// Uncommon
+    			const name = rand_in_list(monsters.uncommon);
+
+    			// console.log(`Spawning a ${name}`);
+    			$$invalidate(5, monster.max_hp = 250 * (1 + 0.2 * $tmk), monster);
+
+    			$$invalidate(5, monster.hp = monster.max_hp, monster);
+    			$$invalidate(5, monster.name = name, monster);
+    			$$invalidate(5, monster.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`, monster);
+    			$$invalidate(5, monster.worth = 3, monster);
+    		} else if (rand <= 0.98) {
+    			// Rare
+    			const name = rand_in_list(monsters.rare);
+
+    			// console.log(`Spawning a ${name}`);
+    			$$invalidate(5, monster.max_hp = 500 * (1 + 0.2 * $tmk), monster);
+
+    			$$invalidate(5, monster.hp = monster.max_hp, monster);
+    			$$invalidate(5, monster.name = name, monster);
+    			$$invalidate(5, monster.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`, monster);
+    			$$invalidate(5, monster.worth = 10, monster);
+    		} else {
+    			// Legendary
+    			const name = rand_in_list(monsters.legendary);
+
+    			// console.log(`Spawning a ${name}`);
+    			$$invalidate(5, monster.max_hp = 1000 * (1 + 0.2 * $tmk), monster);
+
+    			$$invalidate(5, monster.hp = monster.max_hp, monster);
+    			$$invalidate(5, monster.name = name, monster);
+    			$$invalidate(5, monster.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`, monster);
+    			$$invalidate(5, monster.worth = 25, monster);
+    		}
+
+    		$$invalidate(5, monster);
+    	};
+
+    	let monster = {
+    		hp: 100,
+    		max_hp: 300,
+    		pt1: { x: 300, y: 100 },
+    		pt2: { x: 700, y: 300 },
+    		name: "Stone monster",
+    		src: "./assets/robo_arm.svg",
+    		tick: 0,
+    		total_ticks: 600,
+    		worth: 1,
+    		draw() {
+    			ctx.fillStyle = "red";
+    			ctx.fillRect(this.pt1.x, this.pt1.y, this.pt2.x - this.pt1.x, this.pt2.y - this.pt1.y);
+    			ctx.fillStyle = "#444";
+    			ctx.fillRect(this.pt1.x + 2, this.pt1.y + 2, this.pt2.x - this.pt1.x - 4, this.pt2.y - this.pt1.y - 4);
+    			ctx.fillStyle = "#333";
+    			ctx.fillRect(this.pt1.x + 10, this.pt2.y - 30, this.pt2.x - this.pt1.x - 20, 20);
+    			ctx.fillStyle = "#33aa33";
+    			ctx.fillRect(this.pt1.x + 10, this.pt2.y - 30, (this.pt2.x - this.pt1.x - 20) * (this.hp / this.max_hp), 20);
+    			ctx.fillStyle = "#00ffff66";
+    			ctx.fillRect(this.pt1.x + 1, this.pt1.y + 1, (this.pt2.x - this.pt1.x) * (this.tick / this.total_ticks) - 2, 5);
+    			if (this.tick > this.total_ticks) (this.tick = 0, set_store_value(fighting, $fighting = false, $fighting));
+    			this.tick++;
+    		},
+    		hit(dmg) {
+    			this.hp -= dmg;
+
+    			if (this.hp <= 0) {
+    				this.tick = 0;
+
+    				// console.log("Mana increasing by: " + this.worth);
+    				set_store_value(mana, $mana += this.worth, $mana);
+
+    				set_store_value(total_monster_killed, $tmk++, $tmk);
+    				spawn_monster();
+    			}
+    		}
     	};
 
     	const writable_props = [];
@@ -1054,10 +1491,12 @@ var app = (function () {
     		});
     	}
 
+    	const click_handler = () => set_store_value(fighting, $fighting = false, $fighting);
+
     	function main_1_binding($$value) {
     		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			main = $$value;
-    			($$invalidate(0, main), $$invalidate(2, toggled));
+    			($$invalidate(0, main), $$invalidate(4, $toggled));
     		});
     	}
 
@@ -1072,6 +1511,11 @@ var app = (function () {
     		basic_orb,
     		light_orb,
     		homing_orb,
+    		toggled: canvas_toggled,
+    		fighting,
+    		mana,
+    		tmk: total_monster_killed,
+    		shifting,
     		manager,
     		small_explosion,
     		sci,
@@ -1080,6 +1524,7 @@ var app = (function () {
     		canvas,
     		ctx,
     		pause,
+    		step,
     		w,
     		h,
     		distance,
@@ -1089,25 +1534,33 @@ var app = (function () {
     		orbs,
     		main_loop,
     		mouse,
-    		toggled,
     		mouse_move,
     		mouse_enter,
     		mouse_leave,
     		mouse_down,
     		key_up,
+    		key_down,
     		visible,
     		draw_auto_bounce_bar,
     		auto_bounce_perc,
     		auto_bounce_loop,
+    		rand_in_list,
+    		monsters,
+    		spawn_monster,
+    		monster,
+    		$fighting,
+    		$tmk,
+    		$mana,
     		$auto_bounce,
     		$bounce_size,
+    		$toggled,
+    		$shifting,
     		$cash,
-    		$orb_bonus,
-    		$collector_pos,
-    		$timer,
-    		$basic_orb,
     		$homing_orb,
-    		$light_orb
+    		$light_orb,
+    		$basic_orb,
+    		$collector_pos,
+    		$timer
     	});
 
     	$$self.$inject_state = $$props => {
@@ -1115,11 +1568,12 @@ var app = (function () {
     		if ('canvas' in $$props) $$invalidate(1, canvas = $$props.canvas);
     		if ('ctx' in $$props) ctx = $$props.ctx;
     		if ('pause' in $$props) pause = $$props.pause;
+    		if ('step' in $$props) step = $$props.step;
     		if ('w' in $$props) w = $$props.w;
     		if ('h' in $$props) h = $$props.h;
-    		if ('toggled' in $$props) $$invalidate(2, toggled = $$props.toggled);
     		if ('visible' in $$props) visible = $$props.visible;
     		if ('auto_bounce_perc' in $$props) auto_bounce_perc = $$props.auto_bounce_perc;
+    		if ('monster' in $$props) $$invalidate(5, monster = $$props.monster);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1127,7 +1581,7 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty[0] & /*$basic_orb*/ 64) {
+    		if ($$self.$$.dirty[0] & /*$basic_orb, $light_orb, $homing_orb*/ 1792) {
     			{
     				set_orbs();
     			}
@@ -1141,32 +1595,44 @@ var app = (function () {
     					$$invalidate(1, canvas.onmouseenter = mouse_enter, canvas);
     					$$invalidate(1, canvas.onmouseleave = mouse_leave, canvas);
     					document.body.onkeyup = key_up;
+    					document.body.onkeydown = key_down;
     				}
     			}
     		}
 
-    		if ($$self.$$.dirty[0] & /*main, toggled*/ 5) {
+    		if ($$self.$$.dirty[0] & /*main, $toggled*/ 17) {
     			{
     				if (main != undefined) {
-    					$$invalidate(0, main.ontransitionend = () => visible = toggled, main);
+    					$$invalidate(0, main.ontransitionend = () => visible = $toggled, main);
     				}
     			}
     		}
 
-    		if ($$self.$$.dirty[0] & /*$auto_bounce*/ 32) {
-    			if (!$auto_bounce.unlocked) auto_bounce_perc = 0;
+    		if ($$self.$$.dirty[0] & /*$auto_bounce*/ 8) {
+    			if (!$auto_bounce.unlocked || !$auto_bounce.on) auto_bounce_perc = 0;
+    		}
+
+    		if ($$self.$$.dirty[0] & /*$fighting*/ 4) {
+    			{
+    				if ($fighting) spawn_monster();
+    			}
     		}
     	};
 
     	return [
     		main,
     		canvas,
-    		toggled,
+    		$fighting,
+    		$auto_bounce,
+    		$toggled,
+    		monster,
     		$bounce_size,
     		$cash,
-    		$auto_bounce,
+    		$homing_orb,
+    		$light_orb,
     		$basic_orb,
     		canvas_1_binding,
+    		click_handler,
     		main_1_binding
     	];
     }
@@ -1192,7 +1658,7 @@ var app = (function () {
     	let main;
     	let h30;
     	let t0;
-    	let t1_value = sci(/*$cash*/ ctx[4]) + "";
+    	let t1_value = sci(/*$cash*/ ctx[3]) + "";
     	let t1;
     	let t2;
     	let hr;
@@ -1201,16 +1667,16 @@ var app = (function () {
     	let t4;
     	let b0;
     	let t5;
-    	let t6_value = sci(/*$basic_orb*/ ctx[3].cost) + "";
+    	let t6_value = sci(/*$basic_orb*/ ctx[6].cost) + "";
     	let t6;
     	let t7;
     	let button1;
     	let t8;
     	let b1;
 
-    	let t9_value = (/*$auto_bounce*/ ctx[2].unlocked
+    	let t9_value = (/*$auto_bounce*/ ctx[5].unlocked
     	? "Unlocked!"
-    	: `$${sci(/*$auto_bounce*/ ctx[2].cost)}`) + "";
+    	: `$${sci(/*$auto_bounce*/ ctx[5].cost)}`) + "";
 
     	let t9;
     	let t10;
@@ -1218,24 +1684,24 @@ var app = (function () {
     	let t11;
     	let b2;
     	let t12;
-    	let t13_value = sci(/*$bounce_area_cost*/ ctx[6]) + "";
+    	let t13_value = sci(/*$bounce_area_cost*/ ctx[4]) + "";
     	let t13;
     	let t14;
     	let div;
     	let t15;
     	let h31;
     	let t16;
-    	let t17_value = sci(/*$prestige*/ ctx[5].times * 50) + "";
+    	let t17_value = sci(/*$prestige*/ ctx[1].times * 50) + "";
     	let t17;
     	let t18;
-    	let t19_value = (/*prest_hover*/ ctx[1] ? "(+50%)" : "") + "";
+    	let t19_value = (/*prest_hover*/ ctx[2] ? "(+50%)" : "") + "";
     	let t19;
     	let t20;
     	let button3;
     	let t21;
     	let b3;
     	let t22;
-    	let t23_value = sci(/*$prestige*/ ctx[5].cost) + "";
+    	let t23_value = sci(/*$prestige*/ ctx[1].cost) + "";
     	let t23;
     	let mounted;
     	let dispose;
@@ -1281,33 +1747,33 @@ var app = (function () {
     			t23 = text(t23_value);
     			attr_dev(h30, "id", "cash");
     			attr_dev(h30, "class", "svelte-t1qr23");
-    			add_location(h30, file$3, 57, 1, 1463);
+    			add_location(h30, file$3, 68, 1, 1992);
     			attr_dev(hr, "id", "top-hr");
     			attr_dev(hr, "class", "svelte-t1qr23");
-    			add_location(hr, file$3, 58, 1, 1502);
+    			add_location(hr, file$3, 69, 1, 2031);
     			attr_dev(b0, "class", "svelte-t1qr23");
-    			add_location(b0, file$3, 59, 46, 1565);
+    			add_location(b0, file$3, 70, 46, 2094);
     			attr_dev(button0, "class", "svelte-t1qr23");
-    			add_location(button0, file$3, 59, 1, 1520);
+    			add_location(button0, file$3, 70, 1, 2049);
     			attr_dev(b1, "class", "svelte-t1qr23");
-    			add_location(b1, file$3, 60, 55, 1660);
+    			add_location(b1, file$3, 71, 55, 2189);
     			attr_dev(button1, "class", "svelte-t1qr23");
-    			add_location(button1, file$3, 60, 1, 1606);
+    			add_location(button1, file$3, 71, 1, 2135);
     			attr_dev(b2, "class", "svelte-t1qr23");
-    			add_location(b2, file$3, 61, 62, 1807);
+    			add_location(b2, file$3, 72, 62, 2336);
     			attr_dev(button2, "class", "svelte-t1qr23");
-    			add_location(button2, file$3, 61, 1, 1746);
-    			add_location(div, file$3, 62, 1, 1850);
+    			add_location(button2, file$3, 72, 1, 2275);
+    			add_location(div, file$3, 73, 1, 2379);
     			attr_dev(h31, "id", "orb-info");
     			attr_dev(h31, "class", "svelte-t1qr23");
-    			add_location(h31, file$3, 63, 1, 1863);
+    			add_location(h31, file$3, 74, 1, 2392);
     			attr_dev(b3, "class", "svelte-t1qr23");
-    			add_location(b3, file$3, 64, 63, 2027);
+    			add_location(b3, file$3, 75, 63, 2556);
     			attr_dev(button3, "class", "svelte-t1qr23");
-    			add_location(button3, file$3, 64, 1, 1965);
+    			add_location(button3, file$3, 75, 1, 2494);
     			attr_dev(main, "id", "main-shop");
     			attr_dev(main, "class", "svelte-t1qr23");
-    			add_location(main, file$3, 56, 0, 1440);
+    			add_location(main, file$3, 67, 0, 1969);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1350,7 +1816,7 @@ var app = (function () {
     			append_dev(button3, b3);
     			append_dev(b3, t22);
     			append_dev(b3, t23);
-    			/*button3_binding*/ ctx[11](button3);
+    			/*button3_binding*/ ctx[12](button3);
 
     			if (!mounted) {
     				dispose = [
@@ -1364,23 +1830,23 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*$cash*/ 16 && t1_value !== (t1_value = sci(/*$cash*/ ctx[4]) + "")) set_data_dev(t1, t1_value);
-    			if (dirty & /*$basic_orb*/ 8 && t6_value !== (t6_value = sci(/*$basic_orb*/ ctx[3].cost) + "")) set_data_dev(t6, t6_value);
+    			if (dirty & /*$cash*/ 8 && t1_value !== (t1_value = sci(/*$cash*/ ctx[3]) + "")) set_data_dev(t1, t1_value);
+    			if (dirty & /*$basic_orb*/ 64 && t6_value !== (t6_value = sci(/*$basic_orb*/ ctx[6].cost) + "")) set_data_dev(t6, t6_value);
 
-    			if (dirty & /*$auto_bounce*/ 4 && t9_value !== (t9_value = (/*$auto_bounce*/ ctx[2].unlocked
+    			if (dirty & /*$auto_bounce*/ 32 && t9_value !== (t9_value = (/*$auto_bounce*/ ctx[5].unlocked
     			? "Unlocked!"
-    			: `$${sci(/*$auto_bounce*/ ctx[2].cost)}`) + "")) set_data_dev(t9, t9_value);
+    			: `$${sci(/*$auto_bounce*/ ctx[5].cost)}`) + "")) set_data_dev(t9, t9_value);
 
-    			if (dirty & /*$bounce_area_cost*/ 64 && t13_value !== (t13_value = sci(/*$bounce_area_cost*/ ctx[6]) + "")) set_data_dev(t13, t13_value);
-    			if (dirty & /*$prestige*/ 32 && t17_value !== (t17_value = sci(/*$prestige*/ ctx[5].times * 50) + "")) set_data_dev(t17, t17_value);
-    			if (dirty & /*prest_hover*/ 2 && t19_value !== (t19_value = (/*prest_hover*/ ctx[1] ? "(+50%)" : "") + "")) set_data_dev(t19, t19_value);
-    			if (dirty & /*$prestige*/ 32 && t23_value !== (t23_value = sci(/*$prestige*/ ctx[5].cost) + "")) set_data_dev(t23, t23_value);
+    			if (dirty & /*$bounce_area_cost*/ 16 && t13_value !== (t13_value = sci(/*$bounce_area_cost*/ ctx[4]) + "")) set_data_dev(t13, t13_value);
+    			if (dirty & /*$prestige*/ 2 && t17_value !== (t17_value = sci(/*$prestige*/ ctx[1].times * 50) + "")) set_data_dev(t17, t17_value);
+    			if (dirty & /*prest_hover*/ 4 && t19_value !== (t19_value = (/*prest_hover*/ ctx[2] ? "(+50%)" : "") + "")) set_data_dev(t19, t19_value);
+    			if (dirty & /*$prestige*/ 2 && t23_value !== (t23_value = sci(/*$prestige*/ ctx[1].cost) + "")) set_data_dev(t23, t23_value);
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
-    			/*button3_binding*/ ctx[11](null);
+    			/*button3_binding*/ ctx[12](null);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -1398,39 +1864,46 @@ var app = (function () {
     }
 
     function instance$3($$self, $$props, $$invalidate) {
-    	let $auto_bounce;
-    	let $basic_orb;
+    	let $bounce_size;
     	let $cash;
     	let $prestige;
-    	let $bounce_size;
+    	let $orb_bonus;
+    	let $shifting;
     	let $bounce_area_cost;
-    	validate_store(auto_bounce, 'auto_bounce');
-    	component_subscribe($$self, auto_bounce, $$value => $$invalidate(2, $auto_bounce = $$value));
-    	validate_store(basic_orb, 'basic_orb');
-    	component_subscribe($$self, basic_orb, $$value => $$invalidate(3, $basic_orb = $$value));
-    	validate_store(cash, 'cash');
-    	component_subscribe($$self, cash, $$value => $$invalidate(4, $cash = $$value));
-    	validate_store(prestige, 'prestige');
-    	component_subscribe($$self, prestige, $$value => $$invalidate(5, $prestige = $$value));
+    	let $auto_bounce;
+    	let $basic_orb;
     	validate_store(bounce_size, 'bounce_size');
-    	component_subscribe($$self, bounce_size, $$value => $$invalidate(12, $bounce_size = $$value));
+    	component_subscribe($$self, bounce_size, $$value => $$invalidate(13, $bounce_size = $$value));
+    	validate_store(cash, 'cash');
+    	component_subscribe($$self, cash, $$value => $$invalidate(3, $cash = $$value));
+    	validate_store(prestige, 'prestige');
+    	component_subscribe($$self, prestige, $$value => $$invalidate(1, $prestige = $$value));
+    	validate_store(orb_bonus, 'orb_bonus');
+    	component_subscribe($$self, orb_bonus, $$value => $$invalidate(11, $orb_bonus = $$value));
+    	validate_store(shifting, 'shifting');
+    	component_subscribe($$self, shifting, $$value => $$invalidate(14, $shifting = $$value));
     	validate_store(bounce_area_cost, 'bounce_area_cost');
-    	component_subscribe($$self, bounce_area_cost, $$value => $$invalidate(6, $bounce_area_cost = $$value));
+    	component_subscribe($$self, bounce_area_cost, $$value => $$invalidate(4, $bounce_area_cost = $$value));
+    	validate_store(auto_bounce, 'auto_bounce');
+    	component_subscribe($$self, auto_bounce, $$value => $$invalidate(5, $auto_bounce = $$value));
+    	validate_store(basic_orb, 'basic_orb');
+    	component_subscribe($$self, basic_orb, $$value => $$invalidate(6, $basic_orb = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Shop', slots, []);
 
     	const buy_basic = () => {
     		if ($cash < $basic_orb.cost) return;
     		set_store_value(cash, $cash -= $basic_orb.cost, $cash);
-    		set_store_value(basic_orb, $basic_orb.cost = Math.round($basic_orb.cost * 1.5), $basic_orb);
+    		set_store_value(basic_orb, $basic_orb.cost = Math.round($basic_orb.cost * 1.2), $basic_orb);
     		set_store_value(basic_orb, $basic_orb.amount++, $basic_orb);
     		basic_orb.set($basic_orb);
+    		if ($shifting) buy_basic();
     	};
 
     	//#endregion
     	//#region | Auto Bounce
     	const buy_auto_bounce = () => {
-    		if ($cash < $auto_bounce.cost) return;
+    		if ($cash < $auto_bounce.cost || $auto_bounce.unlocked) return;
     		set_store_value(cash, $cash -= $auto_bounce.cost, $cash);
     		auto_bounce.update(v => (v.unlocked = true, v));
     	};
@@ -1442,6 +1915,7 @@ var app = (function () {
     		set_store_value(cash, $cash -= $bounce_area_cost, $cash);
     		set_store_value(bounce_area_cost, $bounce_area_cost *= 2, $bounce_area_cost);
     		set_store_value(bounce_size, $bounce_size += 25, $bounce_size);
+    		if ($shifting) increase_bounce_area();
     	};
 
     	//#endregion
@@ -1454,8 +1928,11 @@ var app = (function () {
     	const do_prestige = (bypass = false) => {
     		if ($cash < $prestige.cost && bypass !== true) return;
     		set_store_value(cash, $cash = 0, $cash);
-    		set_store_value(basic_orb, $basic_orb.amount = 1, $basic_orb);
-    		set_store_value(auto_bounce, $auto_bounce.unlocked = false, $auto_bounce);
+    		basic_orb.update(v => (v.amount = 1, v));
+    		light_orb.update(v => (v.amount = 0, v));
+    		homing_orb.update(v => (v.amount = 0, v));
+    		set_store_value(bounce_size, $bounce_size = 75, $bounce_size);
+    		auto_bounce.update(v => (v.unlocked = false, v));
     		prestige.update(v => (v.times++, v.cost = Math.round(v.cost * 1.25), v));
     	};
 
@@ -1474,12 +1951,15 @@ var app = (function () {
 
     	$$self.$capture_state = () => ({
     		cash,
+    		shifting,
     		more_orbs_cost,
     		auto_bounce,
-    		basic_orb,
     		bounce_size,
     		bounce_area_cost,
     		orb_bonus,
+    		basic_orb,
+    		light_orb,
+    		homing_orb,
     		prestige,
     		timer,
     		sci,
@@ -1489,17 +1969,19 @@ var app = (function () {
     		prest_btn,
     		prest_hover,
     		do_prestige,
-    		$auto_bounce,
-    		$basic_orb,
+    		$bounce_size,
     		$cash,
     		$prestige,
-    		$bounce_size,
-    		$bounce_area_cost
+    		$orb_bonus,
+    		$shifting,
+    		$bounce_area_cost,
+    		$auto_bounce,
+    		$basic_orb
     	});
 
     	$$self.$inject_state = $$props => {
     		if ('prest_btn' in $$props) $$invalidate(0, prest_btn = $$props.prest_btn);
-    		if ('prest_hover' in $$props) $$invalidate(1, prest_hover = $$props.prest_hover);
+    		if ('prest_hover' in $$props) $$invalidate(2, prest_hover = $$props.prest_hover);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -1509,26 +1991,36 @@ var app = (function () {
     	$$self.$$.update = () => {
     		if ($$self.$$.dirty & /*prest_btn*/ 1) {
     			{
+    				// Prestige Button
     				if (prest_btn != undefined) {
-    					$$invalidate(0, prest_btn.onmouseenter = () => $$invalidate(1, prest_hover = true), prest_btn);
-    					$$invalidate(0, prest_btn.onmouseleave = () => $$invalidate(1, prest_hover = false), prest_btn);
+    					$$invalidate(0, prest_btn.onmouseenter = () => $$invalidate(2, prest_hover = true), prest_btn);
+    					$$invalidate(0, prest_btn.onmouseleave = () => $$invalidate(2, prest_hover = false), prest_btn);
     				}
+    			}
+    		}
+
+    		if ($$self.$$.dirty & /*$orb_bonus, $prestige*/ 2050) {
+    			{
+    				basic_orb.update(v => (v.value = 1 + 0.5 * $prestige.times, v));
+    				light_orb.update(v => (v.value = 1 + 0.5 * $prestige.times, v));
+    				homing_orb.update(v => (v.value = 0.5 + 0.5 * $prestige.times, v));
     			}
     		}
     	};
 
     	return [
     		prest_btn,
+    		$prestige,
     		prest_hover,
+    		$cash,
+    		$bounce_area_cost,
     		$auto_bounce,
     		$basic_orb,
-    		$cash,
-    		$prestige,
-    		$bounce_area_cost,
     		buy_basic,
     		buy_auto_bounce,
     		increase_bounce_area,
     		do_prestige,
+    		$orb_bonus,
     		button3_binding
     	];
     }
@@ -1551,52 +2043,499 @@ var app = (function () {
 
     const file$2 = "src/components/Lab.svelte";
 
-    function create_fragment$2(ctx) {
-    	let main;
+    // (60:1) {:else}
+    function create_else_block(ctx) {
     	let img;
     	let img_src_value;
     	let t0;
     	let h3;
+    	let t1;
     	let em;
+    	let t3;
+    	let t4_value = 5 - /*$prestige*/ ctx[8].times + "";
+    	let t4;
+    	let t5;
+
+    	const block = {
+    		c: function create() {
+    			img = element("img");
+    			t0 = space();
+    			h3 = element("h3");
+    			t1 = text("Unlock ");
+    			em = element("em");
+    			em.textContent = "Orb Lab";
+    			t3 = text(" After ");
+    			t4 = text(t4_value);
+    			t5 = text(" Prestiges");
+    			attr_dev(img, "id", "img");
+    			if (!src_url_equal(img.src, img_src_value = "./assets/robo_arm.svg")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "Robot Arm");
+    			attr_dev(img, "class", "svelte-1iyusne");
+    			add_location(img, file$2, 60, 2, 2258);
+    			add_location(em, file$2, 61, 23, 2340);
+    			attr_dev(h3, "id", "info");
+    			attr_dev(h3, "class", "svelte-1iyusne");
+    			add_location(h3, file$2, 61, 2, 2319);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, img, anchor);
+    			insert_dev(target, t0, anchor);
+    			insert_dev(target, h3, anchor);
+    			append_dev(h3, t1);
+    			append_dev(h3, em);
+    			append_dev(h3, t3);
+    			append_dev(h3, t4);
+    			append_dev(h3, t5);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$prestige*/ 256 && t4_value !== (t4_value = 5 - /*$prestige*/ ctx[8].times + "")) set_data_dev(t4, t4_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(img);
+    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(h3);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(60:1) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (40:1) {#if $unlocked_lab || $prestige.times >= 5}
+    function create_if_block(ctx) {
+    	let h30;
+    	let t0;
+    	let t1;
     	let t2;
+    	let div;
+    	let button0;
+    	let t3;
+    	let b0;
+    	let t4;
+    	let t5_value = sci(/*$fight_cost*/ ctx[1]) + "";
+    	let t5;
+    	let t6;
+    	let t7;
+    	let button1;
+    	let span0;
+    	let t8_value = /*$trades*/ ctx[3].to_light + "";
+    	let t8;
+    	let t9;
+    	let t10;
+    	let span1;
+    	let t11;
+    	let b1;
+    	let t13;
+    	let span2;
+    	let t14;
+    	let span3;
+    	let t16;
+    	let button2;
+    	let span4;
+    	let t17_value = /*$trades*/ ctx[3].to_homing + "";
+    	let t17;
+    	let t18;
+    	let t19;
+    	let span5;
+    	let t20;
+    	let b2;
+    	let t22;
+    	let span6;
+    	let t23;
+    	let span7;
+    	let t25;
+    	let h31;
+    	let span8;
+    	let t26;
+    	let t27_value = /*$basic_orb*/ ctx[6].amount + "";
+    	let t27;
+    	let t28;
+    	let br0;
+    	let t29;
+    	let t30_value = /*$basic_orb*/ ctx[6].value + "";
+    	let t30;
+    	let br1;
+    	let t31;
+    	let span9;
+    	let t32;
+    	let t33_value = /*$light_orb*/ ctx[5].amount + "";
+    	let t33;
+    	let t34;
+    	let br2;
+    	let t35;
+    	let t36_value = /*$light_orb*/ ctx[5].value + "";
+    	let t36;
+    	let br3;
+    	let t37;
+    	let span10;
+    	let t38;
+    	let t39_value = /*$homing_orb*/ ctx[9].amount + "";
+    	let t39;
+    	let t40;
+    	let br4;
+    	let t41;
+    	let t42_value = /*$homing_orb*/ ctx[9].value + "";
+    	let t42;
+    	let mounted;
+    	let dispose;
+    	let if_block = /*hover_fight*/ ctx[2] && create_if_block_1(ctx);
+
+    	const block = {
+    		c: function create() {
+    			h30 = element("h3");
+    			t0 = text("Mana: ");
+    			t1 = text(/*$mana*/ ctx[4]);
+    			t2 = space();
+    			div = element("div");
+    			button0 = element("button");
+    			t3 = text("Fight A Monster | ");
+    			b0 = element("b");
+    			t4 = text("$");
+    			t5 = text(t5_value);
+    			t6 = space();
+    			if (if_block) if_block.c();
+    			t7 = space();
+    			button1 = element("button");
+    			span0 = element("span");
+    			t8 = text(t8_value);
+    			t9 = text(" Mana + 1 Basic Orb");
+    			t10 = space();
+    			span1 = element("span");
+    			t11 = space();
+    			b1 = element("b");
+    			b1.textContent = "=>";
+    			t13 = space();
+    			span2 = element("span");
+    			t14 = space();
+    			span3 = element("span");
+    			span3.textContent = "1 Light Orb";
+    			t16 = space();
+    			button2 = element("button");
+    			span4 = element("span");
+    			t17 = text(t17_value);
+    			t18 = text(" Mana + 1 Light Orb");
+    			t19 = space();
+    			span5 = element("span");
+    			t20 = space();
+    			b2 = element("b");
+    			b2.textContent = "=>";
+    			t22 = space();
+    			span6 = element("span");
+    			t23 = space();
+    			span7 = element("span");
+    			span7.textContent = "1 Homing Orb";
+    			t25 = space();
+    			h31 = element("h3");
+    			span8 = element("span");
+    			t26 = text("Basic Orbs: ");
+    			t27 = text(t27_value);
+    			t28 = space();
+    			br0 = element("br");
+    			t29 = text(" Dmg/Value: ");
+    			t30 = text(t30_value);
+    			br1 = element("br");
+    			t31 = space();
+    			span9 = element("span");
+    			t32 = text("Light Orbs: ");
+    			t33 = text(t33_value);
+    			t34 = space();
+    			br2 = element("br");
+    			t35 = text(" Dmg/Value: ");
+    			t36 = text(t36_value);
+    			br3 = element("br");
+    			t37 = space();
+    			span10 = element("span");
+    			t38 = text("Homing Orbs: ");
+    			t39 = text(t39_value);
+    			t40 = space();
+    			br4 = element("br");
+    			t41 = text(" Dmg/Value: ");
+    			t42 = text(t42_value);
+    			attr_dev(h30, "id", "mana");
+    			attr_dev(h30, "class", "svelte-1iyusne");
+    			add_location(h30, file$2, 40, 2, 1099);
+    			add_location(b0, file$2, 43, 22, 1225);
+    			attr_dev(button0, "id", "fight-btn");
+    			attr_dev(button0, "class", "svelte-1iyusne");
+    			add_location(button0, file$2, 42, 3, 1157);
+    			attr_dev(div, "id", "hold-btn");
+    			attr_dev(div, "class", "svelte-1iyusne");
+    			add_location(div, file$2, 41, 2, 1134);
+    			add_location(span0, file$2, 52, 54, 1609);
+    			add_location(span1, file$2, 52, 105, 1660);
+    			add_location(b1, file$2, 52, 113, 1668);
+    			add_location(span2, file$2, 52, 123, 1678);
+    			add_location(span3, file$2, 52, 131, 1686);
+    			attr_dev(button1, "class", "trade-btn svelte-1iyusne");
+    			add_location(button1, file$2, 52, 2, 1557);
+    			add_location(span4, file$2, 53, 55, 1775);
+    			add_location(span5, file$2, 53, 107, 1827);
+    			add_location(b2, file$2, 53, 115, 1835);
+    			add_location(span6, file$2, 53, 125, 1845);
+    			add_location(span7, file$2, 53, 133, 1853);
+    			attr_dev(button2, "class", "trade-btn svelte-1iyusne");
+    			add_location(button2, file$2, 53, 2, 1722);
+    			add_location(br0, file$2, 55, 62, 1972);
+    			set_style(span8, "color", "#ccc");
+    			add_location(span8, file$2, 55, 3, 1913);
+    			add_location(br1, file$2, 55, 103, 2013);
+    			add_location(br2, file$2, 56, 65, 2083);
+    			set_style(span9, "color", "#00cccc");
+    			add_location(span9, file$2, 56, 3, 2021);
+    			add_location(br3, file$2, 56, 106, 2124);
+    			add_location(br4, file$2, 57, 67, 2196);
+    			set_style(span10, "color", "#cccc00");
+    			add_location(span10, file$2, 57, 3, 2132);
+    			attr_dev(h31, "id", "orb-stats");
+    			attr_dev(h31, "class", "svelte-1iyusne");
+    			add_location(h31, file$2, 54, 2, 1890);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h30, anchor);
+    			append_dev(h30, t0);
+    			append_dev(h30, t1);
+    			insert_dev(target, t2, anchor);
+    			insert_dev(target, div, anchor);
+    			append_dev(div, button0);
+    			append_dev(button0, t3);
+    			append_dev(button0, b0);
+    			append_dev(b0, t4);
+    			append_dev(b0, t5);
+    			append_dev(button0, t6);
+    			if (if_block) if_block.m(button0, null);
+    			/*button0_binding*/ ctx[14](button0);
+    			insert_dev(target, t7, anchor);
+    			insert_dev(target, button1, anchor);
+    			append_dev(button1, span0);
+    			append_dev(span0, t8);
+    			append_dev(span0, t9);
+    			append_dev(button1, t10);
+    			append_dev(button1, span1);
+    			append_dev(button1, t11);
+    			append_dev(button1, b1);
+    			append_dev(button1, t13);
+    			append_dev(button1, span2);
+    			append_dev(button1, t14);
+    			append_dev(button1, span3);
+    			insert_dev(target, t16, anchor);
+    			insert_dev(target, button2, anchor);
+    			append_dev(button2, span4);
+    			append_dev(span4, t17);
+    			append_dev(span4, t18);
+    			append_dev(button2, t19);
+    			append_dev(button2, span5);
+    			append_dev(button2, t20);
+    			append_dev(button2, b2);
+    			append_dev(button2, t22);
+    			append_dev(button2, span6);
+    			append_dev(button2, t23);
+    			append_dev(button2, span7);
+    			insert_dev(target, t25, anchor);
+    			insert_dev(target, h31, anchor);
+    			append_dev(h31, span8);
+    			append_dev(span8, t26);
+    			append_dev(span8, t27);
+    			append_dev(span8, t28);
+    			append_dev(span8, br0);
+    			append_dev(span8, t29);
+    			append_dev(span8, t30);
+    			append_dev(h31, br1);
+    			append_dev(h31, t31);
+    			append_dev(h31, span9);
+    			append_dev(span9, t32);
+    			append_dev(span9, t33);
+    			append_dev(span9, t34);
+    			append_dev(span9, br2);
+    			append_dev(span9, t35);
+    			append_dev(span9, t36);
+    			append_dev(h31, br3);
+    			append_dev(h31, t37);
+    			append_dev(h31, span10);
+    			append_dev(span10, t38);
+    			append_dev(span10, t39);
+    			append_dev(span10, t40);
+    			append_dev(span10, br4);
+    			append_dev(span10, t41);
+    			append_dev(span10, t42);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(button1, "click", /*trade_to_light*/ ctx[10], false, false, false),
+    					listen_dev(button2, "click", /*trade_to_homing*/ ctx[11], false, false, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$mana*/ 16) set_data_dev(t1, /*$mana*/ ctx[4]);
+    			if (dirty & /*$fight_cost*/ 2 && t5_value !== (t5_value = sci(/*$fight_cost*/ ctx[1]) + "")) set_data_dev(t5, t5_value);
+
+    			if (/*hover_fight*/ ctx[2]) {
+    				if (if_block) ; else {
+    					if_block = create_if_block_1(ctx);
+    					if_block.c();
+    					if_block.m(button0, null);
+    				}
+    			} else if (if_block) {
+    				if_block.d(1);
+    				if_block = null;
+    			}
+
+    			if (dirty & /*$trades*/ 8 && t8_value !== (t8_value = /*$trades*/ ctx[3].to_light + "")) set_data_dev(t8, t8_value);
+    			if (dirty & /*$trades*/ 8 && t17_value !== (t17_value = /*$trades*/ ctx[3].to_homing + "")) set_data_dev(t17, t17_value);
+    			if (dirty & /*$basic_orb*/ 64 && t27_value !== (t27_value = /*$basic_orb*/ ctx[6].amount + "")) set_data_dev(t27, t27_value);
+    			if (dirty & /*$basic_orb*/ 64 && t30_value !== (t30_value = /*$basic_orb*/ ctx[6].value + "")) set_data_dev(t30, t30_value);
+    			if (dirty & /*$light_orb*/ 32 && t33_value !== (t33_value = /*$light_orb*/ ctx[5].amount + "")) set_data_dev(t33, t33_value);
+    			if (dirty & /*$light_orb*/ 32 && t36_value !== (t36_value = /*$light_orb*/ ctx[5].value + "")) set_data_dev(t36, t36_value);
+    			if (dirty & /*$homing_orb*/ 512 && t39_value !== (t39_value = /*$homing_orb*/ ctx[9].amount + "")) set_data_dev(t39, t39_value);
+    			if (dirty & /*$homing_orb*/ 512 && t42_value !== (t42_value = /*$homing_orb*/ ctx[9].value + "")) set_data_dev(t42, t42_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h30);
+    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(div);
+    			if (if_block) if_block.d();
+    			/*button0_binding*/ ctx[14](null);
+    			if (detaching) detach_dev(t7);
+    			if (detaching) detach_dev(button1);
+    			if (detaching) detach_dev(t16);
+    			if (detaching) detach_dev(button2);
+    			if (detaching) detach_dev(t25);
+    			if (detaching) detach_dev(h31);
+    			mounted = false;
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(40:1) {#if $unlocked_lab || $prestige.times >= 5}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (45:4) {#if hover_fight}
+    function create_if_block_1(ctx) {
+    	let h3;
+    	let span0;
+    	let t1;
+    	let span1;
+    	let br;
+    	let t3;
+    	let span2;
+    	let t5;
+    	let span3;
+
+    	const block = {
+    		c: function create() {
+    			h3 = element("h3");
+    			span0 = element("span");
+    			span0.textContent = "Common: 70%";
+    			t1 = text(" | \n\t\t\t\t\t");
+    			span1 = element("span");
+    			span1.textContent = "Uncommon: 20%";
+    			br = element("br");
+    			t3 = space();
+    			span2 = element("span");
+    			span2.textContent = "Rare: 8%";
+    			t5 = text(" | \n\t\t\t\t\t");
+    			span3 = element("span");
+    			span3.textContent = "Legendary: 2%";
+    			set_style(span0, "color", "#ddd");
+    			add_location(span0, file$2, 45, 5, 1298);
+    			set_style(span1, "color", "#B8E986");
+    			add_location(span1, file$2, 46, 5, 1352);
+    			add_location(br, file$2, 46, 55, 1402);
+    			set_style(span2, "color", "#48BAFF");
+    			add_location(span2, file$2, 47, 5, 1412);
+    			set_style(span3, "color", "#F8E71C");
+    			add_location(span3, file$2, 48, 5, 1466);
+    			attr_dev(h3, "id", "rarities");
+    			attr_dev(h3, "class", "svelte-1iyusne");
+    			add_location(h3, file$2, 44, 22, 1274);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, h3, anchor);
+    			append_dev(h3, span0);
+    			append_dev(h3, t1);
+    			append_dev(h3, span1);
+    			append_dev(h3, br);
+    			append_dev(h3, t3);
+    			append_dev(h3, span2);
+    			append_dev(h3, t5);
+    			append_dev(h3, span3);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(h3);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1.name,
+    		type: "if",
+    		source: "(45:4) {#if hover_fight}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$2(ctx) {
+    	let main;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*$unlocked_lab*/ ctx[7] || /*$prestige*/ ctx[8].times >= 5) return create_if_block;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block = current_block_type(ctx);
 
     	const block = {
     		c: function create() {
     			main = element("main");
-    			img = element("img");
-    			t0 = space();
-    			h3 = element("h3");
-    			em = element("em");
-    			em.textContent = "Orb Lab";
-    			t2 = text(" Coming Soon!");
-    			attr_dev(img, "id", "img");
-    			if (!src_url_equal(img.src, img_src_value = "./assets/robo_arm.svg")) attr_dev(img, "src", img_src_value);
-    			attr_dev(img, "alt", "Robot Arm");
-    			attr_dev(img, "class", "svelte-rc0bfe");
-    			add_location(img, file$2, 6, 1, 61);
-    			add_location(em, file$2, 8, 15, 206);
-    			attr_dev(h3, "id", "info");
-    			attr_dev(h3, "class", "svelte-rc0bfe");
-    			add_location(h3, file$2, 8, 1, 192);
-    			attr_dev(main, "class", "svelte-rc0bfe");
-    			add_location(main, file$2, 4, 0, 22);
+    			if_block.c();
+    			attr_dev(main, "class", "svelte-1iyusne");
+    			add_location(main, file$2, 38, 0, 1045);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
-    			append_dev(main, img);
-    			append_dev(main, t0);
-    			append_dev(main, h3);
-    			append_dev(h3, em);
-    			append_dev(h3, t2);
+    			if_block.m(main, null);
     		},
-    		p: noop,
+    		p: function update(ctx, [dirty]) {
+    			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block) {
+    				if_block.p(ctx, dirty);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(main, null);
+    				}
+    			}
+    		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
+    			if_block.d();
     		}
     	};
 
@@ -1611,16 +2550,160 @@ var app = (function () {
     	return block;
     }
 
-    function instance$2($$self, $$props) {
+    function instance$2($$self, $$props, $$invalidate) {
+    	let $trades;
+    	let $mana;
+    	let $light_orb;
+    	let $basic_orb;
+    	let $fighting;
+    	let $canvas_toggled;
+    	let $fight_cost;
+    	let $cash;
+    	let $tmk;
+    	let $unlocked_lab;
+    	let $prestige;
+    	let $homing_orb;
+    	validate_store(trades, 'trades');
+    	component_subscribe($$self, trades, $$value => $$invalidate(3, $trades = $$value));
+    	validate_store(mana, 'mana');
+    	component_subscribe($$self, mana, $$value => $$invalidate(4, $mana = $$value));
+    	validate_store(light_orb, 'light_orb');
+    	component_subscribe($$self, light_orb, $$value => $$invalidate(5, $light_orb = $$value));
+    	validate_store(basic_orb, 'basic_orb');
+    	component_subscribe($$self, basic_orb, $$value => $$invalidate(6, $basic_orb = $$value));
+    	validate_store(fighting, 'fighting');
+    	component_subscribe($$self, fighting, $$value => $$invalidate(15, $fighting = $$value));
+    	validate_store(canvas_toggled, 'canvas_toggled');
+    	component_subscribe($$self, canvas_toggled, $$value => $$invalidate(16, $canvas_toggled = $$value));
+    	validate_store(fight_cost, 'fight_cost');
+    	component_subscribe($$self, fight_cost, $$value => $$invalidate(1, $fight_cost = $$value));
+    	validate_store(cash, 'cash');
+    	component_subscribe($$self, cash, $$value => $$invalidate(12, $cash = $$value));
+    	validate_store(total_monster_killed, 'tmk');
+    	component_subscribe($$self, total_monster_killed, $$value => $$invalidate(13, $tmk = $$value));
+    	validate_store(unlocked_lab, 'unlocked_lab');
+    	component_subscribe($$self, unlocked_lab, $$value => $$invalidate(7, $unlocked_lab = $$value));
+    	validate_store(prestige, 'prestige');
+    	component_subscribe($$self, prestige, $$value => $$invalidate(8, $prestige = $$value));
+    	validate_store(homing_orb, 'homing_orb');
+    	component_subscribe($$self, homing_orb, $$value => $$invalidate(9, $homing_orb = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Lab', slots, []);
+    	let fight_btn;
+    	let hover_fight = false;
+
+    	//#endregion
+    	//#region | Upgrades
+    	const trade_to_light = () => {
+    		if ($mana < $trades.to_light && $basic_orb.amount < 1) return;
+    		set_store_value(mana, $mana -= $trades.to_light, $mana);
+    		basic_orb.update(v => (v.amount--, v));
+    	};
+
+    	const trade_to_homing = () => {
+    		if ($mana < $trades.to_homing && $light_orb.amount < 1) return;
+    		set_store_value(mana, $mana -= $trades.to_homing, $mana);
+    		basic_orb.update(v => (v.amount--, v));
+    	};
+
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Lab> was created with unknown prop '${key}'`);
     	});
 
-    	return [];
+    	function button0_binding($$value) {
+    		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+    			fight_btn = $$value;
+    			((($$invalidate(0, fight_btn), $$invalidate(12, $cash)), $$invalidate(1, $fight_cost)), $$invalidate(13, $tmk));
+    		});
+    	}
+
+    	$$self.$capture_state = () => ({
+    		sci,
+    		unlocked_lab,
+    		canvas_toggled,
+    		fighting,
+    		mana,
+    		cash,
+    		fight_cost,
+    		tmk: total_monster_killed,
+    		basic_orb,
+    		light_orb,
+    		homing_orb,
+    		trades,
+    		prestige,
+    		fight_btn,
+    		hover_fight,
+    		trade_to_light,
+    		trade_to_homing,
+    		$trades,
+    		$mana,
+    		$light_orb,
+    		$basic_orb,
+    		$fighting,
+    		$canvas_toggled,
+    		$fight_cost,
+    		$cash,
+    		$tmk,
+    		$unlocked_lab,
+    		$prestige,
+    		$homing_orb
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ('fight_btn' in $$props) $$invalidate(0, fight_btn = $$props.fight_btn);
+    		if ('hover_fight' in $$props) $$invalidate(2, hover_fight = $$props.hover_fight);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*$tmk*/ 8192) {
+    			{
+    				set_store_value(fight_cost, $fight_cost = 1e3 * (1 + 0.2 * $tmk), $fight_cost);
+    			}
+    		}
+
+    		if ($$self.$$.dirty & /*fight_btn, $cash, $fight_cost*/ 4099) {
+    			{
+    				if (fight_btn != undefined) {
+    					$$invalidate(
+    						0,
+    						fight_btn.onclick = () => {
+    							if ($cash < $fight_cost) return;
+    							set_store_value(canvas_toggled, $canvas_toggled = true, $canvas_toggled);
+    							set_store_value(fighting, $fighting = true, $fighting);
+    						},
+    						fight_btn
+    					);
+
+    					$$invalidate(0, fight_btn.onmouseenter = () => $$invalidate(2, hover_fight = true), fight_btn);
+    					$$invalidate(0, fight_btn.onmouseleave = () => $$invalidate(2, hover_fight = false), fight_btn);
+    				}
+    			}
+    		}
+    	};
+
+    	return [
+    		fight_btn,
+    		$fight_cost,
+    		hover_fight,
+    		$trades,
+    		$mana,
+    		$light_orb,
+    		$basic_orb,
+    		$unlocked_lab,
+    		$prestige,
+    		$homing_orb,
+    		trade_to_light,
+    		trade_to_homing,
+    		$cash,
+    		$tmk,
+    		button0_binding
+    	];
     }
 
     class Lab extends SvelteComponentDev {
@@ -1643,8 +2726,11 @@ var app = (function () {
     function create_fragment$1(ctx) {
     	let main;
     	let shop;
-    	let t;
+    	let t0;
     	let lab;
+    	let t1;
+    	let img;
+    	let img_src_value;
     	let current;
     	shop = new Shop({ $$inline: true });
     	lab = new Lab({ $$inline: true });
@@ -1653,9 +2739,16 @@ var app = (function () {
     		c: function create() {
     			main = element("main");
     			create_component(shop.$$.fragment);
-    			t = space();
+    			t0 = space();
     			create_component(lab.$$.fragment);
-    			attr_dev(main, "class", "svelte-i4yhlq");
+    			t1 = space();
+    			img = element("img");
+    			attr_dev(img, "id", "settings");
+    			if (!src_url_equal(img.src, img_src_value = "./assets/settings.svg")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "Settings");
+    			attr_dev(img, "class", "svelte-1skdxqn");
+    			add_location(img, file$1, 8, 1, 113);
+    			attr_dev(main, "class", "svelte-1skdxqn");
     			add_location(main, file$1, 5, 0, 88);
     		},
     		l: function claim(nodes) {
@@ -1664,8 +2757,10 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, main, anchor);
     			mount_component(shop, main, null);
-    			append_dev(main, t);
+    			append_dev(main, t0);
     			mount_component(lab, main, null);
+    			append_dev(main, t1);
+    			append_dev(main, img);
     			current = true;
     		},
     		p: noop,

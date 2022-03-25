@@ -26,3 +26,6 @@ export const format_seconds = (secs, short=true)=>{
   secs /= 365;
   return `${neg ? '-' : ''}${ceil(secs)}${short ? "y" : " Years"}`;
 }
+export const run_n_times = (n, callback)=>{
+  Array.from(Array(n)).forEach(callback);
+}

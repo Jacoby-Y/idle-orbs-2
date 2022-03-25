@@ -1,25 +1,26 @@
 <script>
 	// import { timer, cash, bounce_size, collector_pos, orb_count } from "../stores.js";
 	import { 
-		cash,
-		more_orbs_cost, auto_bounce, basic_orb, bounce_size, bounce_area_cost, orb_bonus,
-		prestige,
-		timer,
-	} from "../stores.js";
+		cash, shifting,
+		more_orbs_cost, auto_bounce, bounce_size, bounce_area_cost, orb_bonus,
+		basic_orb, light_orb, homing_orb,
+		prestige, timer,
+		} from "../stores.js";
 	import { sci } from "../functions.js";
 
 	//#region | Buy Basic Orb
 	const buy_basic = ()=>{
 		if ($cash < $basic_orb.cost) return;
 		$cash -= $basic_orb.cost;
-		$basic_orb.cost = Math.round($basic_orb.cost * 1.5);
+		$basic_orb.cost = Math.round($basic_orb.cost * 1.2);
 		$basic_orb.amount++;
 		$basic_orb = $basic_orb;
+		if ($shifting) buy_basic();
 	}
 	//#endregion
 	//#region | Auto Bounce
 	const buy_auto_bounce = ()=>{
-		if ($cash < $auto_bounce.cost) return;
+		if ($cash < $auto_bounce.cost || $auto_bounce.unlocked) return;
 		$cash -= $auto_bounce.cost;
 		auto_bounce.update( v => (v.unlocked = true, v) );
 	};
@@ -30,23 +31,33 @@
 		$cash -= $bounce_area_cost;
 		$bounce_area_cost *= 2;
 		$bounce_size += 25;
+		if ($shifting) increase_bounce_area();
 	}
 	//#endregion
 	//#region | Prestige
 	/** @type {HTMLElement} */
 	let prest_btn;
 	let prest_hover = false;
-	$: {
+	$: { // Prestige Button
 		if (prest_btn != undefined) {
 			prest_btn.onmouseenter = ()=> prest_hover = true;
 			prest_btn.onmouseleave = ()=> prest_hover = false;
 		}
-	}
+		}
+	$: { $orb_bonus;
+		basic_orb.update( v => (v.value = 1 + 0.5*$prestige.times, v) );
+		light_orb.update( v => (v.value = 1 + 0.5*$prestige.times, v) );
+		homing_orb.update( v => (v.value = 0.5 + 0.5*$prestige.times, v) );
+		}
 	const do_prestige = (bypass=false)=>{
 		if ($cash < $prestige.cost && bypass !== true) return;
 		$cash = 0;
-		$basic_orb.amount = 1;
-		$auto_bounce.unlocked = false;
+		basic_orb.update( v => (v.amount = 1, v));
+		light_orb.update( v => (v.amount = 0, v));
+		homing_orb.update( v => (v.amount = 0, v));
+		$bounce_size = 75;
+		auto_bounce.update( v => (v.unlocked = false, v));
+
 
 		prestige.update( v => (v.times++, v.cost = Math.round(v.cost * 1.25), v) );
 	}

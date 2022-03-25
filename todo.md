@@ -1,17 +1,22 @@
 Shop Ideas:
 - More collectors
 - Collector bonus
-- 
+- Prestige doesn't reset (increase bounce area)
 
 ToDo: 
-- Loses velocity on ground even when it has high vx.
+- 
 
 Orb Lab Ideas:
-- Fight "ancients" to get Mana
+- Fight "monsters" to get Mana
 
 Orb Types: 
 - Basic
 - Ice
 - Homing
 
-1e+6 / 1e6 == 1*10^6 == 1.000.000 
+monster Ideas:
+- When you beat an monster you move onto the next one.
+- There is a time limit
+- The cost to fight monsters to proportional to the amount you've beaten
+- Every monster gives an amount of mana
+- Chance to spawn different rarities of monsters?

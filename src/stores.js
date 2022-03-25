@@ -14,13 +14,15 @@ const w = writable;
 const to_store = {};
 //#endregion
 
+//#region | Timer
 export const timer = writable(0);
 let ticks = 0; timer.subscribe( v => ticks = v );
 const timer_loop = setInterval(() => {
 	if (ticks < 29) timer.update( v => v+1 );
 	else timer.set(0);
 }, 1000/30);
-
+//#endregion
+//#region | Cash
 let deci = 0;
 export const cash = w(0);
 cash.subscribe((v)=>{
@@ -34,34 +36,65 @@ cash.subscribe((v)=>{
 			cash.set(Math.floor(v));
 		}
 	}
-})
-
+});
+//#endregion
+//#region | Bounce and Collector
 export const bounce_size = w(75);
 export const bounce_area_cost = w(500);
 export const collector_pos = w(250);
-// export const orb_count = w(1);
+//#endregion
+//#region | Orbs
 export const basic_orb = w({
 	amount: 1,
-	cost: 100,
+	cost: 50,
+	value: 1
 });
 export const light_orb = w({
 	amount: 0,
 	cost: 100,
+	value: 1
 });
 export const homing_orb = w({
 	amount: 0,
 	cost: 100,
+	value: 0.5,
 });
-
-export const more_orbs_cost = w(100);
+//#endregion
+//#region | Shop Upgrades
+export const more_orbs_cost = w(50);
 export const auto_bounce = w({
 	cost: 500,
-	unlocked: false
+	unlocked: false,
+	on: true,
 });
-
+//#endregion
+//#region | Prestige
 export const prestige = w({
 	cost: 1e4,
 	times: 0,
 });
+//#endregion
 
 export const orb_bonus = writable(1);
+
+export const unlocked_lab = w(false);
+
+export const canvas_toggled = w(true);
+export const fighting = w(false);
+
+export const monster = w(null);
+export const total_monster_killed = w(0);
+
+export const mana = w(0);
+export const fight_cost = w(1e3);
+
+export const trades = w({
+	to_light: 1,
+	to_homing: 3,
+});
+
+export const shifting = w(false);
+
+// const callable = ()=>{
+
+// }

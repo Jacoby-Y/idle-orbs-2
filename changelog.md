@@ -1,3 +1,10 @@
+## v0.3
+- Tweaked hitting ground for ice
+- Fixed bug where sometimes orbs weren't gettting collected
+- Added entire monster fighting and mana system
+- Polished all orb types (basic, light, homing)
+- Orb cost balancing changes
+
 ## v0.2.3
 - Progress on different orb types
 

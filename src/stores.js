@@ -51,21 +51,29 @@ export const basic_orb = w({
 });
 export const light_orb = w({
 	amount: 0,
-	cost: 100,
+	cost: 1,
 	value: 1
 });
 export const homing_orb = w({
 	amount: 0,
-	cost: 100,
+	cost: 5,
 	value: 0.5,
 });
 //#endregion
 //#region | Shop Upgrades
-export const more_orbs_cost = w(50);
+// export const more_orbs_cost = w(50);
 export const auto_bounce = w({
-	cost: 500,
+	cost: 350,
 	unlocked: false,
 	on: true,
+});
+export const bounce_power = w({
+	cost: 250,
+	value: 30,
+});
+export const starting_cash = w({
+	cost: 25,
+	amount: 0,
 });
 //#endregion
 //#region | Prestige
@@ -77,9 +85,12 @@ export const prestige = w({
 
 export const orb_bonus = writable(1);
 
-export const unlocked_lab = w(false);
+// export const unlocked_lab = w(true); //-! DEBUG
+export const unlocked_fighting = w(false);
+export const got_mana = w(false);
+export const next_tower_lvl = w(1);
 
-export const canvas_toggled = w(true);
+export const canvas_toggled = w(true); 
 export const fighting = w(false);
 
 export const monster = w(null);
@@ -92,6 +103,14 @@ export const trades = w({
 	to_light: 1,
 	to_homing: 3,
 });
+
+export const rarities = w({
+	c: 100,
+	u: 0,
+	r: 0,
+	l: 0
+});
+
 
 export const shifting = w(false);
 

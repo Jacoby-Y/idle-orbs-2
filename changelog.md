@@ -1,6 +1,13 @@
+## v0.4
+- Added monster tower / fighting system
+- Reworked orb buying system
+- Quality of life / better gameplay
+- Code restructuring
+- Balancing changes to costs of upgrades/purchases
+
 ## v0.3
 - Tweaked hitting ground for ice
-- Fixed bug where sometimes orbs weren't gettting collected
+- Fixed bug where sometimes orbs weren't getting collected
 - Added entire monster fighting and mana system
 - Polished all orb types (basic, light, homing)
 - Orb cost balancing changes

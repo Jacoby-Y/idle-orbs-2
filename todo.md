@@ -1,22 +1,36 @@
-Shop Ideas:
-- More collectors
-- Collector bonus
-- Prestige doesn't reset (increase bounce area)
-
 ToDo: 
-- 
+- More Common enemies
+- Clean up code
+- Settings tab
+- Shift buy orbs
+- Limit drawn orbs
 
-Orb Lab Ideas:
-- Fight "monsters" to get Mana
+Notes: 
+- Cost of basic orb increases to much per purchase??
+- Too many prestiges to unlock fighting?
+- Different fighting areas for different artifacts?
+- Restart with a % of money/mana
 
-Orb Types: 
-- Basic
-- Ice
-- Homing
+Settings: 
+- Rendering Modes
 
-monster Ideas:
-- When you beat an monster you move onto the next one.
-- There is a time limit
-- The cost to fight monsters to proportional to the amount you've beaten
-- Every monster gives an amount of mana
-- Chance to spawn different rarities of monsters?
+Ideas: 
+- Achievements
+- Magic/Spells
+
+Orb Types: (✅ | ❌)
+- Basic ✅
+- Ice ✅
+- Homing ✅
+- Gold ❌
+- Spore ❌
+
+Artifacts: 
+- Shadow (Chance to summon a shadow clone of orbs)
+- Agile (Orbs lose less velocity from a bad angled bounce)
+- Holy Click
+
+
+Save: 
+- Prestige: 250%
+- Starting Cash: 864

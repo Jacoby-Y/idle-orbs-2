@@ -2,20 +2,21 @@
 	// import { timer, cash, bounce_size, collector_pos, orb_count } from "../stores.js";
 	import { 
 		cash, shifting,
-		more_orbs_cost, auto_bounce, bounce_size, bounce_area_cost, orb_bonus,
+		auto_bounce, bounce_size, bounce_area_cost, orb_bonus,
 		basic_orb, light_orb, homing_orb,
-		prestige, timer,
+		prestige, timer, bounce_power, starting_cash,
 		} from "../stores.js";
 	import { sci } from "../functions.js";
 
-	//#region | Buy Basic Orb
-	const buy_basic = ()=>{
-		if ($cash < $basic_orb.cost) return;
-		$cash -= $basic_orb.cost;
-		$basic_orb.cost = Math.round($basic_orb.cost * 1.2);
-		$basic_orb.amount++;
-		$basic_orb = $basic_orb;
-		if ($shifting) buy_basic();
+	//#region | Buy Bounce Power
+	const buy_bounce_power = ()=>{
+		if ($cash < $bounce_power.cost) return;
+		$cash -= $bounce_power.cost;
+		bounce_power.update( v => (
+			v.cost = Math.floor(v.cost * 1.5),
+			v.value += 2.5, v
+		));
+		if ($shifting) buy_bounce_power();
 	}
 	//#endregion
 	//#region | Auto Bounce
@@ -51,28 +52,41 @@
 		}
 	const do_prestige = (bypass=false)=>{
 		if ($cash < $prestige.cost && bypass !== true) return;
-		$cash = 0;
-		basic_orb.update( v => (v.amount = 1, v));
-		light_orb.update( v => (v.amount = 0, v));
-		homing_orb.update( v => (v.amount = 0, v));
+		$cash = $starting_cash.amount;
+		basic_orb.update( v => (v.amount = 1, v.cost = 50, v));
+		// light_orb.update( v => (v.amount = 0, v.cost = 1, v));
+		// homing_orb.update( v => (v.amount = 0, v.cost = 5, v));
 		$bounce_size = 75;
+		$bounce_area_cost = 500;
 		auto_bounce.update( v => (v.unlocked = false, v));
-
+		bounce_power.update( v => (
+			v.cost = 250,
+			v.value = 30, v
+		));
 
 		prestige.update( v => (v.times++, v.cost = Math.round(v.cost * 1.25), v) );
 	}
 	//#endregion
-
+	//#region | Post-Prestige Cash
+	const buy_starting_cash = ()=>{
+		if ($cash < $starting_cash.cost) return;
+		$cash -= $starting_cash.cost;
+		starting_cash.update( v => (v.amount++, v));
+		if ($shifting) buy_starting_cash();
+	}
+	//#endregion
 </script>
 
 <main id="main-shop">
 	<h3 id="cash">Cash: {sci($cash)}</h3>
 	<hr id="top-hr">
-	<button on:click={buy_basic}>Buy a Basic Orb <b>${sci($basic_orb.cost)}</b></button>
+	<!-- <button on:click={buy_basic}>Buy a Basic Orb <b>${sci($basic_orb.cost)}</b></button> -->
+	<button on:click={buy_bounce_power}>Increase Bounce Power <b>${sci($bounce_power.cost)}</b></button>
 	<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$auto_bounce.unlocked ? "Unlocked!" : `$${sci($auto_bounce.cost)}`}</b></button>
 	<button on:click={increase_bounce_area}>Increase Bounce Area <b>${sci($bounce_area_cost)}</b></button>
+	<button on:click={buy_starting_cash}>Starting Cash +1 (${sci($starting_cash.amount)}) <b>${sci($starting_cash.cost)}</b></button>
 	<div></div>
-	<h3 id="orb-info">Orb Prestige Bonus: +{sci($prestige.times*50)}% {prest_hover ? "(+50%)" : ""}</h3>
+	<h3 id="orb-info">Orb Value Bonus: +{sci($prestige.times*50)}% {prest_hover ? "(+50%)" : ""}</h3>
 	<button bind:this={prest_btn} on:click={do_prestige}>Prestige <b>${sci($prestige.cost)}</b></button>
 </main>
 
@@ -92,7 +106,7 @@
 		display: grid;
 		gap: 0.5rem;
 		grid-auto-rows: max-content;
-		grid-template-rows: repeat(5, max-content) 1fr repeat(2, max-content);
+		grid-template-rows: repeat(6, max-content) 1fr repeat(2, max-content);
 		border-right: 1px solid white;
 	}
 	#main-shop button {

@@ -1,11 +1,11 @@
 <script>
 	import { onMount } from "svelte";
 	import { 
-		timer, cash, bounce_size, collector_pos, auto_bounce, orb_bonus,
+		timer, cash, mana, bounce_size, collector_pos, auto_bounce, orb_bonus,
 		basic_orb, light_orb, homing_orb,
-		canvas_toggled as toggled, fighting, mana, total_monster_killed as tmk, shifting
-	} from "../stores.js";
-	import { manager, small_explosion } from "../particles.js";
+		canvas_toggled as toggled, fighting, shifting, rarities, next_tower_lvl, bounce_power
+		} from "../stores.js";
+	import { manager, small_explosion, big_explosion } from "../particles.js";
 	import { sci } from "../functions.js";
 
 	const set_orbs = ()=>{
@@ -59,12 +59,17 @@
 			y: Math.round(Math.random()*1000),
 		}
 	}
+	const F_acos = (x) => { return (-0.698 * x * x - 0.872) * x + 1.570; };
+	const F_atan2 = (y, x) => { 
+		let z = y/x;
+		let neg = 1;
+		if (z < 0) z *= -1; neg = -1;
+		if (z > 1) return 1.571 - F_atan2(1, z);
+		return neg*(z * (0.785 - (z - 1)*(0.244 + 0.067 * z))); // 14: 0.244 | 3.83: 0.067
+	}
 	const orbs = {
 		list: [],
 		homing: [],
-		// pos: [],
-		// vect: [],
-		// grounded: [],
 		col(orb, xy, mult) { 
 			xy = xy == 0 ? "vx" : "vy";
 			orb[xy] = Math.abs(orb[xy]) * mult; 
@@ -170,8 +175,8 @@
 		},
 		collide_monster(orb) {
 			// c1 = 400, 200 / c2 = 600, 300
-			const pt1 = monster.pt1;
-			const pt2 = monster.pt2;
+			const pt1 = monster_manager.pt1;
+			const pt2 = monster_manager.pt2;
 			if (orb.y >= pt1.y-20 && orb.y <= pt2.y) {
 				// console.log("in horz area");
 				if (orb.lx+20 < pt1.x && orb.x+20 >= pt1.x) {
@@ -229,7 +234,7 @@
 			if ($fighting) { 
 				const hit = this.collide_monster(orb);
 				if (hit) {
-					monster.hit(1);
+					monster_manager.hit(1);
 				}
 			}
 
@@ -270,17 +275,11 @@
 			}
 		},
 		bounce(pos) {
-			// for (let i = 0; i < this.pos.length; i++) {
-			// 	if (this.pos[i][1] < 600-$bounce_size-21) continue;
-			// 	if (pos != null) this.vect[i][0] += (pos[0] - this.pos[i][0])/100;
-			// 	this.vect[i][1] -= 30 - Math.random()*3;
-			// 	this.grounded[i] = false;
-			// }
 			for (let i = 0; i < this.list.length; i++) {
 				const orb = this.list[i];
 				if (orb.y < 600-$bounce_size-21) continue;
 				if (pos != null) orb.vx += (pos[0] - orb.x)/100;
-				orb.vy -= 30 - Math.random()*3;
+				orb.vy -= $bounce_power.value + (Math.random()*6-3);
 				orb.grounded = false;
 			}
 		},
@@ -324,7 +323,7 @@
 			ctx.lineTo(1000, 250);
 			ctx.stroke();
 		} else {
-			monster.draw();
+			monster_manager.draw();
 		}
 
 		manager.update();
@@ -372,11 +371,11 @@
 		else if (k == "o") console.log(orbs);
 		else if (k == "d") console.log(orbs.draw_homing());
 		else if (k == "l") console.log(orbs.list.length + orbs.homing.length);
-		else if (k == "a") console.log(monster);
+		else if (k == "a") console.log(monster_manager);
 		else if (k == "c") $cash += 10000;
-		else if (k == "b") $bounce_size += 10;
-		else if (k == "B") $bounce_size -= 10;
-		else if (k == "m") console.log(mouse);
+		else if (k == "b") orbs.bounce();
+		else if (k == "M") console.log(mouse);
+		else if (k == "m") $mana += 100;
 		else if (k == "r") set_orbs(); // Broken right now
 		else if (k == "1") basic_orb.update( v => (v.amount++, v));  // orbs.new(rand_width(), 580, 					 0, 0, "basic");
 		else if (k == "2") light_orb.update( v => (v.amount++, v));  // orbs.new(rand_width(), rand_height(), 0, 0, "light");
@@ -386,6 +385,7 @@
 		else if (k == "#") homing_orb.update( v => (v.amount > 0 ? v.amount-- : 0, v));
 		else if (k == "0") homing_orb.update( v => (v.amount += 10000, v)); //Array.from(Array(25000)).forEach(()=> orbs.new(rand_width(), rand_height(), 0, 0, "homing"));
 		else if (k == "Shift") $shifting = false;
+		else if (k == "h") monster_manager.hit(1e10);
 	};
 	const key_down = (e)=>{
 		const k = e.key;
@@ -450,47 +450,52 @@
 	const spawn_monster = ()=>{
 		// Chances for common, uncommon, rare, legendary
 		// 70, 20, 8, 2
-		const rand = Math.random();
-		if (rand <= 0.7) { 
+
+		const c = $rarities.c;
+		const u = $rarities.c + $rarities.u;
+		const r = $rarities.c + $rarities.u + $rarities.r;
+
+		const rand = Math.round(Math.random()*100);
+		if (rand <= c) { 
 			// Common
 			const name = rand_in_list(monsters.common);
 			// console.log(`Spawning a ${name}`);
-			monster.max_hp = 100*(1 + 0.2*$tmk);
-			monster.hp = monster.max_hp;
-			monster.name = name;
-			monster.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
-			monster.worth = 1;
-		} else if (rand <= 0.9) {
+			monster_manager.max_hp = 100*(1 + 0.2*($next_tower_lvl-1));
+			monster_manager.hp = monster_manager.max_hp;
+			monster_manager.name = name;
+			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
+			monster_manager.worth = 1;
+		} else if (rand <= u) {
 			// Uncommon
 			const name = rand_in_list(monsters.uncommon);
 			// console.log(`Spawning a ${name}`);
-			monster.max_hp = 250*(1 + 0.2*$tmk);
-			monster.hp = monster.max_hp;
-			monster.name = name;
-			monster.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
-			monster.worth = 3;
-		} else if (rand <= 0.98) {
+			monster_manager.max_hp = 250*(1 + 0.2*($next_tower_lvl-1));
+			monster_manager.hp = monster_manager.max_hp;
+			monster_manager.name = name;
+			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
+			monster_manager.worth = 3;
+		} else if (rand <= r) {
 			// Rare
 			const name = rand_in_list(monsters.rare);
 			// console.log(`Spawning a ${name}`);
-			monster.max_hp = 500*(1 + 0.2*$tmk);
-			monster.hp = monster.max_hp;
-			monster.name = name;
-			monster.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
-			monster.worth = 10;
+			monster_manager.max_hp = 500*(1 + 0.2*($next_tower_lvl-1));
+			monster_manager.hp = monster_manager.max_hp;
+			monster_manager.name = name;
+			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
+			monster_manager.worth = 10;
 		} else {
 			// Legendary
 			const name = rand_in_list(monsters.legendary);
 			// console.log(`Spawning a ${name}`);
-			monster.max_hp = 1000*(1 + 0.2*$tmk);
-			monster.hp = monster.max_hp;
-			monster.name = name;
-			monster.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
-			monster.worth = 25;
+			monster_manager.max_hp = 1000*(1 + 0.2*($next_tower_lvl-1));
+			monster_manager.hp = monster_manager.max_hp;
+			monster_manager.name = name;
+			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
+			monster_manager.worth = 25;
 		}
-		monster = monster;
+		monster_manager = monster_manager;
 	}
-	let monster = {
+	let monster_manager = {
 		hp: 100,
 		max_hp: 300,
 		pt1: { x: 300, y: 100 },
@@ -500,19 +505,26 @@
 		tick: 0,
 		total_ticks: 600,
 		worth: 1,
+		kill_index: 0,
 		draw() {
-			ctx.fillStyle = "red";
-			ctx.fillRect(this.pt1.x, this.pt1.y, this.pt2.x-this.pt1.x, this.pt2.y-this.pt1.y);
+			// Base Background
 			ctx.fillStyle = "#444";
 			ctx.fillRect(this.pt1.x+2, this.pt1.y+2, this.pt2.x-this.pt1.x-4, this.pt2.y-this.pt1.y-4);
-
+			// Health bar background
 			ctx.fillStyle = "#333";
 			ctx.fillRect(this.pt1.x+10, this.pt2.y-30, this.pt2.x-this.pt1.x-20, 20);
+			// Health bar fill color
 			ctx.fillStyle = "#33aa33";
 			ctx.fillRect(this.pt1.x+10, this.pt2.y-30, (this.pt2.x-this.pt1.x-20)*(this.hp/this.max_hp), 20);
-
+			// Kill Index bar
+			ctx.fillStyle = "#ffffff66";
+			ctx.fillRect(this.pt1.x+1, this.pt1.y+1, (this.pt2.x-this.pt1.x)*((this.kill_index+1)/10)-2, 5);
+			// Timer bar
 			ctx.fillStyle = "#00ffff66";
-			ctx.fillRect(this.pt1.x+1, this.pt1.y+1, (this.pt2.x-this.pt1.x)*(this.tick/this.total_ticks)-2, 5);
+			ctx.fillRect(this.pt1.x+1, this.pt1.y+6, (this.pt2.x-this.pt1.x)*(this.tick/this.total_ticks)-2, 5);
+			// Border
+			ctx.strokeStyle = "red";
+			ctx.strokeRect(this.pt1.x, this.pt1.y, this.pt2.x-this.pt1.x, this.pt2.y-this.pt1.y);
 
 			if (this.tick > this.total_ticks) (this.tick = 0, $fighting = false);
 			this.tick++;
@@ -522,9 +534,15 @@
 			if (this.hp <= 0) {
 				this.tick = 0;
 				// console.log("Mana increasing by: " + this.worth);
-				$mana += this.worth;
-				$tmk++;
+				$mana += Math.round(this.worth*(1 + 0.1*($next_tower_lvl-1)));
 				spawn_monster();
+				this.kill_index++;
+				if (this.kill_index >= 10) {
+					$fighting = false;
+					$next_tower_lvl++;
+					this.kill_index = 0;
+					big_explosion(ctx, [this.pt1.x+((this.pt2.x-this.pt1.x)/2), this.pt1.y+((this.pt2.y-this.pt1.y)/2)]);
+				}
 			}
 		}
 	}
@@ -544,13 +562,13 @@
 		<div 
 			id="monster-info" 
 			style="
-				left: {monster.pt1.x}px;
-				top: {monster.pt1.y}px;
-				width: {monster.pt2.x-monster.pt1.x}px;
-				height: {monster.pt2.y-monster.pt1.y}px;"
-		>
-			<h3>{monster.name}</h3>
-			<img src="{monster.src}" alt="monster Icon" style="width: {(monster.pt2.y-monster.pt1.y)/2}px; height: {(monster.pt2.y-monster.pt1.y)/2}px;">
+				left: {monster_manager.pt1.x}px;
+				top: {monster_manager.pt1.y}px;
+				width: {monster_manager.pt2.x-monster_manager.pt1.x}px;
+				height: {monster_manager.pt2.y-monster_manager.pt1.y}px;">
+			<h3 id="lvl">Monster Tower: Level {$next_tower_lvl}</h3>
+			<h3 id="name">{monster_manager.name}</h3>
+			<img src="{monster_manager.src}" alt="monster Icon" style="width: {(monster_manager.pt2.y-monster_manager.pt1.y)/2}px; height: {(monster_manager.pt2.y-monster_manager.pt1.y)/2}px;">
 		</div>
 		{/if}
 </main>
@@ -613,7 +631,7 @@
 		top: 55%;
 		transform: translate(-50%, -50%);
 	}
-	#monster-info h3 {
+	#monster-info #name {
 		position: absolute;
 		left: 50%;
 		top: 0;
@@ -621,5 +639,14 @@
 		transform: translate(-50%, 0);
 		font-size: 1.5rem;
 		color: white;
+	}
+	#monster-info #lvl {
+		position: absolute;
+		left: 50%;
+		bottom: 100%;
+		padding: 0.5rem 0.7rem;
+		transform: translate(-50%, 0);
+		color: white;
+		width: max-content;
 	}
 </style>

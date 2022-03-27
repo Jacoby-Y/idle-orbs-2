@@ -61,11 +61,11 @@
 	$: if (!$fighting && fight_btn != undefined) fight_btn.disabled = false;
 	
 	$: { if (fight_btn != undefined){
-		fight_btn.onclick = (bypass)=> {
+		fight_btn.onclick = (bypass=false)=> {
 			if (($cash < $fight_cost || $fighting) && !bypass) return false;
 			$cash -= $fight_cost;
-			$canvas_toggled = true;
 			$fighting = true;
+			$canvas_toggled = true;
 			return true;
 		}
 		fight_btn.onmouseenter = ()=> hover_fight = true;

@@ -1,12 +1,29 @@
 <script>
 	import Shop from "./Shop.svelte";
 	import Lab from "./Lab.svelte";
+	import Settings from "./Settings.svelte";
+
+	let settings_open = false;
+		/** @type {HTMLElement} */
+	let settings;
+
+	const click = (e)=>{
+		/** @type {HTMLElement} */
+		const t = e.target;
+		if (!settings.contains(t)) settings_open = false;
+		callback(); callback = ()=>{};
+	}
+	let callback = ()=>{};
+	const toggled_settings = ()=>{
+		callback = ()=> settings_open = !settings_open;
+	}
 </script>
 
-<main>
+<main on:click={click}>
 	<Shop/>
 	<Lab/>
-	<img id="settings" src="./assets/settings.svg" alt="Settings">
+	<img on:click={toggled_settings} id="settings" src="./assets/settings.svg" alt="Settings">
+	<Settings bind:settings bind:open={settings_open}/>
 </main>
 
 <style>

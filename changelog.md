@@ -1,3 +1,7 @@
+## v0.6
+- Added different rendering modes (Square, Circle, Sand, Pixelated, None)
+- You can now save and load data from a string
+
 ## v0.5
 - Massive performance improvements
 - Added auto fighting

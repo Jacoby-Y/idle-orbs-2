@@ -1,17 +1,22 @@
 ToDo: 
 - Settings tab
-- Max level for bounce area upgrade
-- Bonus value for orbs upgrade
 - probably color change for Lab
 - Load and save from a string of text!
+- sub spore cash hold is too much
+- large explosion bigger for circle render mode
+- shift buy double and format cost
+- close shop when clicking fighting btn, not whenever fighting
+- Fighting bug (beat monster, then pause)
+- Bug: fight monster, can't toggle shop again unless you click screen
 
 Notes: 
-- Cost of basic orb increases to much per purchase??
-- Too many prestiges to unlock fighting?
+- Cost of basic orb increases to much per purchase??? (increase linearly not compounding?)
+- Too many prestiges to unlock fighting? (should be three?)
 - Different fighting areas for different artifacts?
 - Restart with a % of money/mana
 - gui that give info on the monster tower
 - Every 5 levels there's a boss that gives an artifact?
+- Total prestige?
 
 Settings: 
 - Rendering Modes

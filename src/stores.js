@@ -58,6 +58,10 @@ export const starting_cash = w("starting_cash", {
 	cost: 25,
 	amount: 0,
 });
+export const orb_double = w("orb_double", {
+	cost: 10,
+	value: 0,
+});
 //#endregion
 //#region | Orbs
 export const basic_orb = w("basic_orb", { //-! DEBUG
@@ -107,14 +111,57 @@ export const mana = w("mana", 0);
 export const canvas_toggled = writable(true);
 export const shifting = writable(false);
 
+export const render_mode = w("render_mode", 0);
+
 export const clear_storage = ()=>{
 	window.onbeforeunload = null;
 	localStorage.clear();
 	location.reload();
 }
 
-window.onbeforeunload = ()=>{
+const chars = ` "'{}():_,.0123456789acbdefghijklmnopqrstyuvwxyzACBDEFGHIJKLMNOPQRSTYUVWXYZ`;
+
+export const get_data = ()=>{
+	const str = JSON.stringify(get_store_obj()).split("");
+	let build = "";
+	for (let i = 0; i < str.length; i++) {
+		const ch = str[i];
+		if (!chars.includes(ch)) { 
+			console.error(`Character list doesn't have: "${ch}"`);
+			return "Error";
+		}
+		const index = chars.indexOf(ch);
+		build += chars.at(index-2);
+	}
+	return build;
+}
+export const load_data = (load)=>{
+	const str = load.split("");
+	let build = "";
+	for (let i = 0; i < str.length; i++) {
+		const ch = str[i];
+		const index = chars.indexOf(ch);
+		build += chars.at((index+2)%chars.length);
+	}
+	try {
+		const built = JSON.parse(build);
+		for (const k in built) {
+			if (Object.hasOwnProperty.call(built, k)) {
+				const v = built[k];
+				writables[k].set(v);
+			}
+		}
+	} catch (err) {
+		console.error(`Couldn't Load Data!\n${err}`);
+	}
+}
+
+const get_store_obj = ()=>{
 	let store_obj = {};
 	store_keys.forEach((k)=> store_obj[k] = get(writables[k]) );
-	localStorage.IdleOrbs2 = JSON.stringify(store_obj);
+	return store_obj;
+}
+
+window.onbeforeunload = ()=>{
+	localStorage.IdleOrbs2 = JSON.stringify(get_store_obj());
 }

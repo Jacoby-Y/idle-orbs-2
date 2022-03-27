@@ -1,6 +1,6 @@
 <script>
 	// import { timer, cash, bounce_size, collector_pos, orb_count } from "../stores.js";
-	import { cash, shifting, basic_orb, prestige, starting_cash, bounce } from "../stores.js";
+	import { cash, mana, shifting, basic_orb, prestige, starting_cash, bounce, got_mana, orb_double } from "../stores.js";
 	import { sci } from "../functions.js";
 
 	//#region | Buy Bounce Power
@@ -23,7 +23,7 @@
 	//#endregion
 	//#region | Bounce Area
 	const increase_bounce_area = ()=>{
-		if ($cash < $bounce.size_cost) return;
+		if ($cash < $bounce.size_cost || $bounce.size >= 275) return;
 		$cash -= $bounce.size_cost;
 		$bounce.size_cost *= 2;
 		$bounce.size += 25;
@@ -67,6 +67,15 @@
 		if ($shifting) buy_starting_cash();
 	}
 	//#endregion
+	//#region | Base Power Multiplier
+	const double_values = ()=>{
+		if ($mana < $orb_double.cost) return;
+		$mana -= $orb_double.cost;
+		$orb_double.cost *= 2;
+		$orb_double.value++;
+		$orb_double = $orb_double;
+	}
+	//#endregion
 </script>
 
 <main id="main-shop">
@@ -76,8 +85,10 @@
 	<!-- <button on:click={buy_basic}>Buy a Basic Orb <b>${sci($basic_orb.cost)}</b></button> -->
 	<button on:click={buy_bounce_power}>Increase Bounce Power <b>${sci($bounce.power_cost)}</b></button>
 	<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$bounce.auto_unlocked ? "Unlocked!" : `$${sci($bounce.auto_cost)}`}</b></button>
-	<button on:click={increase_bounce_area}>Increase Bounce Area <b>${sci($bounce.size_cost)}</b></button>
+	<button on:click={increase_bounce_area}>Increase Bounce Area <b> {#if $bounce.size < 275} ${sci($bounce.size_cost)} {:else} Max! {/if} </b></button>
 	<button on:click={buy_starting_cash}>Starting Cash +1 (${sci($starting_cash.amount)}) <b>${sci($starting_cash.cost)}</b></button>
+	{#if $got_mana} <button on:click={double_values}>Double All Orb Values <b>{$orb_double.cost}₪</b></button>
+	{:else} <div></div> {/if}
 	<div></div>
 	<h3 id="orb-info">Orb Value Bonus: +{sci($prestige.times*50)}% {prest_hover ? "(+50%)" : ""}</h3>
 	<button bind:this={prest_btn} on:click={do_prestige}>Prestige <b>${sci($prestige.cost)}</b></button>
@@ -100,7 +111,7 @@
 		display: grid;
 		gap: 0.5rem;
 		grid-auto-rows: max-content;
-		grid-template-rows: repeat(6, max-content) 1fr repeat(2, max-content);
+		grid-template-rows: repeat(7, max-content) 1fr repeat(2, max-content);
 		border-right: 1px solid white;
 	}
 	#main-shop button {

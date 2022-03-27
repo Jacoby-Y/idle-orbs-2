@@ -1,6 +1,8 @@
 export const manager = {
 	groups: [],
-	update(draw=true) {
+	mode: 0, 
+	update(mode, draw=true) {
+		if (this.mode != mode) this.mode = mode;
 		for (let i = this.groups.length-1; i >= 0; i--) {
 			if (this.groups[i].update(draw)) this.groups.splice(i, 1);
 		}
@@ -18,7 +20,15 @@ export const small_explosion = (ctx, pos=[0,0])=>{
 				if (p.ticks <= 0) continue;
 				if (draw) {
 					ctx.fillStyle = "#ff440055";
-					ctx.fillRect(p.x-3, p.y-3, 6, 6);
+					if (manager.mode == 0) {
+						ctx.fillRect(p.x-3, p.y-3, 6, 6);
+					} else if (manager.mode == 1) {
+						ctx.beginPath(); ctx.arc(p.x+1.5, p.y+1.5, 3, 0, 2 * Math.PI); ctx.fill(); 
+					} else if (manager.mode == 2) {
+						ctx.fillRect(p.x-1, p.y-1, 2, 2);
+					} else if (manager.mode == 3) {
+						ctx.fillRect(Math.floor(p.x/6)*6, Math.floor(p.y/6)*6, 6, 6);
+					}
 					p.x += p.vx; p.vx *= 0.95;
 					p.y += p.vy; p.vy *= 0.95;
 				}
@@ -52,7 +62,15 @@ export const big_explosion = (ctx, pos=[0,0])=>{
 				if (p.ticks <= 0) continue;
 				if (draw) {
 					ctx.fillStyle = "#ff440055";
-					ctx.fillRect(p.x-3, p.y-3, 15, 15);
+					if (manager.mode == 0) {
+						ctx.fillRect(p.x-3, p.y-3, 15, 15);
+					} else if (manager.mode == 1) {
+						ctx.beginPath(); ctx.arc(p.x+1.5, p.y+1.5, 3, 0, 2 * Math.PI); ctx.fill(); 
+					} else if (manager.mode == 2) {
+						ctx.fillRect(p.x-1, p.y-1, 2, 2);
+					} else if (manager.mode == 3) {
+						ctx.fillRect(Math.floor(p.x/15)*15, Math.floor(p.y/15)*15, 15, 15);
+					}
 					p.x += p.vx; p.vx *= 0.95;
 					p.y += p.vy; p.vy *= 0.95;
 				}

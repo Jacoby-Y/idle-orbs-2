@@ -29,3 +29,17 @@ export const format_seconds = (secs, short=true)=>{
 export const run_n_times = (n, callback)=>{
   Array.from(Array(n)).forEach(callback);
 }
+export const floor_round = (num, place)=>{
+  const pow = (Math.pow(10, place));
+  return Math.floor(num * pow) / pow;
+}
+const num_shorts = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'O', 'N', 'D', 'UD', 'DD', 'TD', 'QuD', 'QiD', 'SxD', 'SpD', 'OD', 'ND', 'V', 'UV', 'DV', 'TV', 'QaV', 'QiV', 'SxV', 'SpV', 'OV', 'NV', 'T', 'UT', 'DT', 'TT', 'QaT', 'QiT', 'SxT', 'SpT', 'OT', 'NT'];
+export const format_num = (num, round_to=1, i=0, past_thresh=false)=>{
+    const div = num / 1000;
+    const thresh = (i >= num_shorts.length);
+    if (div < 1 || thresh) { 
+      if (thresh) return (floor_round(num, round_to) + num_shorts[num_shorts.length-1]);
+      else return (i == 0) ? (floor_round(num, round_to)) : (floor_round(num, round_to) + num_shorts[i]);
+    }
+    return format_num(div, round_to, i+1, thresh);
+}

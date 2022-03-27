@@ -1,3 +1,13 @@
+## v0.5
+- Massive performance improvements
+- Added auto fighting
+- Fixed monster collision bugs
+- Cleaned up code
+- Added and optimized "Spore Orb"
+- Added more monsters
+- Polished/fixed up monster system
+- Added data saving/loading system
+
 ## v0.4
 - Added monster tower / fighting system
 - Reworked orb buying system

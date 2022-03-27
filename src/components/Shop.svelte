@@ -1,37 +1,33 @@
 <script>
 	// import { timer, cash, bounce_size, collector_pos, orb_count } from "../stores.js";
-	import { 
-		cash, shifting,
-		auto_bounce, bounce_size, bounce_area_cost, orb_bonus,
-		basic_orb, light_orb, homing_orb,
-		prestige, timer, bounce_power, starting_cash,
-		} from "../stores.js";
+	import { cash, shifting, basic_orb, prestige, starting_cash, bounce } from "../stores.js";
 	import { sci } from "../functions.js";
 
 	//#region | Buy Bounce Power
 	const buy_bounce_power = ()=>{
-		if ($cash < $bounce_power.cost) return;
-		$cash -= $bounce_power.cost;
-		bounce_power.update( v => (
-			v.cost = Math.floor(v.cost * 1.5),
-			v.value += 2.5, v
-		));
+		if ($cash < $bounce.power_cost) return;
+		$cash -= $bounce.power_cost;
+		$bounce.power += 2.5;
+		$bounce.power_cost = Math.floor($bounce.power_cost * 1.5);
+		$bounce = $bounce;
 		if ($shifting) buy_bounce_power();
 	}
 	//#endregion
 	//#region | Auto Bounce
 	const buy_auto_bounce = ()=>{
-		if ($cash < $auto_bounce.cost || $auto_bounce.unlocked) return;
-		$cash -= $auto_bounce.cost;
-		auto_bounce.update( v => (v.unlocked = true, v) );
+		if ($cash < $bounce.auto_cost || $bounce.auto_unlocked) return;
+		$cash -= $bounce.auto_cost;
+		$bounce.auto_unlocked = true;
+		$bounce = $bounce;
 	};
 	//#endregion
 	//#region | Bounce Area
 	const increase_bounce_area = ()=>{
-		if ($cash < $bounce_area_cost) return;
-		$cash -= $bounce_area_cost;
-		$bounce_area_cost *= 2;
-		$bounce_size += 25;
+		if ($cash < $bounce.size_cost) return;
+		$cash -= $bounce.size_cost;
+		$bounce.size_cost *= 2;
+		$bounce.size += 25;
+		$bounce = $bounce;
 		if ($shifting) increase_bounce_area();
 	}
 	//#endregion
@@ -45,24 +41,20 @@
 			prest_btn.onmouseleave = ()=> prest_hover = false;
 		}
 		}
-	$: { $orb_bonus;
-		basic_orb.update( v => (v.value = 1 + 0.5*$prestige.times, v) );
-		light_orb.update( v => (v.value = 1 + 0.5*$prestige.times, v) );
-		homing_orb.update( v => (v.value = 0.5 + 0.5*$prestige.times, v) );
-		}
+	
 	const do_prestige = (bypass=false)=>{
 		if ($cash < $prestige.cost && bypass !== true) return;
 		$cash = $starting_cash.amount;
 		basic_orb.update( v => (v.amount = 1, v.cost = 50, v));
-		// light_orb.update( v => (v.amount = 0, v.cost = 1, v));
-		// homing_orb.update( v => (v.amount = 0, v.cost = 5, v));
-		$bounce_size = 75;
-		$bounce_area_cost = 500;
-		auto_bounce.update( v => (v.unlocked = false, v));
-		bounce_power.update( v => (
-			v.cost = 250,
-			v.value = 30, v
-		));
+		$bounce = {
+			power: 30,
+			power_cost: 250,
+			size: 75,
+			size_cost: 500,
+			auto_cost: 350,
+			auto_unlocked: false,
+			auto_on: true,
+		};
 
 		prestige.update( v => (v.times++, v.cost = Math.round(v.cost * 1.25), v) );
 	}
@@ -79,11 +71,12 @@
 
 <main id="main-shop">
 	<h3 id="cash">Cash: {sci($cash)}</h3>
+	<h3 id="max-buy-hint">Shift + Click to buy max</h3>
 	<hr id="top-hr">
 	<!-- <button on:click={buy_basic}>Buy a Basic Orb <b>${sci($basic_orb.cost)}</b></button> -->
-	<button on:click={buy_bounce_power}>Increase Bounce Power <b>${sci($bounce_power.cost)}</b></button>
-	<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$auto_bounce.unlocked ? "Unlocked!" : `$${sci($auto_bounce.cost)}`}</b></button>
-	<button on:click={increase_bounce_area}>Increase Bounce Area <b>${sci($bounce_area_cost)}</b></button>
+	<button on:click={buy_bounce_power}>Increase Bounce Power <b>${sci($bounce.power_cost)}</b></button>
+	<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$bounce.auto_unlocked ? "Unlocked!" : `$${sci($bounce.auto_cost)}`}</b></button>
+	<button on:click={increase_bounce_area}>Increase Bounce Area <b>${sci($bounce.size_cost)}</b></button>
 	<button on:click={buy_starting_cash}>Starting Cash +1 (${sci($starting_cash.amount)}) <b>${sci($starting_cash.cost)}</b></button>
 	<div></div>
 	<h3 id="orb-info">Orb Value Bonus: +{sci($prestige.times*50)}% {prest_hover ? "(+50%)" : ""}</h3>
@@ -101,6 +94,7 @@
 		float: right;
 	}
 	#main-shop {
+		position: relative;
 		background: #00443b;
 		padding: 1rem;
 		display: grid;
@@ -126,5 +120,12 @@
 		font-weight: normal;
 		color: #1dddc3;
 		font-size: 1rem;
+	}
+	#max-buy-hint {
+		position: absolute;
+		top: 0;
+		right: 0;
+		color: #888;
+		padding: 1rem;
 	}
 </style>

@@ -8,6 +8,7 @@ export const manager = {
 };
 /** @param {CanvasRenderingContext2D} ctx */
 export const small_explosion = (ctx, pos=[0,0])=>{
+	if (manager.groups.length >= 10) return;
 	const obj = {
 		parts: [],
 		ticks: 30,
@@ -41,6 +42,7 @@ export const small_explosion = (ctx, pos=[0,0])=>{
 	manager.groups.push(obj);
 };
 export const big_explosion = (ctx, pos=[0,0])=>{
+	if (manager.groups.length >= 10) return;
 	const obj = {
 		parts: [],
 		ticks: 90,

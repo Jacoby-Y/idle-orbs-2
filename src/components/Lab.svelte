@@ -1,8 +1,8 @@
 <script>
 	import { sci } from "../functions.js";
 	import { 
-		canvas_toggled, fighting, mana, cash, fight_cost, total_monster_killed as tmk,
-		basic_orb, light_orb, homing_orb, trades, prestige, rarities, unlocked_fighting, got_mana, next_tower_lvl, shifting
+		canvas_toggled, fighting, mana, cash, fight_cost, auto_fight, afford_fight,
+		basic_orb, light_orb, homing_orb, spore_orb, prestige, rarities, unlocked_fighting, got_mana, next_tower_lvl, shifting
 	} from "../stores.js";
 	import Artifacts from "./Artifacts.svelte";
 
@@ -41,6 +41,17 @@
 		}
 	}
 
+	$: { 
+		if ($auto_fight) {
+			const click_fight = fight_btn.onclick(true);
+			$auto_fight = click_fight
+			// console.log(`Click Fight: ${click_fight}`);
+		}
+		// if (!$auto_fight) fighting.set(false);
+		// else fighting.set(true);
+	}
+	$afford_fight = ()=> $cash >= $fight_cost;
+
 	//#region | Fight Button
 	/** @type {HTMLElement} */
 	let fight_btn;
@@ -50,11 +61,12 @@
 	$: if (!$fighting && fight_btn != undefined) fight_btn.disabled = false;
 	
 	$: { if (fight_btn != undefined){
-		fight_btn.onclick = ()=> {
-			if ($cash < $fight_cost || $fighting) return;
+		fight_btn.onclick = (bypass)=> {
+			if (($cash < $fight_cost || $fighting) && !bypass) return false;
 			$cash -= $fight_cost;
 			$canvas_toggled = true;
 			$fighting = true;
+			return true;
 		}
 		fight_btn.onmouseenter = ()=> hover_fight = true;
 		fight_btn.onmouseleave = ()=> hover_fight = false;
@@ -64,7 +76,7 @@
 	// Math.ceil(Math.floor(#*1.2)/1.2)
 
 	let total_orbs = 0;
-	$: total_orbs = $basic_orb.amount + $light_orb.amount + $homing_orb.amount;
+	$: total_orbs = $basic_orb.amount + $light_orb.amount + $homing_orb.amount + $spore_orb.amount;
 
 	//#region | Basic Orb
 	const buy_basic = ()=>{
@@ -96,22 +108,36 @@
 	const buy_homing = ()=>{
 		if ($mana < $homing_orb.cost) return;
 		$mana -= $homing_orb.cost;
-		homing_orb.update( v => (v.cost += 5, v.amount++, v) );
+		homing_orb.update( v => (v.cost += 2, v.amount++, v) );
 		if ($shifting) buy_homing();
 	};
 	const sell_homing = ()=>{
 		if (total_orbs <= 1) return;
 		$mana += Math.floor($homing_orb.cost/2.2);
-		homing_orb.update( v => (v.cost -= 5, v.amount--, v) );
+		homing_orb.update( v => (v.cost -= 2, v.amount--, v) );
+	}
+	//#endregion
+	//#region | Spore Orb
+	const buy_spore = ()=>{
+		if ($mana < $spore_orb.cost) return;
+		$mana -= $spore_orb.cost;
+		spore_orb.update( v => (v.cost += 3, v.amount++, v) );
+		if ($shifting) buy_spore();
+	};
+	const sell_spore = ()=>{
+		if (total_orbs <= 1) return;
+		$mana += Math.floor($spore_orb.cost/2.2);
+		spore_orb.update( v => (v.cost -= 3, v.amount--, v) );
 	}
 	//#endregion
 	//#endregion
 </script>
 
 <main>
-	<h3 id="mana">Mana <span style="font-weight: normal;">(₪)</span>: {$mana}</h3>
+	<h3 id="mana">Mana <span style="font-weight: normal;">(₪)</span>: {sci($mana)}</h3>
 	<div id="hold-btn">
 		{#if $unlocked_fighting}
+			<button id="auto-fight" style="{$auto_fight ? "border-color: lime;" : ""}" on:click={()=> $auto_fight = !$auto_fight}>Auto Fight?</button>
 			<button bind:this={fight_btn} id="fight-btn">
 				Monster Tower Lvl {$next_tower_lvl} | <b>${sci($fight_cost)}</b>
 				<h3 id="rarities">
@@ -152,19 +178,27 @@
 				<button class="buy-sell" on:click={sell_homing}>Sell</button>
 			</div>
 		</button>
+		<button class="trade-btn" id="spore-btn">Spore
+			<p class="stat">Dmg/Value: {$spore_orb.value}</p>
+			<div class="orb-info">
+				<button class="buy-sell" on:click={buy_spore}>Buy {sci($spore_orb.cost)}₪</button>
+				<button class="buy-sell" on:click={sell_spore}>Sell</button>
+			</div>
+		</button>
 		{:else}
 		<button disabled>?</button>
 		<button disabled>?</button>
-		{/if}
 		<button disabled>?</button>
+		{/if}
 		<button disabled on:click={()=> $next_tower_lvl += 10}>?</button>
 	</div>
 	<h3 id="orb-stats">
 		<span style="color: #ccc;">Basic Orbs: {$basic_orb.amount}</span><br>
 		{#if $got_mana}
 			<span style="color: #00cccc;">Light Orbs: {$light_orb.amount}</span><br>
-			<span style="color: #cccc00;">Homing Orbs: {$homing_orb.amount}</span>
-			{/if}
+			<span style="color: #cccc00;">Homing Orbs: {$homing_orb.amount}</span><br>
+			<span style="color: #ffaa00;">Spore Orbs: {$spore_orb.amount}</span>
+		{/if}
 	</h3>
 
 	<Artifacts />
@@ -283,14 +317,21 @@
 		background-color: #686f79;
 	}
 
-	#light-btn {
-		background-color: #1c6f77;
-	}
-	#homing-btn {
-		background-color: #71771c;
-	}
+	#light-btn  { background-color: #1c6f77; }
+	#homing-btn { background-color: #71771c; }
+	#spore-btn { background-color: #aa771c; }
 	button:disabled {
 		background-color: #52575f;
 		pointer-events: none;
 	}
+
+	#auto-fight {
+		position: absolute;
+		left: 0; top: 1rem;
+		font-size: 0.9rem;
+		background-color: #686f7933;
+		border: 1px solid red;
+	}
+	#auto-fight:hover { background-color: #686f7966; }
+	#auto-fight:active { background-color: #686f7966; }
 </style>

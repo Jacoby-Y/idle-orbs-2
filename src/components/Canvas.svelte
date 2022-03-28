@@ -697,7 +697,7 @@
 			show_earnings = false;
 			return;
 		}
-		const [x, y] = [e.layerX, e.layerY];
+		const [x, y] = (e.offsetX == 0 ? [e.layerX, e.layerY] : [e.offsetX, e.offsetY]);
 		if (event_manager.click({x, y})) return;
 		orbs.bounce({x, y});
 		small_explosion(ctx, [x, y]);

@@ -1,3 +1,6 @@
+## v0.7.1
+- Fixed cross browser mouse clicking issue
+
 ## v0.7
 - Fixed key event not working bug
 - A lot of minor improvements and fixes

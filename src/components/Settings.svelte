@@ -19,6 +19,7 @@
 			<button class:selected={$render_mode == 4} on:click={()=> $render_mode = 4}>None</button>
 		</div>
 	</div>
+	<hr>
 	<div class="sect" id="data">
 		<button on:click={()=> get_data_str = get_data()}>Get Data</button> <input placeholder="Your data will appear here" type="text" name="get" id="get" bind:value={get_data_str}>
 		<button on:click={()=> load_data(load_data_str)}>Load Data</button> <input placeholder="Paste your data here" type="text" name="load" id="load" bind:value={load_data_str}>
@@ -34,16 +35,22 @@
 		transform: translate(-50%, 0);
 		width: 50%;
 		height: 80%;
-		background-color: #777;
+		background-color: #656565;
 		transition-duration: 0.3s;
 		display: grid;
 		grid-auto-rows: max-content;
 		padding: 1rem;
 		gap: 1rem;
+		border: 1px solid white;
+		border-radius: 10px;
 	}
 	.open {
 		bottom: 50%;
 		transform: translate(-50%, 50%);
+	}
+	hr {
+		margin: 0;
+		border: 1px solid black;
 	}
 	/* .sect { } */
 	.sect-title {
@@ -61,6 +68,7 @@
 		color: white;
 		border: none;
 		border-radius: 0;
+		margin: 0;
 	}
 	.rendering-row .selected {
 		background-color: #555;

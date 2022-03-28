@@ -65,7 +65,7 @@ export const big_explosion = (ctx, pos=[0,0])=>{
 					if (manager.mode == 0) {
 						ctx.fillRect(p.x-3, p.y-3, 15, 15);
 					} else if (manager.mode == 1) {
-						ctx.beginPath(); ctx.arc(p.x+1.5, p.y+1.5, 3, 0, 2 * Math.PI); ctx.fill(); 
+						ctx.beginPath(); ctx.arc(p.x, p.y, 7, 0, 2 * Math.PI); ctx.fill(); 
 					} else if (manager.mode == 2) {
 						ctx.fillRect(p.x-1, p.y-1, 2, 2);
 					} else if (manager.mode == 3) {

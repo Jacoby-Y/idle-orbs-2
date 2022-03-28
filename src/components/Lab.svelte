@@ -43,37 +43,25 @@
 
 	$: { 
 		if ($auto_fight) {
-			const click_fight = fight_btn.onclick(true);
-			$auto_fight = click_fight
-			// console.log(`Click Fight: ${click_fight}`);
+			if ($afford_fight()) {
+				$auto_fight = true;
+				click_fight();
+			}
+			else $auto_fight = false;
 		}
-		// if (!$auto_fight) fighting.set(false);
-		// else fighting.set(true);
 	}
 	$afford_fight = ()=> $cash >= $fight_cost;
 
 	//#region | Fight Button
-	/** @type {HTMLElement} */
-	let fight_btn;
-	let hover_fight = false;
 	$: $fight_cost = 1e3 * (1 + 1.2 * ($next_tower_lvl-1));
-	$: if ($fighting && fight_btn != undefined) fight_btn.disabled = true;
-	$: if (!$fighting && fight_btn != undefined) fight_btn.disabled = false;
-	
-	$: { if (fight_btn != undefined){
-		fight_btn.onclick = (bypass=false)=> {
-			if (($cash < $fight_cost || $fighting) && !bypass) return false;
-			$cash -= $fight_cost;
-			$fighting = true;
-			$canvas_toggled = true;
-			return true;
-		}
-		fight_btn.onmouseenter = ()=> hover_fight = true;
-		fight_btn.onmouseleave = ()=> hover_fight = false;
-	}}
+
+	const click_fight = ()=>{
+		if ($cash < $fight_cost || $fighting) return;
+		$cash -= $fight_cost;
+		$fighting = true;
+		$canvas_toggled = true;
+	}
 	//#endregion
-	//#region | Buy Orbs
-	// Math.ceil(Math.floor(#*1.2)/1.2)
 
 	let total_orbs = 0;
 	$: total_orbs = $basic_orb.amount + $light_orb.amount + $homing_orb.amount + $spore_orb.amount;
@@ -82,13 +70,15 @@
 	const buy_basic = ()=>{
 		if ($cash < $basic_orb.cost) return;
 		$cash -= $basic_orb.cost;
-		basic_orb.update( v => (v.cost = Math.floor(v.cost*1.1), v.amount++, v) );
+		basic_orb.update( v => (v.cost += 10, v.amount++, v) );
+		// basic_orb.update( v => (v.cost = Math.floor(v.cost*1.1), v.amount++, v) );
 		if ($shifting) buy_basic();
 	};
 	const sell_basic = ()=>{
 		if (total_orbs <= 1) return;
+		basic_orb.update( v => (v.cost -= 10, v.amount--, v) );
 		$cash += Math.floor($basic_orb.cost/2);
-		basic_orb.update( v => (v.cost = Math.ceil(v.cost/1.2), v.amount--, v) );
+		// basic_orb.update( v => (v.cost = Math.ceil(v.cost/1.2), v.amount--, v) );
 	}
 	//#endregion
 	//#region | Light Orb
@@ -121,13 +111,13 @@
 	const buy_spore = ()=>{
 		if ($mana < $spore_orb.cost) return;
 		$mana -= $spore_orb.cost;
-		spore_orb.update( v => (v.cost += 3, v.amount++, v) );
+		spore_orb.update( v => (v.cost += 2, v.amount++, v) );
 		if ($shifting) buy_spore();
 	};
 	const sell_spore = ()=>{
 		if (total_orbs <= 1) return;
 		$mana += Math.floor($spore_orb.cost/2.2);
-		spore_orb.update( v => (v.cost -= 3, v.amount--, v) );
+		spore_orb.update( v => (v.cost -= 2, v.amount--, v) );
 	}
 	//#endregion
 	//#endregion
@@ -138,7 +128,7 @@
 	<div id="hold-btn">
 		{#if $unlocked_fighting}
 			<button id="auto-fight" style="{$auto_fight ? "border-color: lime;" : ""}" on:click={()=> $auto_fight = !$auto_fight}>Auto Fight?</button>
-			<button bind:this={fight_btn} id="fight-btn">
+			<button on:click={()=> click_fight()} class:disabled={$fighting} id="fight-btn">
 				Monster Tower Lvl {$next_tower_lvl} | <b>${sci($fight_cost)}</b>
 				<h3 id="rarities">
 					{#if $rarities.c > 0}<span style="color: #ddd;">Common: {$rarities.c}%</span>{/if} 
@@ -208,7 +198,7 @@
 	/* #f97171 */
 	main {
 		position: relative;
-		background-color: #3c3c3c;
+		background-color: #343f46;
 		display: grid;
 		grid-template-rows: max-content 30% repeat(2, max-content);
 		padding: 1rem;
@@ -334,4 +324,9 @@
 	}
 	#auto-fight:hover { background-color: #686f7966; }
 	#auto-fight:active { background-color: #686f7966; }
+
+	.disabled {
+		pointer-events: none !important;
+		opacity: 0.8;
+	}
 </style>

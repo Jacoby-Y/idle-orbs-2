@@ -3,7 +3,7 @@
 	import { 
 		timer, cash, mana, collector_pos, bounce, render_mode,
 		basic_orb, light_orb, homing_orb, auto_fight, afford_fight, orb_double,
-		canvas_toggled as toggled, fighting, shifting, rarities, next_tower_lvl, prestige, spore_orb, clear_storage
+		canvas_toggled as toggled, fighting, shifting, rarities, next_tower_lvl, prestige, spore_orb, clear_storage, offline_time,
 		} from "../stores.js";
 	import { manager, small_explosion, big_explosion } from "../particles.js";
 	import { sci, format_num } from "../functions.js";
@@ -12,19 +12,18 @@
 	const set_orbs = ()=>{
 		orbs.free_all();
 		for (let i = 0; i < $basic_orb.amount; i++) {
-			orbs.new(Math.round(Math.random()*1000), 580, 0, 0, "basic");
+			orbs.new.basic(Math.round(Math.random()*1000), 580, 0, 0);
 		}
 		for (let i = 0; i < $light_orb.amount; i++) {
-			orbs.new(Math.round(Math.random()*1000), 580, 0, 0, "light");
+			orbs.new.light(Math.round(Math.random()*1000), 580, 0, 0);
+		}
+		for (let i = 0; i < $homing_orb.amount; i++) {
+			orbs.new.homing(Math.round(Math.random()*1000), 580, 0, 0);
 		}
 		for (let i = 0; i < $spore_orb.amount; i++) {
-			orbs.new(Math.round(Math.random()*1000), 580, 0, 0, "spore");
+			orbs.new.spore(Math.round(Math.random()*1000), 580, 0, 0);
 		}
-		for (let i = 0; i < Math.min(200, $homing_orb.amount); i++) {
-			orbs.new(Math.round(Math.random()*1000), 580, 0, 0, "homing");
-		}
-		if ($homing_orb.amount > 200) orbs.homing_over = $homing_orb.amount - 200;
-		return;
+		$basic_orb = $basic_orb;
 	};
 
 	$: {
@@ -49,6 +48,9 @@
 			v.sub_value = (0.2*(2**$orb_double.value)) + 0.2*$prestige.times,
 		v) );
 	}
+	$: { $prestige.times;
+		orbs.free_all();
+	}
 	//#endregion
 	//#region | Canvas
 	let main;
@@ -58,6 +60,7 @@
 	let ctx;
 	let pause = false;
 	let step = false;
+	const background_color = "#3c5b5f";
 
 	// $: console.log(`Fighting: ${$fighting} | Pause: ${pause}`);
 
@@ -93,463 +96,515 @@
 		return neg*(z * (0.785 - (z - 1)*(0.244 + 0.067 * z))); // 14: 0.244 | 3.83: 0.067
 	}
 	//#endregion
-	const orbs = {
-		//#region | Homing
-		homing: [],
-		homing_over: 0,
-		draw_homing(orb) {
-			if ($render_mode == 0) {
-				ctx.strokeStyle = "#c7fda533";
-				ctx.strokeRect(orb.x, orb.y, 20, 20);
-				ctx.fillStyle = "#73bd4599";
-				ctx.fillRect(orb.x+7.5, orb.y+5, 5 , 10); 
-				ctx.fillRect(orb.x+5, orb.y+7.5, 10, 5 ); 
-			} else if ($render_mode == 1) {
-				ctx.strokeStyle = "#c7fda533";
-				ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.stroke();
-				ctx.fillStyle = "#73bd4599";
-				ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 5, 0, 2 * Math.PI); ctx.fill();
-			} else if ($render_mode == 2) {
-				ctx.strokeStyle = "#c7fda533";
-				ctx.strokeRect(orb.x+9, orb.y+9, 2, 2);
-			} else if ($render_mode == 3) {
-				let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
-				ctx.strokeStyle = "#c7fda533";
-				ctx.strokeRect(x, y, 20, 20);
-				ctx.fillStyle = "#73bd4599";
-				ctx.fillRect(x+7.5, y+5, 5 , 10); 
-				ctx.fillRect(x+5, y+7.5, 10, 5 ); 
-			}
-		},
-		homing_push_to(orb, pos1, pos2, mult) {
+	
+	const orbs = (()=>{
+		const basic = {
+			l: [],
+			max: 100,
+			over: 0,
+		}
+		const light = {
+			l: [],
+			max: 100,
+			over: 0,
+		}
+		const homing = {
+			l: [],
+			max: 100,
+			over: 0,
+		}
+		const spore = {
+			l: [],
+			max: 100,
+			over: 0,
+		}
+		const sub_spore = {
+			l: [],
+			max: 100,
+			over: 0,
+			life_span: 100,
+		}
+		const shadow = {
+			l: [],
+			max: 100,
+			over: 0,
+			life_span: 100,
+		}
+		let cash_hold = 0;
+
+		const push_to = (orb, pos1, pos2, mult)=>{
 			const ang = Math.atan2((pos1.y-10)-pos2.y, (pos1.x-10)-pos2.x);
 			orb.vx += Math.cos(ang) * mult;
 			orb.vy += Math.sin(ang) * mult;
-		},
-		homing_physics(orb) {
-			orb.lx = orb.x;
-			orb.ly = orb.y;
-
-			orb.x += orb.vx*2;
-			orb.y += orb.vy*2;
-
-			orb.vx *= 0.9;
-			orb.vy *= 0.9;
-
-			if (mouse.hovering) {
-				const to_pos = { x: undefined, y: undefined };
-				if (orb.index % 2 == 0) {
-					to_pos.x = Math.cos((6.242)/this.homing.length * orb.index + (6.282*($timer/29)))*100 + mouse.x-10, 
-					to_pos.y = Math.cos((6.242)/this.homing.length * orb.index + (6.282*($timer/29)))*100 + mouse.y-10  
-				} else {
-					to_pos.x = Math.cos((6.282/this.homing.length * orb.index + (6.282*($timer/29)))%6.282)*50 + mouse.x, 
-					to_pos.y = Math.sin((6.282/this.homing.length * orb.index + (6.282*($timer/29)))%6.282)*50 + mouse.y  
-				}
-
-				// const dist_to = distance(orb, to_pos);
-				// const mult = 1.2;
-				this.homing_push_to(orb, to_pos, orb, distance(orb, to_pos) < 200 ? 1.2 : 2);
-			}
-			
-			if (orb.y+20 >= canvas.height) {
-				this.col(orb, 1, -1);
-				orb.y = canvas.height - 20;
-			} else if (orb.y <= 0) {
-				this.col(orb, 1, 1); 
-				orb.y = 0;
-			}
-			if (orb.x+20 >= canvas.width) {
-				this.col(orb, 0, -1);
-				orb.x = canvas.width - 20;
-			} else if (orb.x <= 0) {
-				this.col(orb, 0, 1);
-				orb.x = 0;
-			}
-
-			if ($fighting) { 
-				const hit = this.collide_monster(orb);
-				if (orb.x > monster_manager.pt1.x-20 && orb.x < monster_manager.pt2.x && orb.y > monster_manager.pt1.y-20 && orb.y < monster_manager.pt2.y) {
-					orb.x = orb.lx = monster_manager.pt1.x-50;
-					orb.y = orb.ly = monster_manager.pt1.y+(monster_manager.pt2.y-monster_manager.pt1.y)/2;
-					return true;
-				}
-				if (hit) {
-					monster_manager.hit($homing_orb.value + ($homing_orb.value*this.homing_over/200));
-				}
-			}
-
-			if (orb.y < $collector_pos && orb.ly > $collector_pos) this.collect(orb);
-			else if (orb.y > $collector_pos && orb.ly < $collector_pos) this.collect(orb); 
-		},
-		//#endregion
-		//#region | Sub Spores
-		sub_spore_max: 100,
-		sub_spores: Array.from(Array(100)),
-		sub_spore_over: 0,
-		sub_spore_allocated: 0,
-		sub_spore_cash_hold: 0,
-		sub_spore_physics(orb) {
-			orb.vy += 1;
-			orb.lx = orb.x;
-			orb.ly = orb.y;
-
-			orb.x += orb.vx*2;
-			orb.y += orb.vy*2;
-
-			orb.vx *= 0.99;
-			orb.vy *= 0.99;
-
-			if (orb.x+10 >= canvas.width) {
-				this.col(orb, 0, -1);
-				orb.x = canvas.width - 10;
-			}
-			else if (orb.x <= 0) {
-				this.col(orb, 0, 1);
-				orb.x = 0;
-			}
-			if (orb.y+10 >= canvas.height) {
-				this.col(orb, 1, -1);
-				orb.vy *= 0.85;
-				if (Math.abs(orb.vy) <= 10) orb.vy *= 0.5;
-				if (Math.abs(orb.vy) <= 3) orb.vy = 0;
-				if (Math.abs(orb.vy) <= 0.5) orb.vx *= 0.9;
-				if (Math.abs(orb.vy) == 0 && Math.abs(orb.vx) < 1) (orb.vy = 0, orb.vx = 0, orb.grounded = true);
-				orb.y = canvas.height - 10;
-			} else if (orb.y <= 0) {
-				this.col(orb, 1, 1); 
-				orb.y = 0;
-			}
-
-			if ($fighting) { 
-				const hit = this.collide_monster(orb);
-				if (hit) {
-					monster_manager.hit($spore_orb.sub_value + ($spore_orb.sub_value * this.sub_spore_over/this.sub_spore_max))
-				}
-			}
-
-			if (orb.y < $collector_pos && orb.ly > $collector_pos) this.collect(orb);
-			else if (orb.y > $collector_pos && orb.ly < $collector_pos) this.collect(orb); 
-
-			orb.ticks--;
-			return (orb.ticks > 0);
-		},
-		//#endregion
-		list: [],
-		col(orb, xy, mult) { 
-			xy = xy == 0 ? "vx" : "vy";
-			const val = Math.abs(orb[xy]) * mult;
-			orb[xy] = val == 0 ? 1 : val; 
-			if (orb.type == "spore") {
-				if (xy == "vx" || mult > 0 || Math.abs(orb.vy) > 20) orbs.new(orb.x, orb.y, orb.vx*1.2, orb.vy*1.2, "sub_spore");
-			}
-		},
-		draw(orb) {
-			const type = orb.type;
-			if ($render_mode == 0) {
-				if (type == "basic") {
-					ctx.fillStyle = "#e3ffcf"; ctx.fillRect(orb.x, orb.y, 20, 20);
-				}
-				else if (type == "light") {
-					ctx.fillStyle = "#aae8e088"; ctx.fillRect(orb.x, orb.y, 20, 20);
-					ctx.fillStyle = "#aae8e088"; ctx.fillRect(orb.x+2, orb.y+2, 16, 16);
-					ctx.fillStyle = "#aae8e088"; ctx.fillRect(orb.x+4, orb.y+4, 12, 12);
-					ctx.fillStyle = "#aae8e088"; ctx.fillRect(orb.x+6, orb.y+6, 8, 8);
-				}
-				else if (type == "spore") {
-					ctx.fillStyle = "#dfac33dd"; 
-					ctx.fillRect(orb.x+2, orb.y, 20-4 , 20);
-					ctx.fillRect(orb.x, orb.y+2, 20, 20-4 );
-				}
-				else if (type == "sub_spore") {
-					ctx.fillStyle = "#ff9900aa";
-					ctx.fillRect(orb.x, orb.y, 10, 10);
-				}
-			} else if ($render_mode == 1) {
-				if (type == "basic") {
-					ctx.fillStyle = "#e3ffcf"; //ctx.fillRect(orb.x, orb.y, 20, 20);
-					ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill(); 
-				}
-				else if (type == "light") {
-					ctx.fillStyle = "#aae8e088"; //ctx.fillRect(orb.x, orb.y, 20, 20);
-					ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill();
-					ctx.fillStyle = "#aae8e088"; // ctx.fillRect(orb.x+2, orb.y+2, 16, 16);
-					ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 8, 0, 2 * Math.PI); ctx.fill();
-					ctx.fillStyle = "#aae8e088"; // ctx.fillRect(orb.x+4, orb.y+4, 12, 12);
-					ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 6, 0, 2 * Math.PI); ctx.fill();
-					ctx.fillStyle = "#aae8e088"; // ctx.fillRect(orb.x+6, orb.y+6, 8, 8);
-					ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 4, 0, 2 * Math.PI); ctx.fill();
-				}
-				else if (type == "spore") {
-					ctx.fillStyle = "#dfac33dd"; 
-					ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill();
-					ctx.fillStyle = "#dfac33"; 
-					ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 5, 0, 2 * Math.PI); ctx.fill();
-				}
-				else if (type == "sub_spore") {
-					ctx.fillStyle = "#ff9900aa";
-					ctx.beginPath(); ctx.arc(orb.x+5, orb.y+5, 5, 0, 2 * Math.PI); ctx.fill();
-				}
-			} else if ($render_mode == 2) {
-				if (type == "basic") {
-					ctx.fillStyle = "#e3ffcf"; ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
-				}
-				else if (type == "light") {
-					ctx.fillStyle = "#aae8e088"; ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
-				}
-				else if (type == "spore") {
-					ctx.fillStyle = "#dfac33dd"; ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
-				}
-				else if (type == "sub_spore") {
-					ctx.fillStyle = "#ff9900aa"; ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
-				}
-			} else if ($render_mode == 3) {
-				let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
-				if (type == "basic") {
-					ctx.fillStyle = "#e3ffcf"; ctx.fillRect(x, y, 20, 20);
-				}
-				else if (type == "light") {
-					ctx.fillStyle = "#aae8e088"; ctx.fillRect(x, y, 20, 20);
-					ctx.fillStyle = "#aae8e088"; ctx.fillRect(x+2, y+2, 16, 16);
-					ctx.fillStyle = "#aae8e088"; ctx.fillRect(x+4, y+4, 12, 12);
-					ctx.fillStyle = "#aae8e088"; ctx.fillRect(x+6, y+6, 8, 8);
-				}
-				else if (type == "spore") {
-					ctx.fillStyle = "#dfac33dd"; 
-					ctx.fillRect(x+2, y, 20-4 , 20);
-					ctx.fillRect(x, y+2, 20, 20-4 );
-				}
-				else if (type == "sub_spore") {
-					ctx.fillStyle = "#ff9900aa";
-					ctx.fillRect(x+5, y+5, 10, 10);
-				}
-			}
-			// ctx.fillRect(orb.x, orb.y, 20, 20);
-		},
-		basic_physics(orb) {
-			orb.vy += 1;
-			orb.vx *= 0.99;
-			orb.vy *= 0.99;
-
-			if (orb.y+20 >= canvas.height) {
-				this.col(orb, 1, -1);
-				orb.vy *= 0.85;
-				// if (Math.abs(orb.vy) < 10) orb.vy *= 0.85;
-				// if (Math.abs(orb.vy) < 6) orb.vy *= 0.85;
-				// if (Math.abs(orb.vy) < 3) (orb.vx = 0, orb.vy = 0, orb.grounded = true);
-				if (Math.abs(orb.vy) <= 10) orb.vy *= 0.5;
-				if (Math.abs(orb.vy) <= 3) orb.vy = 0;
-				if (Math.abs(orb.vy) <= 0.5) orb.vx *= 0.9;
-				if (Math.abs(orb.vy) == 0 && Math.abs(orb.vx) < 1) (orb.vy = 0, orb.vx = 0, orb.grounded = true);
-				// console.log(orb.vy);
-				orb.y = canvas.height - 20;
-			}
-		},
-		light_physics(orb) {
-			orb.vy += 0.8;
-			orb.vx *= 0.99;
-			orb.vy *= 0.99;
-
-			if (orb.y+20 >= canvas.height) {
-				this.col(orb, 1, -1);
-				if (Math.abs(orb.vy) >= 15) orb.vy *= 0.98;
-				else orb.vy *= 0.85;
-				if (Math.abs(orb.vy) < 15) (orb.vy *= 0.7, orb.vx *= 0.7);
-				if (Math.abs(orb.vy) < 5) (orb.vy *= 0.7, orb.vx *= 0.7);
-				if (Math.abs(orb.vy) < 1) (orb.vy = 0, orb.vx = 0, orb.grounded = true);
-				// console.log(orb.vy);
-				orb.y = canvas.height - 20;
-			}
-		},
-		spore_physics(orb) {
-			orb.vy += 1;
-			orb.vx *= 0.99;
-			orb.vy *= 0.99;
-
-			if (orb.y+20 >= canvas.height) {
-				this.col(orb, 1, -1);
-				orb.vy *= 0.85;
-				if (Math.abs(orb.vy) <= 10) orb.vy *= 0.5;
-				if (Math.abs(orb.vy) <= 3) orb.vy = 0;
-				if (Math.abs(orb.vy) <= 0.5) orb.vx *= 0.9;
-				if (Math.abs(orb.vy) == 0 && Math.abs(orb.vx) < 1) (orb.vy = 0, orb.vx = 0, orb.grounded = true);
-				orb.y = canvas.height - 20;
-			}
-		},
-		collide_monster(orb) {
-			// c1 = 400, 200 / c2 = 600, 300
-			const pt1 = monster_manager.pt1;
-			const pt2 = monster_manager.pt2;
-			if (orb.y >= pt1.y-20 && orb.y <= pt2.y) {
-				// console.log("in horz area");
-				if (orb.lx+20 < pt1.x && orb.x+20 >= pt1.x) {
-					orb.vx = Math.abs(orb.vx) * -1;
-					orb.x = pt1.x-21;
-					return true;
-				} else if (orb.lx > pt2.x && orb.x <= pt2.x) {
-					orb.vx = Math.abs(orb.vx);
-					orb.x = pt2.x+1;
-					return true;
-				}
-			}
-			if (orb.x >= pt1.x-20 && orb.x <= pt2.x) {
-				// console.log("in vert area");
-				if (orb.ly+20 < pt1.y && orb.y+20 >= pt1.y) {
-					orb.vy = Math.abs(orb.vy) * -1;
-					orb.y = pt1.y-21;
-					if (Math.abs(orb.vx) < 0.1) orb.vx = 1;
-					orb.vx *= 1.5;
-					return true;
-				} else if (orb.ly > pt2.y && orb.y <= pt2.y) {
-					orb.vy = Math.abs(orb.vy);
-					orb.y = pt2.y+1;
-					return true;
-				}
-			}
-			return false;
-		},
-		physics(orb) {
-			if (orb.grounded) return;
-
-			orb.lx = orb.x;
-			orb.ly = orb.y;
-
-			orb.x += orb.vx;
-			orb.y += orb.vy;
-			
-			if (orb.type == "basic") this.basic_physics(orb);
-			else if (orb.type == "light") this.light_physics(orb);
-			else if (orb.type == "spore") this.spore_physics(orb);
-
-			if (orb.x+20 >= canvas.width) {
-				this.col(orb, 0, -1);
-				orb.x = canvas.width - 20;
-			}
-			else if (orb.x <= 0) {
-				this.col(orb, 0, 1);
-				orb.x = 0;
-			}
-			if (orb.y <= 0) {
-				this.col(orb, 1, 1); 
-				orb.y = 0;
-			}
-
-			if ($fighting) { 
-				const hit = this.collide_monster(orb);
-				if (hit) {
-					if (orb.type == "basic") monster_manager.hit($basic_orb.value);
-					else if (orb.type == "light") monster_manager.hit($light_orb.value);
-					else if (orb.type == "spore") monster_manager.hit($spore_orb.value);
-				}
-			}
-
-			if (orb.y < $collector_pos && orb.ly > $collector_pos) this.collect(orb);
-			else if (orb.y > $collector_pos && orb.ly < $collector_pos) this.collect(orb); 
-		},
-		collect(orb) {
-			if ($fighting) return;
-			if (orb.type == "basic") $cash += $basic_orb.value;
-			else if (orb.type == "light") $cash += $light_orb.value;
-			else if (orb.type == "homing") $cash += $homing_orb.value + ($homing_orb.value*this.homing_over/200);
-			else if (orb.type == "spore") $cash += $spore_orb.value;
-			else if (orb.type == "sub_spore") { 
-				this.sub_spore_cash_hold += $spore_orb.sub_value + ($spore_orb.sub_value * this.sub_spore_over/this.sub_spore_max);
-				if (this.sub_spore_cash_hold > 1) {
-					this.sub_spore_cash_hold--;
-					$cash++;
-				}
-			}
-		},
-		update() {
-			for (let i = 0; i < this.list.length; i++) {
-				const orb = this.list[i];
-				this.draw(orb);
-				this.physics(orb);
-			}
-			for (let i = 0; i < this.homing.length; i++) {
-				const orb = this.homing[i];
-				this.draw_homing(orb);
-				this.homing_physics(orb);
-			}
-			for (let i = 0; i < this.sub_spores.length; i++) {
-				const orb = this.sub_spores[i];
-				if (orb == undefined) continue;
-				this.draw(orb);
-				if (this.sub_spore_physics(orb) == false) (this.sub_spores[i] = undefined, this.sub_spore_allocated--);
-			}
-		},
-		new(x,y, vx, vy, type) {
-			if (type == "homing") {
-				if (this.homing.length >= 200) { this.homing_over++; return; }
-				else this.homing_over = 0;
-				this.homing.push({
-					x,y, vx,vy, type,
-					grounded: false,
-					lx: x, ly: y,
-					index: this.homing.length,
-				});
-			} 
-			else if (type == "sub_spore") {
-				if (this.sub_spore_allocated >= this.sub_spore_max) {
-					this.sub_spore_over++;
-					return;
-				}
-				this.sub_spore_over = 0;
-				this.sub_spore_allocated++;
-				const index = this.sub_spores.indexOf(undefined);
-				if (index < 0) {
-					console.warn(`Sub spore index undefined!`);
-					return
-				}
-				this.sub_spores[index] = {
-					x,y, vx,vy, type,
-					grounded: false,
-					lx: x, ly: y,
-					ticks: 100,
-				};
-				// console.log("sub spores, went up!");
-			}
-			else {
-				this.list.push({
-					x,y, vx,vy, type,
-					grounded: false,
-					lx: x, ly: y,
-				});
-			}
-		},
-		bounce(pos) {
-			for (let i = 0; i < this.list.length; i++) {
-				const orb = this.list[i];
-				if (orb.y < 600-$bounce.size-21) continue;
-				if (pos != null) orb.vx += (pos.x - orb.x)/100;
-				if (orb.type == "light" && orb.vy > 0) orb.vy = -1*($bounce.power + (Math.random()*6-3));
-				else orb.vy -= $bounce.power + (Math.random()*6-3);
-				orb.grounded = false;
-			}
-		},
-		free_all() {
-			this.list = [];
-			this.homing = [];
-			this.homing_over = 0;
-			this.sub_spore_over = 0;
-			for (let i = 0; i < this.sub_spores.length; i++) {
-				const orb = this.sub_spores[i];
-				if (orb != undefined) {
-					this.sub_spores[i] = undefined;
-				}
-			}
-			this.sub_spore_allocated = 0;
 		}
-	};
+		const collide_monster = (orb)=>{
+				// c1 = 400, 200 / c2 = 600, 300
+				const pt1 = monster_manager.pt1;
+				const pt2 = monster_manager.pt2;
+				if (orb.y >= pt1.y-20 && orb.y <= pt2.y) {
+					// console.log("in horz area");
+					if (orb.lx+20 < pt1.x && orb.x+20 >= pt1.x) {
+						orb.vx = Math.abs(orb.vx) * -1;
+						orb.x = pt1.x-21;
+						return true;
+					} else if (orb.lx > pt2.x && orb.x <= pt2.x) {
+						orb.vx = Math.abs(orb.vx);
+						orb.x = pt2.x+1;
+						return true;
+					}
+				}
+				if (orb.x >= pt1.x-20 && orb.x <= pt2.x) {
+					// console.log("in vert area");
+					if (orb.ly+20 < pt1.y && orb.y+20 >= pt1.y) {
+						orb.vy = Math.abs(orb.vy) * -1;
+						orb.y = pt1.y-21;
+						if (Math.abs(orb.vx) < 0.1) orb.vx = 1;
+						orb.vx *= 1.5;
+						return true;
+					} else if (orb.ly > pt2.y && orb.y <= pt2.y) {
+						orb.vy = Math.abs(orb.vy);
+						orb.y = pt2.y+1;
+						return true;
+					}
+				}
+				return false;
+			};
+
+		return {
+			new: {
+				basic(x,y, vx,vy) {
+					if (basic.l.length >= basic.max) { basic.over++; return; }
+					else basic.over = 0;
+					basic.l.push({
+						x,y, vx, vy,
+						lx: x, ly: y,
+						grounded: false,
+					});
+				},
+				light(x,y, vx,vy) {
+					if (light.l.length >= light.max) { light.over++; return; }
+					else light.over = 0;
+					light.l.push({
+						x,y, vx, vy,
+						lx: x, ly: y,
+						grounded: false,
+					});
+				},
+				homing(x,y, vx,vy) {
+					if (homing.l.length >= homing.max) { homing.over++; return; }
+					else homing.over = 0;
+					homing.l.push({
+						x,y, vx, vy,
+						lx: x, ly: y,
+						grounded: false,
+						index: homing.l.length,
+					});
+				},
+				spore(x,y, vx,vy) {
+					if (spore.l.length >= spore.max) { spore.over++; return; }
+					else spore.over = 0;
+					spore.l.push({
+						x,y, vx, vy,
+						lx: x, ly: y,
+						grounded: false,
+					});
+				},
+				sub_spore(x,y, vx,vy) {
+					if (sub_spore.l.length >= sub_spore.max) { sub_spore.over++; return; }
+					else sub_spore.over = 0;
+					sub_spore.l.push({
+						x,y, vx, vy,
+						lx: x, ly: y,
+						ticks: sub_spore.life_span+Math.floor(Math.random()*10),
+					});
+				},
+				shadow(x,y, vx,vy) {
+					if (shadow.l.length >= shadow.max) { shadow.over++; return; }
+					else shadow.over = 0;
+					shadow.l.push({
+						x,y, vx, vy,
+						lx: x, ly: y,
+						ticks: shadow.life_span+Math.floor(Math.random()*10),
+					});
+				},
+			},
+			free_all() {
+				basic.l = [];
+				basic.over = 0;
+				light.l = [];
+				light.over = 0;
+				homing.l = [];
+				homing.over = 0;
+				spore.l = [];
+				spore.over = 0;
+				sub_spore.l = [];
+				sub_spore.over = 0;
+				shadow.l = [];
+				shadow.over = 0;
+			},
+			update() {
+				const all = [].concat(basic.l).concat(light.l).concat(homing.l).concat(spore.l).concat(sub_spore.l).concat(shadow.l); //...
+				for (let i = 0; i < basic.l.length; i++) {
+					const orb = basic.l[i];
+					ctx.fillStyle = "#e3ffcfdd";
+					switch ($render_mode) {
+						case 0:
+							ctx.fillRect(orb.x, orb.y, 20, 20);
+							break;
+						case 1:
+							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill(); 
+							break;
+						case 2:
+							ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
+							break;
+						case 3:
+							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+							ctx.fillRect(x, y, 20, 20);
+							break;
+					}
+
+					orb.vx *= 0.98;
+					orb.vy *= 0.98;
+
+					if (!$fighting) {
+						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
+							cash_hold += this.value.basic; //$basic_orb.value + (($basic_orb.value * basic.over)/basic.l.length);
+						}
+					} else {
+						const hit = collide_monster(orb);
+						if (hit) monster_manager.hit(this.value.basic);
+					}
+				}
+				for (let i = 0; i < light.l.length; i++) {
+					const orb = light.l[i];
+					ctx.fillStyle = "#aae8e088"; 
+					switch ($render_mode) {
+						case 0:
+							ctx.fillRect(orb.x, orb.y, 20, 20);
+							ctx.fillRect(orb.x+2, orb.y+2, 16, 16);
+							ctx.fillRect(orb.x+4, orb.y+4, 12, 12);
+							ctx.fillRect(orb.x+6, orb.y+6, 8, 8);
+							break;
+						case 1:
+							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill();
+							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 8, 0, 2 * Math.PI); ctx.fill();
+							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 6, 0, 2 * Math.PI); ctx.fill();
+							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 4, 0, 2 * Math.PI); ctx.fill();
+							break;
+						case 2:
+							ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
+							break;
+						case 3:
+							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+							ctx.fillRect(x, y, 20, 20);
+							ctx.fillRect(x+2, y+2, 16, 16);
+							break;
+					}
+
+					orb.vx *= 0.99;
+					orb.vy *= 0.99;
+
+					if (!$fighting) {
+						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
+							cash_hold += this.value.light; //$light_orb.value + (($light_orb.value * light.over)/light.l.length);
+						}
+					} else {
+						const hit = collide_monster(orb);
+						if (hit) monster_manager.hit(this.value.light)
+					}
+				}
+				for (let i = 0; i < homing.l.length; i++) {
+					const orb = homing.l[i];
+					switch ($render_mode) {
+						case 0:
+							ctx.strokeStyle = "#c7fda533";
+							ctx.strokeRect(orb.x, orb.y, 20, 20);
+							ctx.fillStyle = "#73bd4599";
+							ctx.fillRect(orb.x+7.5, orb.y+5, 5 , 10); 
+							ctx.fillRect(orb.x+5, orb.y+7.5, 10, 5 ); 
+							break;
+						case 1:
+							ctx.strokeStyle = "#c7fda533";
+							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.stroke();
+							ctx.fillStyle = "#73bd4599";
+							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 5, 0, 2 * Math.PI); ctx.fill();
+							break;
+						case 2:
+							ctx.strokeStyle = "#c7fda533";
+							ctx.strokeRect(orb.x+9, orb.y+9, 2, 2);
+							break;
+						case 3:
+							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+							ctx.strokeStyle = "#c7fda533";
+							ctx.strokeRect(x, y, 20, 20);
+							ctx.fillStyle = "#73bd4599";
+							ctx.fillRect(x+7.5, y+5, 5 , 10); 
+							ctx.fillRect(x+5, y+7.5, 10, 5 ); 
+							break;
+					}
+
+					orb.vx *= 0.9;
+					orb.vy *= 0.9;
+
+					if (mouse.hovering) {
+						const to_pos = { x: undefined, y: undefined };
+						if (orb.index % 2 == 0) {
+							to_pos.x = Math.cos((6.242)/homing.l.length * orb.index + (6.282*($timer/29)))*100 + mouse.x, 
+							to_pos.y = Math.cos((6.242)/homing.l.length * orb.index + (6.282*($timer/29)))*100 + mouse.y  
+						} else {
+							to_pos.x = Math.cos((6.282/homing.l.length * orb.index + (6.282*($timer/29)))%6.282)*50 + mouse.x, 
+							to_pos.y = Math.sin((6.282/homing.l.length * orb.index + (6.282*($timer/29)))%6.282)*50 + mouse.y  
+						}
+						push_to(orb, to_pos, orb, distance(orb, to_pos) < 200 ? 1.2 : 2);
+					}
+
+					if (!$fighting) {
+						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
+							cash_hold += this.value.homing; //$homing_orb.value + (($homing_orb.value * homing.over)/homing.l.length);
+						}
+					} else {
+						const hit = collide_monster(orb);
+						if (hit) monster_manager.hit(this.value.homing)
+					}
+				}
+				for (let i = 0; i < spore.l.length; i++) {
+					const orb = spore.l[i];
+					ctx.fillStyle = "#dfac33dd"; 
+					switch ($render_mode) {
+						case 0:
+							ctx.fillRect(orb.x+2, orb.y, 20-4 , 20);
+							ctx.fillRect(orb.x, orb.y+2, 20, 20-4 );
+							break;
+						case 1:
+							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill();
+							ctx.fillStyle = "#dfac33"; 
+							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 5, 0, 2 * Math.PI); ctx.fill();
+							break;
+						case 2:
+							ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
+							break;
+						case 3:
+							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+							ctx.fillRect(x, y, 20, 20);
+							ctx.fillRect(x+2, y+2, 16, 16);
+							break;
+					}
+
+					orb.vx *= 0.98;
+					orb.vy *= 0.98;
+
+					if (!$fighting) {
+						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
+							cash_hold += this.value.spore; //$spore_orb.value + (($spore_orb.value * spore.over)/spore.l.length);
+						}
+					} else {
+						const hit = collide_monster(orb);
+						if (hit) monster_manager.hit(this.value.spore)
+					}
+				}
+				for (let i = 0; i < sub_spore.l.length; i++) {
+					const orb = sub_spore.l[i];
+					if (orb == undefined) continue;
+					ctx.fillStyle = "#dfac33dd"; 
+					switch ($render_mode) {
+						case 0:
+							ctx.fillRect(orb.x, orb.y, 10 , 10);
+							break;
+						case 1:
+							ctx.beginPath(); ctx.arc(orb.x+5, orb.y+5, 5, 0, 2 * Math.PI); ctx.fill();
+							break;
+						case 2:
+							ctx.fillRect(orb.x+4, orb.y+4, 2, 2);
+							break;
+						case 3:
+							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+							ctx.fillRect(x+5, y+5, 10, 10);
+							break;
+					}
+
+					orb.vx *= 0.98;
+					orb.vy *= 0.98;
+
+					if (!$fighting) {
+						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
+							cash_hold += this.value.sub_spore; //$spore_orb.sub_value + (($spore_orb.sub_value * sub_spore.over)/sub_spore.l.length);
+						}
+					} else {
+						const hit = collide_monster(orb);
+						if (hit) monster_manager.hit(this.value.sub_spore)
+					}
+
+					orb.ticks--;
+					if (orb.ticks <= 0) { 
+						sub_spore.l.splice(i, 1);
+						i--;
+					}
+				}
+				for (let i = 0; i < shadow.l.length; i++) {
+					const orb = shadow.l[i];
+					if (orb == undefined) continue;
+					ctx.fillStyle = "#00004455";
+					switch ($render_mode) {
+						case 0:
+							ctx.fillRect(orb.x, orb.y, 20, 20);
+							break;
+						case 1:
+							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill(); 
+							break;
+						case 2:
+							ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
+							break;
+						case 3:
+							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+							ctx.fillRect(x, y, 20, 20);
+							break;
+					}
+
+					// orb.vx *= 0.99;
+					// orb.vy *= 0.99;
+					orb.vy--;
+
+					if (!$fighting) {
+						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
+							cash_hold += this.value.basic*1;//($basic_orb.value*10) + ((($basic_orb.value*10) * basic.over)/basic.l.length);
+						}
+					}
+
+					orb.ticks--;
+					if (orb.ticks <= 0) { 
+						shadow.l.splice(i, 1);
+						i--;
+					}
+				}
+
+				for (let i = 0; i < all.length; i++) {
+					const orb = all[i];
+					const is_homing = homing.l.includes(orb);
+					const is_spore = spore.l.includes(orb);
+					const is_sub_spore = sub_spore.l.includes(orb);
+
+					orb.lx = orb.x; orb.ly = orb.y;
+
+					orb.x += orb.vx*1.5;
+					orb.y += orb.vy*1.5;
+					
+					if (!orb.grounded || is_homing) {
+						if (!is_homing) orb.vy++;
+						const offset = is_sub_spore ? 10 : 20;
+						let collided = false;
+						if (orb.x < 0) {
+							collided = true;
+							orb.vx = Math.abs(orb.vx);
+							orb.x = 0;
+						} else if (orb.x > canvas.width-offset) {
+							collided = true;
+							orb.vx = Math.abs(orb.vx) * -1;
+							orb.x = canvas.width-offset;
+						} if (orb.y < 0) {
+							collided = true;
+							orb.vy = Math.abs(orb.vy);
+							orb.y = 0;
+						} else if (orb.y > canvas.height-offset) {
+							collided = true;
+							orb.vy = Math.abs(orb.vy) * -1;
+							orb.y = canvas.height-offset;
+							if (!is_homing) {
+								orb.vy *= 0.75;
+								if (Math.abs(orb.vy) < 10) orb.vy++;
+								if (Math.abs(orb.vy) < 2) {
+									orb.vy = 0;
+									orb.vx = 0;
+									orb.y = canvas.height-offset;
+									orb.grounded = true;
+								}
+							}
+						}
+						if (collided && is_spore && (Math.abs(orb.vx) > 10 || Math.abs(orb.vy) > 10)) this.new.sub_spore(orb.x, orb.y, orb.vx*2, orb.vy*2);
+					} else continue;
+				}
+
+				if (cash_hold > 1) {
+					$cash += Math.floor(cash_hold);
+					cash_hold -= Math.floor(cash_hold);
+				}
+			},
+			bounce(pos) {
+				if (pause) return;
+				for (let i = 0; i < basic.l.length; i++) {
+					const orb = basic.l[i];
+					if (orb.y < 600-$bounce.size-30) continue;
+
+					orb.vy -= ($bounce.power+(Math.random()*-5));
+					if (pos != null) orb.vx += ((pos.x-10-orb.x)/100)*(Math.random()*0.5+0.5);
+					orb.grounded = false;
+				}
+				for (let i = 0; i < light.l.length; i++) {
+					const orb = light.l[i];
+					if (orb.y < 600-$bounce.size-30) continue;
+
+					if (orb.vy > 0) orb.vy = -1*($bounce.power-(Math.random()*-5));
+					else orb.vy -= ($bounce.power+(Math.random()*-5));
+					if (pos != null) orb.vx += ((pos.x-10-orb.x)/100)*(Math.random()*0.5+0.5);
+					orb.grounded = false;
+				}
+				for (let i = 0; i < spore.l.length; i++) {
+					const orb = spore.l[i];
+					if (orb.y < 600-$bounce.size-30) continue;
+
+					orb.vy -= ($bounce.power+(Math.random()*-5));
+					if (pos != null) orb.vx += ((pos.x-10-orb.x)/100)*(Math.random()*0.5+0.5);
+					orb.grounded = false;
+				}
+			},
+			get basic() { return basic; },
+			get light() { return light; },
+			get homing() { return homing; },
+			get spore() { return spore; },
+			get sub_spore() { return sub_spore; },
+			total: {
+				get basic() { return basic.l.length + basic.over; },
+				get light() { return light.l.length + light.over; },
+				get homing() { return homing.l.length + homing.over; },
+				get spore() { return spore.l.length + spore.over; },
+				get sub_spore() { return sub_spore.l.length + sub_spore.over; },
+			},
+			value: {
+				get basic() { return $basic_orb.value + (($basic_orb.value * basic.over)/basic.l.length); },
+				get light() { return $light_orb.value + (($light_orb.value * light.over)/light.l.length); },
+				get homing() { return $homing_orb.value + (($homing_orb.value * homing.over)/homing.l.length); },
+				get spore() { return $spore_orb.value + (($spore_orb.value * spore.over)/spore.l.length); },
+				get sub_spore() { return $spore_orb.sub_value + (($spore_orb.sub_value * spore.over)/spore.l.length); },
+			}
+		}
+	})();
+
 	//#endregion
 	//#region | Cash/Sec
 	let calc_cps = 0;
-	$: { 
+	let first_cps_set = false;
+	let offline_get = false;
+	let offline_gain = 0;
+	let show_earnings = true;
+
+	const check_cps = ()=>{
+		if (offline_get) return;
+		if (!offline_get && first_cps_set) {
+			offline_get = true;
+			offline_gain = calc_cps*$offline_time;
+			$cash += offline_gain;
+		}
+		if (!first_cps_set) first_cps_set = true;
+	}
+
+	$: { // $basic_orb; $light_orb; $spore_orb; $homing_orb;
 		calc_cps = 
-			(($basic_orb.amount*$basic_orb.value) + 
-			($light_orb.amount*$light_orb.value) + 
-			($spore_orb.amount*$spore_orb.value) + 
-			((orbs.sub_spore_allocated + orbs.sub_spore_over)*$spore_orb.sub_value)) * (($bounce.power-29)/35) * ($bounce.auto_unlocked ? 1 : 0) +
-			((orbs.homing.length + orbs.homing_over)*$homing_orb.value*2);
+			(orbs.total.basic * $basic_orb.value +
+			orbs.total.light * $light_orb.value +
+			orbs.total.spore * $spore_orb.value + 
+			orbs.total.sub_spore * $spore_orb.sub_value)*($bounce.auto_unlocked ? 1 : 0)*(1 + ($bounce.power-30)/2.5 * 0.025) + 
+			(orbs.total.homing * $homing_orb.value * 2);
+		//
+		check_cps();
 	}
 
 	let cps = 0;
@@ -580,7 +635,7 @@
 		}
 
 		// Background
-		ctx.fillStyle = "#395b56";
+		ctx.fillStyle = background_color;
 		ctx.fillRect(0, 0, w, h);
 		
 		// Bounce Area
@@ -596,12 +651,13 @@
 			ctx.moveTo(0, 250);
 			ctx.lineTo(1000, 250);
 			ctx.stroke();
-		} else {
-			monster_manager.draw();
-		}
+		} 
 
 		manager.update($render_mode);
 		orbs.update();
+		event_manager.update(v);
+
+		if ($fighting) monster_manager.draw();
 
 		after_frame = Date.now();
 
@@ -637,7 +693,12 @@
 	const mouse_leave = ()=> mouse.hovering = false;
 	const mouse_down = (e)=>{
 		// orbs.new([10, 10], [10, Math.random()*15]);
+		if (show_earnings) {
+			show_earnings = false;
+			return;
+		}
 		const [x, y] = [e.layerX, e.layerY];
+		if (event_manager.click({x, y})) return;
 		orbs.bounce({x, y});
 		small_explosion(ctx, [x, y]);
 	}
@@ -651,7 +712,7 @@
 		if (!debug) return;
 		if (k == "s") step = !step;
 		else if (k == " ") pause = !pause;
-		else if (k == "l") console.log(orbs.list.length + orbs.homing.length);
+		// else if (k == "l") console.log(orbs.list.length + orbs.homing.length);
 		else if (k == "a") console.log(monster_manager);
 		else if (k == "c") $cash += 10000;
 		else if (k == "b") orbs.bounce(null);
@@ -810,7 +871,7 @@
 		draw() {
 			// Base Background
 			ctx.fillStyle = "#444";
-			ctx.fillRect(this.pt1.x+2, this.pt1.y+2, this.pt2.x-this.pt1.x-4, this.pt2.y-this.pt1.y-4);
+			ctx.fillRect(this.pt1.x+1, this.pt1.y+1, this.pt2.x-this.pt1.x-2, this.pt2.y-this.pt1.y-2);
 			// Health bar background
 			ctx.fillStyle = "#333";
 			ctx.fillRect(this.pt1.x+10, this.pt2.y-30, this.pt2.x-this.pt1.x-20, 20);
@@ -859,7 +920,46 @@
 			}
 		}
 	}
-	$: if ($fighting) spawn_monster();
+	$: if ($fighting) { spawn_monster(); set_orbs(); }
+	//#endregion
+	//#region | Game Events
+	const event_manager = {
+		pos: { x: 0, y: 0 },
+		on: false,
+		next_ticks: 1800 + Math.floor(Math.random()*1800),
+		click(pos) {
+			if ($fighting || !this.on) return false;
+			if (distance(pos, this.pos) < 25) {
+				this.on = false;
+				this.next_ticks = 1800 + Math.floor(Math.random()*1800);
+				for (let i = 0; i < 50; i++) {
+					const ang = (3.141/5)*(i/50)+(3.141/5*2);
+					orbs.new.shadow(pos.x, pos.y, Math.cos(ang)*20+(Math.random()*5), Math.sin(ang)*20+(Math.random()*5));
+				}
+				return true;
+			}
+			return false;
+		},
+		update(v) {
+			if ($fighting) return;
+			if (this.on) {
+				ctx.fillStyle = "#000044aa";
+				ctx.beginPath(); ctx.arc(this.pos.x, this.pos.y, 25, 0, 2 * Math.PI); ctx.fill();
+				ctx.strokeStyle = "#ffffffaa";
+				ctx.beginPath(); ctx.arc(this.pos.x, this.pos.y, (25*(v/29)), 0, 2 * Math.PI); ctx.stroke();
+				ctx.beginPath(); ctx.arc(this.pos.x, this.pos.y, (25), 0, 2 * Math.PI); ctx.stroke();
+				return;
+			}
+			this.next_ticks--;
+			if (this.next_ticks <= 0) { 
+				console.log("spawn!");
+				this.pos.x = Math.round(Math.random()*(1000-60))+30;
+				this.pos.y = Math.round(Math.random()*(100))+30;
+				this.on = true;
+				this.next_ticks = 60;
+			}
+		}
+	}
 	//#endregion
 	//#region | Debug mode
 	let total_orbs = 0;
@@ -868,17 +968,7 @@
 			$basic_orb.amount + 
 			$light_orb.amount + 
 			$homing_orb.amount + 
-			$spore_orb.amount + 
-			orbs.sub_spore_allocated + orbs.sub_spore_over;
-	}
-	let calc_orbs = 0;
-	$: {
-		calc_orbs = 
-			$basic_orb.amount + 
-			$light_orb.amount + 
-			orbs.homing.length + 
-			$spore_orb.amount + 
-			orbs.sub_spore_allocated;
+			$spore_orb.amount;
 	}
 
 	let debug = false;
@@ -894,8 +984,7 @@
 			$/sec: {format_num(cps)} <br> 
 			Calc $/sec: {format_num(calc_cps)} <br> 
 			FPS: {fps} <br> 
-			Total Orbs: {format_num(total_orbs)} <br>
-			Calculated Orbs: {format_num(calc_orbs)} {/if}
+			Total Orbs: {format_num(total_orbs)} <br> {/if}
 	</h3>  
 	<h3 id="toggle-txt" style="bottom: {$bounce.size}px;">Press "Esc" to toggle shop</h3>
 	{#if $bounce.auto_unlocked}
@@ -914,7 +1003,12 @@
 			<h3 id="name">{monster_manager.name}</h3>
 			<img src="{monster_manager.src}" alt="monster Icon" style="width: {(monster_manager.pt2.y-monster_manager.pt1.y)/2}px; height: {(monster_manager.pt2.y-monster_manager.pt1.y)/2}px;">
 		</div>
-		{/if}
+	{/if}
+	{#if show_earnings}
+		<div id="offline" on:click={()=> show_earnings = false }>
+			<h3>You got ${format_num(offline_gain)} while offline</h3>
+		</div>
+	{/if}
 </main>
 
 <style>
@@ -926,6 +1020,7 @@
 		width: 100%;
 		height: 100%;
 		transition-duration: 0.3s;
+		/* background-color: #3c5b5f; */
 	}
 	canvas {
 		/* border: 1px solid red; */
@@ -995,5 +1090,13 @@
 		transform: translate(-50%, 0);
 		color: white;
 		width: max-content;
+	}
+
+	#offline {
+		position: absolute;
+		left: 50%; top: 50%;
+		transform: translate(-50%, -50%);
+		background-color: #eec897aa;
+		padding: 1rem 1.2rem;
 	}
 </style>

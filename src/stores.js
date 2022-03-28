@@ -59,7 +59,7 @@ export const starting_cash = w("starting_cash", {
 	amount: 0,
 });
 export const orb_double = w("orb_double", {
-	cost: 10,
+	cost: 50,
 	value: 0,
 });
 //#endregion
@@ -119,7 +119,7 @@ export const clear_storage = ()=>{
 	location.reload();
 }
 
-const chars = ` "'{}():_,.0123456789acbdefghijklmnopqrstyuvwxyzACBDEFGHIJKLMNOPQRSTYUVWXYZ`;
+const chars = ` "'01{23}45(67)89:ab_cd,ef.ghijklmnopqrstyuvwxyzACBDEFGHIJKLMNOPQRSTYUVWXYZ`;
 
 export const get_data = ()=>{
 	const str = JSON.stringify(get_store_obj()).split("");
@@ -156,6 +156,10 @@ export const load_data = (load)=>{
 	}
 }
 
+export const unload_time = w("unload_time", Math.floor(Date.now()/1000));
+export const load_time = writable(Math.floor(Date.now()/1000));
+export const offline_time = writable(get(load_time) - get(unload_time));
+
 const get_store_obj = ()=>{
 	let store_obj = {};
 	store_keys.forEach((k)=> store_obj[k] = get(writables[k]) );
@@ -163,5 +167,6 @@ const get_store_obj = ()=>{
 }
 
 window.onbeforeunload = ()=>{
+	unload_time.set(Math.floor(Date.now()/1000));
 	localStorage.IdleOrbs2 = JSON.stringify(get_store_obj());
 }

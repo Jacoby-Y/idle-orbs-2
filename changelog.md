@@ -1,3 +1,9 @@
+## v0.7
+- Fixed key event not working bug
+- A lot of minor improvements and fixes
+- Completely remade orbs system
+- Added event system with "shadow orbs"
+
 ## v0.6
 - Added different rendering modes (Square, Circle, Sand, Pixelated, None)
 - You can now save and load data from a string

@@ -1,13 +1,6 @@
 ToDo: 
-- Settings tab
 - probably color change for Lab
-- Load and save from a string of text!
-- sub spore cash hold is too much
-- large explosion bigger for circle render mode
-- shift buy double and format cost
-- close shop when clicking fighting btn, not whenever fighting
-- Fighting bug (beat monster, then pause)
-- Bug: fight monster, can't toggle shop again unless you click screen
+- Settings style change (looks ugly!!!)
 
 Notes: 
 - Cost of basic orb increases to much per purchase??? (increase linearly not compounding?)
@@ -17,6 +10,12 @@ Notes:
 - gui that give info on the monster tower
 - Every 5 levels there's a boss that gives an artifact?
 - Total prestige?
+- Fighting bug (beat monster, then pause) (honestly, it's a feature)
+
+
+Events:
+- Orb fountain
+- Double Money
 
 Settings: 
 - Rendering Modes

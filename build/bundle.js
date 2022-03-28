@@ -828,10 +828,10 @@ var app = (function () {
     			t10 = text(t10_value);
     			t11 = space();
     			br3 = element("br");
-    			add_location(br0, file$6, 983, 28, 29606);
-    			add_location(br1, file$6, 984, 38, 29650);
-    			add_location(br2, file$6, 985, 14, 29670);
-    			add_location(br3, file$6, 986, 40, 29716);
+    			add_location(br0, file$6, 983, 28, 29650);
+    			add_location(br1, file$6, 984, 38, 29694);
+    			add_location(br2, file$6, 985, 14, 29714);
+    			add_location(br3, file$6, 986, 40, 29760);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, t0, anchor);
@@ -905,7 +905,7 @@ var app = (function () {
     			attr_dev(h3, "id", "toggle-bounce");
     			set_style(h3, "bottom", /*$bounce*/ ctx[3].size + "px");
     			attr_dev(h3, "class", "svelte-1u01kmx");
-    			add_location(h3, file$6, 990, 2, 29854);
+    			add_location(h3, file$6, 990, 2, 29898);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h3, anchor);
@@ -970,26 +970,26 @@ var app = (function () {
     			img = element("img");
     			attr_dev(button, "id", "quit");
     			attr_dev(button, "class", "svelte-1u01kmx");
-    			add_location(button, file$6, 993, 2, 30009);
+    			add_location(button, file$6, 993, 2, 30053);
     			attr_dev(h30, "id", "lvl");
     			attr_dev(h30, "class", "svelte-1u01kmx");
-    			add_location(h30, file$6, 1001, 3, 30339);
+    			add_location(h30, file$6, 1001, 3, 30383);
     			attr_dev(h31, "id", "name");
     			attr_dev(h31, "class", "svelte-1u01kmx");
-    			add_location(h31, file$6, 1002, 3, 30399);
+    			add_location(h31, file$6, 1002, 3, 30443);
     			if (!src_url_equal(img.src, img_src_value = /*monster_manager*/ ctx[10].src)) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "monster Icon");
     			set_style(img, "width", (/*monster_manager*/ ctx[10].pt2.y - /*monster_manager*/ ctx[10].pt1.y) / 2 + "px");
     			set_style(img, "height", (/*monster_manager*/ ctx[10].pt2.y - /*monster_manager*/ ctx[10].pt1.y) / 2 + "px");
     			attr_dev(img, "class", "svelte-1u01kmx");
-    			add_location(img, file$6, 1003, 3, 30444);
+    			add_location(img, file$6, 1003, 3, 30488);
     			attr_dev(div, "id", "monster-info");
     			set_style(div, "left", /*monster_manager*/ ctx[10].pt1.x + "px");
     			set_style(div, "top", /*monster_manager*/ ctx[10].pt1.y + "px");
     			set_style(div, "width", /*monster_manager*/ ctx[10].pt2.x - /*monster_manager*/ ctx[10].pt1.x + "px");
     			set_style(div, "height", /*monster_manager*/ ctx[10].pt2.y - /*monster_manager*/ ctx[10].pt1.y + "px");
     			attr_dev(div, "class", "svelte-1u01kmx");
-    			add_location(div, file$6, 994, 2, 30101);
+    			add_location(div, file$6, 994, 2, 30145);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1080,10 +1080,10 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text(" while offline");
     			attr_dev(h3, "class", "svelte-1u01kmx");
-    			add_location(h3, file$6, 1008, 3, 30726);
+    			add_location(h3, file$6, 1008, 3, 30770);
     			attr_dev(div, "id", "offline");
     			attr_dev(div, "class", "svelte-1u01kmx");
-    			add_location(div, file$6, 1007, 2, 30665);
+    			add_location(div, file$6, 1007, 2, 30709);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1163,20 +1163,20 @@ var app = (function () {
     			t9 = space();
     			if (if_block3) if_block3.c();
     			attr_dev(canvas_1, "class", "svelte-1u01kmx");
-    			add_location(canvas_1, file$6, 978, 1, 29427);
-    			add_location(br, file$6, 981, 21, 29557);
+    			add_location(canvas_1, file$6, 978, 1, 29471);
+    			add_location(br, file$6, 981, 21, 29601);
     			attr_dev(h30, "id", "cash");
     			attr_dev(h30, "style", h30_style_value = /*debug*/ ctx[12] ? "background-color: #000000bb;" : "");
     			attr_dev(h30, "class", "svelte-1u01kmx");
-    			add_location(h30, file$6, 980, 1, 29467);
+    			add_location(h30, file$6, 980, 1, 29511);
     			attr_dev(h31, "id", "toggle-txt");
     			set_style(h31, "bottom", /*$bounce*/ ctx[3].size + "px");
     			attr_dev(h31, "class", "svelte-1u01kmx");
-    			add_location(h31, file$6, 988, 1, 29737);
+    			add_location(h31, file$6, 988, 1, 29781);
     			set_style(main_1, "opacity", /*$toggled*/ ctx[4] ? "1" : "0");
     			set_style(main_1, "pointer-events", /*$toggled*/ ctx[4] ? "all" : "none");
     			attr_dev(main_1, "class", "svelte-1u01kmx");
-    			add_location(main_1, file$6, 977, 0, 29316);
+    			add_location(main_1, file$6, 977, 0, 29360);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -2124,7 +2124,10 @@ var app = (function () {
     			return;
     		}
 
-    		const [x, y] = [e.layerX, e.layerY];
+    		const [x, y] = e.offsetX == 0
+    		? [e.layerX, e.layerY]
+    		: [e.offsetX, e.offsetY];
+
     		if (event_manager.click({ x, y })) return;
     		orbs.bounce({ x, y });
     		small_explosion(ctx, [x, y]);

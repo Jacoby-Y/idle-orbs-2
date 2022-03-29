@@ -1,3 +1,11 @@
+## v0.8
+- Fixed a bunch of bugs
+- You can now get light orb with cash after your first prestige
+- Added max rendering slider to settings
+- Formatted all numbers with letters instead of scientific notation
+- Made shadow orbs scale with progress
+- Added text info to each orb on hover
+
 ## v0.7.1
 - Fixed cross browser mouse clicking issue
 

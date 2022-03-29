@@ -71,7 +71,7 @@ export const basic_orb = w("basic_orb", { //-! DEBUG
 });
 export const light_orb = w("light_orb", {
 	amount: 0,
-	cost: 1,
+	cost: 100,
 	value: 1
 });
 export const homing_orb = w("homing_orb", {
@@ -88,7 +88,7 @@ export const spore_orb = w("spore_orb", {
 //#endregion
 //#region | Prestige
 export const prestige = w("prestige", {
-	cost: 1e4,
+	cost: 1e5,
 	times: 0,
 });
 //#endregion
@@ -110,8 +110,10 @@ export const mana = w("mana", 0);
 
 export const canvas_toggled = writable(true);
 export const shifting = writable(false);
+export const ctrling = writable(false);
 
 export const render_mode = w("render_mode", 0);
+export const max_render = w("max_render", 100);
 
 export const clear_storage = ()=>{
 	window.onbeforeunload = null;
@@ -119,8 +121,15 @@ export const clear_storage = ()=>{
 	location.reload();
 }
 
-const chars = ` "'01{23}45(67)89:ab_cd,ef.ghijklmnopqrstyuvwxyzACBDEFGHIJKLMNOPQRSTYUVWXYZ`;
+export const reset_orbs = writable(()=>{});
 
+//#region | Offline
+export const unload_time = w("unload_time", Math.floor(Date.now()/1000));
+export const load_time = writable(Math.floor(Date.now()/1000));
+export const offline_time = writable(get(load_time) - get(unload_time));
+//#endregion
+//#region | Saving/Loading Data
+const chars = ` "'01{23}45(67)89:ab_cd,ef.ghijklmnopqrstyuvwxyzACBDEFGHIJKLMNOPQRSTYUVWXYZ`;
 export const get_data = ()=>{
 	const str = JSON.stringify(get_store_obj()).split("");
 	let build = "";
@@ -151,14 +160,11 @@ export const load_data = (load)=>{
 				writables[k].set(v);
 			}
 		}
+		// get(reset_orbs)();
 	} catch (err) {
 		console.error(`Couldn't Load Data!\n${err}`);
 	}
 }
-
-export const unload_time = w("unload_time", Math.floor(Date.now()/1000));
-export const load_time = writable(Math.floor(Date.now()/1000));
-export const offline_time = writable(get(load_time) - get(unload_time));
 
 const get_store_obj = ()=>{
 	let store_obj = {};
@@ -170,3 +176,4 @@ window.onbeforeunload = ()=>{
 	unload_time.set(Math.floor(Date.now()/1000));
 	localStorage.IdleOrbs2 = JSON.stringify(get_store_obj());
 }
+//#endregion

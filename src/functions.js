@@ -34,12 +34,39 @@ export const floor_round = (num, place)=>{
   return Math.floor(num * pow) / pow;
 }
 const num_shorts = ['', 'K', 'M', 'B', 'T', 'Qa', 'Qi', 'Sx', 'Sp', 'O', 'N', 'D', 'UD', 'DD', 'TD', 'QuD', 'QiD', 'SxD', 'SpD', 'OD', 'ND', 'V', 'UV', 'DV', 'TV', 'QaV', 'QiV', 'SxV', 'SpV', 'OV', 'NV', 'T', 'UT', 'DT', 'TT', 'QaT', 'QiT', 'SxT', 'SpT', 'OT', 'NT'];
-export const format_num = (num, round_to=1, i=0, past_thresh=false)=>{
+export const fnum = (num, round_to=1, i=0, past_thresh=false)=>{
     const div = num / 1000;
     const thresh = (i >= num_shorts.length);
     if (div < 1 || thresh) { 
       if (thresh) return (floor_round(num, round_to) + num_shorts[num_shorts.length-1]);
       else return (i == 0) ? (floor_round(num, round_to)) : (floor_round(num, round_to) + num_shorts[i]);
     }
-    return format_num(div, round_to, i+1, thresh);
+    return fnum(div, round_to, i+1, thresh);
+}
+
+export const mult_comp = (c, x, m)=>{
+  // c = x * (m^n);
+  // c/x = m^n
+  // log(c/x)/log(m) = n
+  const pow = Math.floor(Math.log(c/x)/Math.log(m));
+  const total = Math.floor(x * (m ** pow))
+
+  return {
+    pow, 
+    total,
+  }
+}
+export const add_comp = (c, i, x)=>{
+  // 50 * 5 + 10 * m;
+  const m = (i-1)/2 * i;
+  return c * i + x * m;
+}
+// console.log(add_comp(50, 6, 10));
+
+let run_n_save = null;
+export const run_n = (func=()=>{}, n)=>{
+  if (run_n_save == func) return;
+  run_n_save = func;
+  for (let i = 0; i < n; i++) func();
+  run_n_save = null;
 }

@@ -1,12 +1,12 @@
 <script>
-	import { sci } from "../functions.js";
+	import { fnum, run_n } from "../functions.js";
 	import { 
 		canvas_toggled, fighting, mana, cash, fight_cost, auto_fight, afford_fight,
-		basic_orb, light_orb, homing_orb, spore_orb, prestige, rarities, unlocked_fighting, got_mana, next_tower_lvl, shifting
+		basic_orb, light_orb, homing_orb, spore_orb, prestige, rarities, unlocked_fighting, got_mana, next_tower_lvl, shifting, ctrling,
 	} from "../stores.js";
 	import Artifacts from "./Artifacts.svelte";
 
-	$: if (!$unlocked_fighting && $prestige.times >= 5) $unlocked_fighting = true;
+	$: if (!$unlocked_fighting && $prestige.times >= 3) $unlocked_fighting = true;
 	$: if (!$got_mana && $mana > 0) $got_mana = true;
 	$: {
 		const L = $next_tower_lvl-1;
@@ -73,6 +73,7 @@
 		basic_orb.update( v => (v.cost += 10, v.amount++, v) );
 		// basic_orb.update( v => (v.cost = Math.floor(v.cost*1.1), v.amount++, v) );
 		if ($shifting) buy_basic();
+		if ($ctrling) run_n(buy_basic, 9);
 	};
 	const sell_basic = ()=>{
 		if (total_orbs <= 1) return;
@@ -83,15 +84,17 @@
 	//#endregion
 	//#region | Light Orb
 	const buy_light = ()=>{
-		if ($mana < $light_orb.cost) return;
-		$mana -= $light_orb.cost;
-		light_orb.update( v => (v.cost += 1, v.amount++, v) );
+		if ($cash < $light_orb.cost) return;
+		$cash -= $light_orb.cost;
+		light_orb.update( v => (v.cost += 15, v.amount++, v) );
 		if ($shifting) buy_light();
+		if ($ctrling) run_n(buy_light, 9);
+
 	};
 	const sell_light = ()=>{
 		if (total_orbs <= 1) return;
-		$mana += Math.floor($light_orb.cost/2.2);
-		light_orb.update( v => (v.cost -= 1, v.amount--, v) );
+		$cash += Math.floor($light_orb.cost/2.2);
+		light_orb.update( v => (v.cost -= 15, v.amount--, v) );
 	}
 	//#endregion
 	//#region | Homing Orb
@@ -100,6 +103,7 @@
 		$mana -= $homing_orb.cost;
 		homing_orb.update( v => (v.cost += 2, v.amount++, v) );
 		if ($shifting) buy_homing();
+		if ($ctrling) run_n(buy_homing, 9);
 	};
 	const sell_homing = ()=>{
 		if (total_orbs <= 1) return;
@@ -113,6 +117,7 @@
 		$mana -= $spore_orb.cost;
 		spore_orb.update( v => (v.cost += 2, v.amount++, v) );
 		if ($shifting) buy_spore();
+		if ($ctrling) run_n(buy_spore, 9);
 	};
 	const sell_spore = ()=>{
 		if (total_orbs <= 1) return;
@@ -121,19 +126,21 @@
 	}
 	//#endregion
 	//#endregion
+	// console.log(fnum($light_orb.cost));
 </script>
 
 <main>
-	<h3 id="mana">Mana <span style="font-weight: normal;">(₪)</span>: {sci($mana)}</h3>
+	<h3 id="mana">Mana <span style="font-weight: normal;">(₪)</span>: {fnum($mana)}</h3>
 	<div id="hold-btn">
 		{#if $unlocked_fighting}
 			<button id="auto-fight" style="{$auto_fight ? "border-color: lime;" : ""}" on:click={()=> $auto_fight = !$auto_fight}>Auto Fight?</button>
 			<button on:click={()=> click_fight()} class:disabled={$fighting} id="fight-btn">
-				Monster Tower Lvl {$next_tower_lvl} | <b>${sci($fight_cost)}</b>
+				Monster Tower Lvl {$next_tower_lvl} | <b>${fnum($fight_cost)}</b>
 				<h3 id="rarities">
 					{#if $rarities.c > 0}<span style="color: #ddd;">Common: {$rarities.c}%</span>{/if} 
 					{#if $rarities.c > 0 && $rarities.u > 0} | {/if}
 					{#if $rarities.u > 0}<span style="color: #B8E986;">Uncommon: {$rarities.u}%</span>{/if}
+					{#if $rarities.u > 0 && $rarities.r > 0} | {/if}
 					{#if $rarities.r > 0}<span style="color: #48BAFF;">Rare: {$rarities.r}%</span>{/if}
 					{#if $rarities.c > 0 || $rarities.u > 0} <br> {/if}
 					{#if $rarities.r > 0 && $rarities.l > 0} | {/if}
@@ -142,50 +149,57 @@
 			</button>
 		{:else}
 			<!-- <img id="img" src="./assets/locked.svg" alt="Padlock"> -->
-			<h3 id="info">Unlock After {5-$prestige.times} Prestiges</h3>
+			<h3 id="info">Unlock After {3-$prestige.times} Prestiges</h3>
 		{/if}
 	</div>
 	<div id="orb-row">
 		<button class="trade-btn" id="basic-btn">Basic
 			<p class="stat">Dmg/Value: {$basic_orb.value}</p>
 			<div class="orb-info">
-				<button class="buy-sell" on:click={buy_basic}>Buy ${sci($basic_orb.cost)}</button>
+				<button class="buy-sell" on:click={buy_basic}>Buy ${fnum($basic_orb.cost)}</button>
 				<button class="buy-sell" on:click={sell_basic}>Sell</button>
 			</div>
 		</button>
-		{#if $got_mana}
+		{#if $prestige.times >= 1}
 		<button class="trade-btn" id="light-btn">Light
 			<p class="stat">Dmg/Value: {$light_orb.value}</p>
 			<div class="orb-info">
-				<button class="buy-sell" on:click={buy_light}>Buy {sci($light_orb.cost)}₪</button>
+				<button class="buy-sell" on:click={buy_light}>Buy ${fnum($light_orb.cost)}</button>
 				<button class="buy-sell" on:click={sell_light}>Sell</button>
 			</div>
 		</button>
+		{:else} <button disabled>?</button> {/if}
+		{#if $got_mana}
 		<button class="trade-btn" id="homing-btn">Homing
 			<p class="stat">Dmg/Value: {$homing_orb.value}</p>
 			<div class="orb-info">
-				<button class="buy-sell" on:click={buy_homing}>Buy {sci($homing_orb.cost)}₪</button>
+				<button class="buy-sell" on:click={buy_homing}>Buy {fnum($homing_orb.cost)}₪</button>
 				<button class="buy-sell" on:click={sell_homing}>Sell</button>
 			</div>
 		</button>
 		<button class="trade-btn" id="spore-btn">Spore
 			<p class="stat">Dmg/Value: {$spore_orb.value}</p>
 			<div class="orb-info">
-				<button class="buy-sell" on:click={buy_spore}>Buy {sci($spore_orb.cost)}₪</button>
+				<button class="buy-sell" on:click={buy_spore}>Buy {fnum($spore_orb.cost)}₪</button>
 				<button class="buy-sell" on:click={sell_spore}>Sell</button>
 			</div>
 		</button>
 		{:else}
 		<button disabled>?</button>
 		<button disabled>?</button>
-		<button disabled>?</button>
 		{/if}
 		<button disabled on:click={()=> $next_tower_lvl += 10}>?</button>
+		<h3 id="basic-info">Normal gravity, drag, value, etc.<br>Just... <em>Average</em>.</h3>
+		<h3 id="light-info">Low gravity and drag, but normal value.<br>Like an aerodynamic ping pong ball!</h3>
+		<h3 id="homing-info">Lower value, but orbits around the mouse.<br>Buy a bunch and watch the satisfaction!</h3>
+		<h3 id="spore-info">Normal gravity, drag, and value. Spawns smaller, lower value, orbs that despawn after a few seconds.</h3>
 	</div>
 	<h3 id="orb-stats">
 		<span style="color: #ccc;">Basic Orbs: {$basic_orb.amount}</span><br>
-		{#if $got_mana}
+		{#if $prestige.times >= 1}
 			<span style="color: #00cccc;">Light Orbs: {$light_orb.amount}</span><br>
+		{/if}
+		{#if $got_mana}
 			<span style="color: #cccc00;">Homing Orbs: {$homing_orb.amount}</span><br>
 			<span style="color: #ffaa00;">Spore Orbs: {$spore_orb.amount}</span>
 		{/if}
@@ -329,4 +343,25 @@
 		pointer-events: none !important;
 		opacity: 0.8;
 	}
+
+	#orb-row [id$="-info"] {
+		position: absolute;
+		bottom: 33%;
+		left: 50%;
+		transform: translate(-50%, 50%);
+		color: #ddd;
+		text-align: center;
+		width: max-content;
+		display: none;
+		width: 90%;
+	}
+	/* #orb-info h3 {
+		display: none;
+	} */
+
+	#basic-btn:hover ~ #basic-info { display: block; }
+	#light-btn:hover ~ #light-info { display: block; }
+	#homing-btn:hover ~ #homing-info { display: block; }
+	#spore-btn:hover ~ #spore-info { display: block; }
+	/* #basic-btn:hover ~ #basic-info { display: block; } */
 </style>

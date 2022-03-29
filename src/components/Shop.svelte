@@ -1,7 +1,7 @@
 <script>
 	// import { timer, cash, bounce_size, collector_pos, orb_count } from "../stores.js";
-	import { cash, mana, shifting, basic_orb, light_orb, homing_orb, spore_orb, prestige, starting_cash, bounce, got_mana, orb_double } from "../stores.js";
-	import { sci } from "../functions.js";
+	import { cash, mana, shifting, ctrling, basic_orb, light_orb, homing_orb, spore_orb, prestige, starting_cash, bounce, got_mana, orb_double } from "../stores.js";
+	import { fnum, run_n } from "../functions.js";
 
 	//#region | Buy Bounce Power
 	const buy_bounce_power = ()=>{
@@ -11,6 +11,7 @@
 		$bounce.power_cost = Math.floor($bounce.power_cost * 1.5);
 		$bounce = $bounce;
 		if ($shifting) buy_bounce_power();
+		if ($ctrling) run_n(buy_bounce_power, 9);
 	}
 	//#endregion
 	//#region | Auto Bounce
@@ -29,6 +30,7 @@
 		$bounce.size += 25;
 		$bounce = $bounce;
 		if ($shifting) increase_bounce_area();
+		if ($ctrling) run_n(increase_bounce_area, 9);
 	}
 	//#endregion
 	//#region | Prestige
@@ -69,6 +71,9 @@
 			const total = Math.floor($cash/$starting_cash.cost);
 			$cash -= $starting_cash.cost*total;
 			starting_cash.update( v => (v.amount += total, v));
+		} else if ($ctrling) {
+			$cash -= $starting_cash.cost*10;
+			starting_cash.update( v => (v.amount += 10, v));
 		} else {
 			$cash -= $starting_cash.cost;
 			starting_cash.update( v => (v.amount++, v));
@@ -83,24 +88,25 @@
 		$orb_double.value++;
 		$orb_double = $orb_double;
 		if ($shifting) double_values();
+		if ($ctrling) run_n(double_values, 9);
 	}
 	//#endregion
 </script>
 
 <main id="main-shop">
-	<h3 id="cash">Cash: {sci($cash)}</h3>
-	<h3 id="max-buy-hint">Shift + Click to buy max</h3>
+	<h3 id="cash">Cash: {fnum($cash)}</h3>
+	<h3 id="max-buy-hint"><b class:h={$ctrling}>Ctrl: Buy 10</b>, <b class:h={$shifting}>Shift: Buy Max</b></h3>
 	<hr id="top-hr">
-	<!-- <button on:click={buy_basic}>Buy a Basic Orb <b>${sci($basic_orb.cost)}</b></button> -->
-	<button on:click={buy_bounce_power}>Increase Bounce Power <b>${sci($bounce.power_cost)}</b></button>
-	<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$bounce.auto_unlocked ? "Unlocked!" : `$${sci($bounce.auto_cost)}`}</b></button>
-	<button on:click={increase_bounce_area}>Increase Bounce Area <b> {#if $bounce.size < 275} ${sci($bounce.size_cost)} {:else} Max! {/if} </b></button>
-	<button on:click={buy_starting_cash}>Starting Cash +1 (${sci($starting_cash.amount)}) <b>${sci($starting_cash.cost)}</b></button>
-	{#if $got_mana} <button on:click={double_values}>Double All Orb Values <b>{sci($orb_double.cost)}₪</b></button>
+	<!-- <button on:click={buy_basic}>Buy a Basic Orb <b>${fnum($basic_orb.cost)}</b></button> -->
+	<button on:click={buy_bounce_power}>Increase Bounce Power <b>${fnum($bounce.power_cost)}</b></button>
+	<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$bounce.auto_unlocked ? "Unlocked!" : `$${fnum($bounce.auto_cost)}`}</b></button>
+	<button on:click={increase_bounce_area}>Increase Bounce Area <b> {#if $bounce.size < 275} ${fnum($bounce.size_cost)} {:else} Max! {/if} </b></button>
+	<button on:click={buy_starting_cash}>Starting Cash +1 (${fnum($starting_cash.amount)}) <b>${fnum($starting_cash.cost)}</b></button>
+	{#if $got_mana} <button on:click={double_values}>Double All Orb Values <b>{fnum($orb_double.cost)}₪</b></button>
 	{:else} <div></div> {/if}
 	<div></div>
-	<h3 id="orb-info">Orb Value Bonus: +{sci($prestige.times*50)}% {prest_hover ? "(+50%)" : ""}</h3>
-	<button bind:this={prest_btn} on:click={do_prestige}>Prestige <b>${sci($prestige.cost)}</b></button>
+	<h3 id="orb-info">Orb Value Bonus: +{fnum($prestige.times*50)}% {prest_hover ? "(+50%)" : ""}</h3>
+	<button bind:this={prest_btn} on:click={do_prestige}>Prestige <b>${fnum($prestige.cost)}</b></button>
 </main>
 
 <style>
@@ -147,5 +153,9 @@
 		right: 0;
 		color: #888;
 		padding: 1rem;
+	}
+
+	.h {
+		color: #95b973;
 	}
 </style>

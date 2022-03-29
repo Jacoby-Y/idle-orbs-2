@@ -1,11 +1,12 @@
 <script>
-	import { render_mode, get_data, load_data } from "../stores.js";
+	import { render_mode, get_data, load_data, max_render } from "../stores.js";
 	export let open;
 	export let settings;
 
 	let get_data_str = "";
 	let load_data_str = "";
-	
+	let render_amount = 100;
+	// $: console.log(render_amount);
 </script>
 
 <main class:open id="settings" bind:this={settings}>
@@ -18,6 +19,14 @@
 			<button class:selected={$render_mode == 3} on:click={()=> $render_mode = 3}>Pixelated</button>
 			<button class:selected={$render_mode == 4} on:click={()=> $render_mode = 4}>None</button>
 		</div>
+	</div>
+	<hr>
+	<div class="sect" id="render-amount">
+		<h3 class="sect-title">Max Rendered Orbs: {render_amount}</h3>
+		<div>
+			<button on:click={()=> $max_render = render_amount}>Set</button> <input placeholder="Set max orbs rendered. Default: 200" type="range" step="10" min="0" max="1000" id="render" bind:value={render_amount}>
+		</div>
+		<p>Default: 100. Save data before changing to a really high number! (Could crash game)</p>
 	</div>
 	<hr>
 	<div class="sect" id="data">
@@ -40,7 +49,7 @@
 		display: grid;
 		grid-auto-rows: max-content;
 		padding: 1rem;
-		gap: 1rem;
+		gap: 0.5rem;
 		border: 1px solid white;
 		border-radius: 10px;
 	}
@@ -49,7 +58,7 @@
 		transform: translate(-50%, 50%);
 	}
 	hr {
-		margin: 0;
+		margin: 0.5rem 0;
 		border: 1px solid black;
 	}
 	/* .sect { } */
@@ -81,9 +90,30 @@
 		grid-template-rows: max-content max-content;
 		gap: 0 0.5rem;
 	}
-	#data button {
+	#data button, #render-amount button {
 		background-color: #444;
 		color: white;
 		border: none;
+		padding: 0.5rem 0.7rem;
+	}
+	#render-amount {
+		display: grid;
+		/* grid-template-columns: max-content 1fr; */
+		grid-template-rows: max-content max-content;
+	}
+	#render-amount .sect-title {
+		padding-top: 0;
+		padding-bottom: 0;
+	}
+	#render-amount div {
+		display: grid;
+		grid-template-columns: max-content 1fr;
+		grid-template-rows: max-content;
+		gap: 0 0.5rem;
+	}
+	#render-amount p {
+		color: #bbb;
+		text-align: center;
+		padding-top: 0.3rem;
 	}
 </style>

@@ -3,13 +3,14 @@
 	import { 
 		timer, cash, mana, collector_pos, bounce, render_mode,
 		basic_orb, light_orb, homing_orb, auto_fight, afford_fight, orb_double,
-		canvas_toggled as toggled, fighting, shifting, rarities, next_tower_lvl, prestige, spore_orb, clear_storage, offline_time,
+		canvas_toggled as toggled, fighting, shifting, ctrling, rarities, next_tower_lvl, prestige, spore_orb, clear_storage, offline_time, max_render,
 		} from "../stores.js";
 	import { manager, small_explosion, big_explosion } from "../particles.js";
-	import { sci, format_num } from "../functions.js";
+	import { fnum } from "../functions.js";
 
 	//#region | Orb Stuff
-	const set_orbs = ()=>{
+	const reset_orbs = ()=>{
+		// console.log($basic_orb);
 		orbs.free_all();
 		for (let i = 0; i < $basic_orb.amount; i++) {
 			orbs.new.basic(Math.round(Math.random()*1000), 580, 0, 0);
@@ -23,15 +24,16 @@
 		for (let i = 0; i < $spore_orb.amount; i++) {
 			orbs.new.spore(Math.round(Math.random()*1000), 580, 0, 0);
 		}
-		$basic_orb = $basic_orb;
-	};
+		// console.log(orbs.basic);
+		// $basic_orb = $basic_orb;
+	}; 
 
 	$: {
 		$basic_orb;
 		$light_orb;
 		$homing_orb;
 		$spore_orb;
-		set_orbs();
+		reset_orbs();
 	}
 	$: {
 		basic_orb.update( v => (
@@ -49,7 +51,7 @@
 		v) );
 	}
 	$: { $prestige.times;
-		orbs.free_all();
+		reset_orbs();
 	}
 	//#endregion
 	//#region | Canvas
@@ -243,6 +245,16 @@
 				shadow.over = 0;
 			},
 			update() {
+				if (basic.max != $max_render) {
+					basic.max = $max_render;
+					light.max = $max_render;
+					homing.max = $max_render;
+					spore.max = $max_render;
+					sub_spore.max = $max_render;
+					shadow.max = $max_render;
+					reset_orbs();
+					return;
+				}
 				const all = [].concat(basic.l).concat(light.l).concat(homing.l).concat(spore.l).concat(sub_spore.l).concat(shadow.l); //...
 				for (let i = 0; i < basic.l.length; i++) {
 					const orb = basic.l[i];
@@ -466,7 +478,7 @@
 
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
-							cash_hold += this.value.basic*1;//($basic_orb.value*10) + ((($basic_orb.value*10) * basic.over)/basic.l.length);
+							cash_hold += total_value/10;//($basic_orb.value*10) + ((($basic_orb.value*10) * basic.over)/basic.l.length);
 						}
 					}
 
@@ -519,11 +531,11 @@
 								}
 							}
 						}
-						if (collided && is_spore && (Math.abs(orb.vx) > 10 || Math.abs(orb.vy) > 10)) this.new.sub_spore(orb.x, orb.y, orb.vx*2, orb.vy*2);
+						if (collided && is_spore && (Math.abs(orb.vx) > 1 || orb.vy > 5 || Math.abs(orb.vy) > 15)) this.new.sub_spore(orb.x, orb.y, orb.vx*2, orb.vy*2);
 					} else continue;
 				}
 
-				if (cash_hold > 1) {
+				if (cash_hold >= 1) {
 					$cash += Math.floor(cash_hold);
 					cash_hold -= Math.floor(cash_hold);
 				}
@@ -585,7 +597,6 @@
 	let offline_get = false;
 	let offline_gain = 0;
 	let show_earnings = true;
-
 	const check_cps = ()=>{
 		if (offline_get) return;
 		if (!offline_get && first_cps_set) {
@@ -595,7 +606,6 @@
 		}
 		if (!first_cps_set) first_cps_set = true;
 	}
-
 	$: { // $basic_orb; $light_orb; $spore_orb; $homing_orb;
 		calc_cps = 
 			(orbs.total.basic * $basic_orb.value +
@@ -605,6 +615,16 @@
 			(orbs.total.homing * $homing_orb.value * 2);
 		//
 		check_cps();
+	}
+
+	let total_value = 0;
+	$: { 
+		total_value = 
+			orbs.total.basic * $basic_orb.value +
+			orbs.total.light * $light_orb.value +
+			orbs.total.spore * $spore_orb.value + 
+			orbs.total.sub_spore * $spore_orb.sub_value + 
+			orbs.total.homing * $homing_orb.value;
 	}
 
 	let cps = 0;
@@ -674,7 +694,7 @@
 		w = canvas.width;
 		h = canvas.height;
 
-		set_orbs();
+		reset_orbs();
 		timer.subscribe(main_loop);
 
 		// key_up({ key: "Escape" });
@@ -687,10 +707,13 @@
 	}
 	/** @param {MouseEvent} e*/
 	const mouse_move = (e)=>{
-		[ mouse.x, mouse.y ] = [ e.layerX, e.layerY ];
+		const [x, y] = (e.offsetX == 0 ? [e.layerX, e.layerY] : [e.offsetX, e.offsetY]);
+		[ mouse.x, mouse.y ] = [x, y];
 	};
 	const mouse_enter = ()=> mouse.hovering = true;
 	const mouse_leave = ()=> mouse.hovering = false;
+
+	let last_click = Date.now();
 	const mouse_down = (e)=>{
 		// orbs.new([10, 10], [10, Math.random()*15]);
 		if (show_earnings) {
@@ -699,16 +722,20 @@
 		}
 		const [x, y] = (e.offsetX == 0 ? [e.layerX, e.layerY] : [e.offsetX, e.offsetY]);
 		if (event_manager.click({x, y})) return;
+		if (Date.now()-last_click < 200) return;
 		orbs.bounce({x, y});
 		small_explosion(ctx, [x, y]);
+		last_click = Date.now();
 	}
 	const key_up = (e)=>{
 		const k = e.key;
 		if (k == "d") debug = !debug;
 		else if (k == "Escape") $toggled = !$toggled;
 		else if (k == "Tab" && $bounce.auto_unlocked) ($bounce.auto_on = !$bounce.auto_on, $bounce = $bounce);
-		else if (k == "o") console.log(orbs);
-		else if (k == "r") set_orbs();
+		else if (k == "o") console.log(orbs.basic);
+		else if (k == "r") reset_orbs();
+		else if (k == "Shift") $shifting = false;
+		else if (k == "Control") $ctrling = false;
 		if (!debug) return;
 		if (k == "s") step = !step;
 		else if (k == " ") pause = !pause;
@@ -728,7 +755,6 @@
 		else if (k == "$") spore_orb.update( v => (v.amount > 0 ? v.amount-- : 0, v));
 		else if (k == "0") homing_orb.update( v => (v.amount += 200, v));
 		else if (k == ")") homing_orb.update( v => (v.amount += 20000000, v));
-		else if (k == "Shift") $shifting = false;
 		else if (k == "h") monster_manager.hit(1e10);
 		else if (k == "R") clear_storage();
 		else if (k == "S") {
@@ -741,10 +767,11 @@
 	const key_down = (e)=>{
 		const k = e.key;
 		if (k == "Shift") $shifting = true;
+		else if (k == "Control") $ctrling = true;
 		if (!debug) return;
 		if (k == "c") $cash += 1e5;
 	};
-	window.onblur = ()=> $shifting = false;
+	window.onblur = ()=> $shifting = $ctrling = false;
 	
 	// $: if ($toggled && canvas != undefined) canvas.onmousedown({ layerX: 0, layerY: 0 });
 
@@ -920,7 +947,7 @@
 			}
 		}
 	}
-	$: if ($fighting) { spawn_monster(); set_orbs(); }
+	$: if ($fighting) { spawn_monster(); reset_orbs(); }
 	//#endregion
 	//#region | Game Events
 	const event_manager = {
@@ -952,7 +979,7 @@
 			}
 			this.next_ticks--;
 			if (this.next_ticks <= 0) { 
-				console.log("spawn!");
+				// console.log("spawn!");
 				this.pos.x = Math.round(Math.random()*(1000-60))+30;
 				this.pos.y = Math.round(Math.random()*(100))+30;
 				this.on = true;
@@ -973,18 +1000,19 @@
 
 	let debug = false;
 	//#endregion
+
 </script>
 
 <main bind:this={main} style="opacity: {$toggled ? "1" : "0"}; pointer-events: {$toggled ? "all" : "none"};">
 	<canvas bind:this={canvas}></canvas>
 	
 	<h3 id="cash" style="{debug ? "background-color: #000000bb;" : ""}">
-		Cash: {sci($cash)} <br> 
+		Cash: {fnum($cash)} <br> 
 		{#if debug} 
-			$/sec: {format_num(cps)} <br> 
-			Calc $/sec: {format_num(calc_cps)} <br> 
+			$/sec: {fnum(cps)} <br> 
+			Calc $/sec: {fnum(calc_cps)} <br> 
 			FPS: {fps} <br> 
-			Total Orbs: {format_num(total_orbs)} <br> {/if}
+			Total Orbs: {fnum(total_orbs)} <br> {/if}
 	</h3>  
 	<h3 id="toggle-txt" style="bottom: {$bounce.size}px;">Press "Esc" to toggle shop</h3>
 	{#if $bounce.auto_unlocked}
@@ -1006,7 +1034,7 @@
 	{/if}
 	{#if show_earnings}
 		<div id="offline" on:click={()=> show_earnings = false }>
-			<h3>You got ${format_num(offline_gain)} while offline</h3>
+			<h3>You got ${fnum(offline_gain)} while offline</h3>
 		</div>
 	{/if}
 </main>

@@ -1,13 +1,13 @@
 <script>
 	import { onMount } from "svelte";
 	import { 
-		timer, cash, mana, collector_pos, bounce, render_mode,
+		timer, cash, mana, collector_pos, bounce, render_mode, fight_cost,
 		basic_orb, light_orb, homing_orb, auto_fight, afford_fight, orb_double,
 		canvas_toggled as toggled, fighting, shifting, ctrling, rarities, next_tower_lvl, prestige, spore_orb, clear_storage, offline_time, max_render,
 		} from "../stores.js";
 	import { manager, small_explosion, big_explosion } from "../particles.js";
 	import { fnum } from "../functions.js";
-
+ 
 	//#region | Orb Stuff
 	const reset_orbs = ()=>{
 		// console.log($basic_orb);
@@ -931,18 +931,14 @@
 					this.kill_index = 0;
 					big_explosion(ctx, [this.pt1.x+((this.pt2.x-this.pt1.x)/2), this.pt1.y+((this.pt2.y-this.pt1.y)/2)]);
 
-					// console.log(`1: Fighting: ${$fighting}, Auto: ${$auto_fight}`);
 					if (!$auto_fight) {
-						// console.log("not auto");
 						$fighting = false;
 					} else {	
 						const afford = $afford_fight();
 						$fighting = afford;
 						$auto_fight = afford;
-						// console.log(`Can Afford: ${afford}`);
+						if (afford) $cash -= $fight_cost;
 					}
-					// console.log(`2: Fighting: ${$fighting}, Auto: ${$auto_fight}`);
-					// console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
 				}
 			}
 		}

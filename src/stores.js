@@ -77,13 +77,13 @@ export const light_orb = w("light_orb", {
 export const homing_orb = w("homing_orb", {
 	amount: 0,
 	cost: 3,
-	value: 0.5,
+	value: 2,
 });
 export const spore_orb = w("spore_orb", {
 	amount: 0,
 	cost: 3,
-	value: 1,
-	sub_value: 0.2,
+	value: 3,
+	sub_value: 0.5,
 });
 //#endregion
 //#region | Prestige

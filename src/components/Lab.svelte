@@ -44,6 +44,7 @@
 	$: { 
 		if ($auto_fight) {
 			if ($afford_fight()) {
+
 				$auto_fight = true;
 				click_fight();
 			}
@@ -56,7 +57,7 @@
 	$: $fight_cost = 1e3 * (1 + 1.2 * ($next_tower_lvl-1));
 
 	const click_fight = ()=>{
-		if ($cash < $fight_cost || $fighting) return;
+		if ($cash < $fight_cost) return;
 		$cash -= $fight_cost;
 		$fighting = true;
 		$canvas_toggled = true;
@@ -126,7 +127,7 @@
 	}
 	//#endregion
 	//#endregion
-	// console.log(fnum($light_orb.cost));
+	//console.log(fnum($light_orb.cost));
 </script>
 
 <main>
@@ -143,7 +144,7 @@
 					{#if $rarities.u > 0 && $rarities.r > 0} | {/if}
 					{#if $rarities.r > 0}<span style="color: #48BAFF;">Rare: {$rarities.r}%</span>{/if}
 					{#if $rarities.c > 0 || $rarities.u > 0} <br> {/if}
-					{#if $rarities.r > 0 && $rarities.l > 0} | {/if}
+					{#if $rarities.u <= 0 && $rarities.r > 0 && $rarities.l > 0} | {/if}
 					{#if $rarities.l > 0}<span style="color: #F8E71C;">Legendary: {$rarities.l}%</span>{/if}
 				</h3> 
 			</button>

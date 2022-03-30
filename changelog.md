@@ -1,3 +1,6 @@
+## v0.8.1
+- Squashed some bugs
+
 ## v0.8
 - Fixed a bunch of bugs
 - You can now get light orb with cash after your first prestige

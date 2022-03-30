@@ -572,13 +572,13 @@ var app = (function () {
     const homing_orb = w("homing_orb", {
     	amount: 0,
     	cost: 3,
-    	value: 0.5,
+    	value: 2,
     });
     const spore_orb = w("spore_orb", {
     	amount: 0,
     	cost: 3,
-    	value: 1,
-    	sub_value: 0.2,
+    	value: 3,
+    	sub_value: 0.5,
     });
     //#endregion
     //#region | Prestige
@@ -797,7 +797,7 @@ var app = (function () {
     const { console: console_1 } = globals;
     const file$6 = "src/components/Canvas.svelte";
 
-    // (1011:2) {#if debug}
+    // (1007:2) {#if debug}
     function create_if_block_3$1(ctx) {
     	let t0;
     	let t1_value = fnum(/*cps*/ ctx[8]) + "";
@@ -837,10 +837,10 @@ var app = (function () {
     			t10 = text(t10_value);
     			t11 = space();
     			br3 = element("br");
-    			add_location(br0, file$6, 1011, 22, 30538);
-    			add_location(br1, file$6, 1012, 32, 30576);
-    			add_location(br2, file$6, 1013, 14, 30596);
-    			add_location(br3, file$6, 1014, 34, 30636);
+    			add_location(br0, file$6, 1007, 22, 30295);
+    			add_location(br1, file$6, 1008, 32, 30333);
+    			add_location(br2, file$6, 1009, 14, 30353);
+    			add_location(br3, file$6, 1010, 34, 30393);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, t0, anchor);
@@ -890,14 +890,14 @@ var app = (function () {
     		block,
     		id: create_if_block_3$1.name,
     		type: "if",
-    		source: "(1011:2) {#if debug}",
+    		source: "(1007:2) {#if debug}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (1018:1) {#if $bounce.auto_unlocked}
+    // (1014:1) {#if $bounce.auto_unlocked}
     function create_if_block_2$1(ctx) {
     	let h3;
     	let t0;
@@ -914,7 +914,7 @@ var app = (function () {
     			attr_dev(h3, "id", "toggle-bounce");
     			set_style(h3, "bottom", /*$bounce*/ ctx[3].size + "px");
     			attr_dev(h3, "class", "svelte-1u01kmx");
-    			add_location(h3, file$6, 1018, 2, 30774);
+    			add_location(h3, file$6, 1014, 2, 30531);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h3, anchor);
@@ -938,14 +938,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2$1.name,
     		type: "if",
-    		source: "(1018:1) {#if $bounce.auto_unlocked}",
+    		source: "(1014:1) {#if $bounce.auto_unlocked}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (1021:1) {#if $fighting}
+    // (1017:1) {#if $fighting}
     function create_if_block_1$2(ctx) {
     	let button;
     	let t1;
@@ -971,7 +971,7 @@ var app = (function () {
     			div = element("div");
     			h30 = element("h3");
     			t2 = text("Monster Tower: Level ");
-    			t3 = text(/*$next_tower_lvl*/ ctx[14]);
+    			t3 = text(/*$next_tower_lvl*/ ctx[15]);
     			t4 = space();
     			h31 = element("h3");
     			t5 = text(t5_value);
@@ -979,26 +979,26 @@ var app = (function () {
     			img = element("img");
     			attr_dev(button, "id", "quit");
     			attr_dev(button, "class", "svelte-1u01kmx");
-    			add_location(button, file$6, 1021, 2, 30929);
+    			add_location(button, file$6, 1017, 2, 30686);
     			attr_dev(h30, "id", "lvl");
     			attr_dev(h30, "class", "svelte-1u01kmx");
-    			add_location(h30, file$6, 1029, 3, 31259);
+    			add_location(h30, file$6, 1025, 3, 31016);
     			attr_dev(h31, "id", "name");
     			attr_dev(h31, "class", "svelte-1u01kmx");
-    			add_location(h31, file$6, 1030, 3, 31319);
+    			add_location(h31, file$6, 1026, 3, 31076);
     			if (!src_url_equal(img.src, img_src_value = /*monster_manager*/ ctx[10].src)) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "monster Icon");
     			set_style(img, "width", (/*monster_manager*/ ctx[10].pt2.y - /*monster_manager*/ ctx[10].pt1.y) / 2 + "px");
     			set_style(img, "height", (/*monster_manager*/ ctx[10].pt2.y - /*monster_manager*/ ctx[10].pt1.y) / 2 + "px");
     			attr_dev(img, "class", "svelte-1u01kmx");
-    			add_location(img, file$6, 1031, 3, 31364);
+    			add_location(img, file$6, 1027, 3, 31121);
     			attr_dev(div, "id", "monster-info");
     			set_style(div, "left", /*monster_manager*/ ctx[10].pt1.x + "px");
     			set_style(div, "top", /*monster_manager*/ ctx[10].pt1.y + "px");
     			set_style(div, "width", /*monster_manager*/ ctx[10].pt2.x - /*monster_manager*/ ctx[10].pt1.x + "px");
     			set_style(div, "height", /*monster_manager*/ ctx[10].pt2.y - /*monster_manager*/ ctx[10].pt1.y + "px");
     			attr_dev(div, "class", "svelte-1u01kmx");
-    			add_location(div, file$6, 1022, 2, 31021);
+    			add_location(div, file$6, 1018, 2, 30778);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1019,7 +1019,7 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*$next_tower_lvl*/ 16384) set_data_dev(t3, /*$next_tower_lvl*/ ctx[14]);
+    			if (dirty[0] & /*$next_tower_lvl*/ 32768) set_data_dev(t3, /*$next_tower_lvl*/ ctx[15]);
     			if (dirty[0] & /*monster_manager*/ 1024 && t5_value !== (t5_value = /*monster_manager*/ ctx[10].name + "")) set_data_dev(t5, t5_value);
 
     			if (dirty[0] & /*monster_manager*/ 1024 && !src_url_equal(img.src, img_src_value = /*monster_manager*/ ctx[10].src)) {
@@ -1063,14 +1063,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1$2.name,
     		type: "if",
-    		source: "(1021:1) {#if $fighting}",
+    		source: "(1017:1) {#if $fighting}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (1035:1) {#if show_earnings}
+    // (1031:1) {#if show_earnings}
     function create_if_block$2(ctx) {
     	let div;
     	let h3;
@@ -1089,10 +1089,10 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text(" while offline");
     			attr_dev(h3, "class", "svelte-1u01kmx");
-    			add_location(h3, file$6, 1036, 3, 31646);
+    			add_location(h3, file$6, 1032, 3, 31403);
     			attr_dev(div, "id", "offline");
     			attr_dev(div, "class", "svelte-1u01kmx");
-    			add_location(div, file$6, 1035, 2, 31585);
+    			add_location(div, file$6, 1031, 2, 31342);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1120,7 +1120,7 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(1035:1) {#if show_earnings}",
+    		source: "(1031:1) {#if show_earnings}",
     		ctx
     	});
 
@@ -1133,7 +1133,7 @@ var app = (function () {
     	let t0;
     	let h30;
     	let t1;
-    	let t2_value = fnum(/*$cash*/ ctx[15]) + "";
+    	let t2_value = fnum(/*$cash*/ ctx[13]) + "";
     	let t2;
     	let t3;
     	let br;
@@ -1172,20 +1172,20 @@ var app = (function () {
     			t9 = space();
     			if (if_block3) if_block3.c();
     			attr_dev(canvas_1, "class", "svelte-1u01kmx");
-    			add_location(canvas_1, file$6, 1006, 1, 30364);
-    			add_location(br, file$6, 1009, 22, 30495);
+    			add_location(canvas_1, file$6, 1002, 1, 30121);
+    			add_location(br, file$6, 1005, 22, 30252);
     			attr_dev(h30, "id", "cash");
     			attr_dev(h30, "style", h30_style_value = /*debug*/ ctx[12] ? "background-color: #000000bb;" : "");
     			attr_dev(h30, "class", "svelte-1u01kmx");
-    			add_location(h30, file$6, 1008, 1, 30404);
+    			add_location(h30, file$6, 1004, 1, 30161);
     			attr_dev(h31, "id", "toggle-txt");
     			set_style(h31, "bottom", /*$bounce*/ ctx[3].size + "px");
     			attr_dev(h31, "class", "svelte-1u01kmx");
-    			add_location(h31, file$6, 1016, 1, 30657);
+    			add_location(h31, file$6, 1012, 1, 30414);
     			set_style(main_1, "opacity", /*$toggled*/ ctx[4] ? "1" : "0");
     			set_style(main_1, "pointer-events", /*$toggled*/ ctx[4] ? "all" : "none");
     			attr_dev(main_1, "class", "svelte-1u01kmx");
-    			add_location(main_1, file$6, 1005, 0, 30253);
+    			add_location(main_1, file$6, 1001, 0, 30010);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1214,7 +1214,7 @@ var app = (function () {
     			/*main_1_binding*/ ctx[25](main_1);
     		},
     		p: function update(ctx, dirty) {
-    			if (dirty[0] & /*$cash*/ 32768 && t2_value !== (t2_value = fnum(/*$cash*/ ctx[15]) + "")) set_data_dev(t2, t2_value);
+    			if (dirty[0] & /*$cash*/ 8192 && t2_value !== (t2_value = fnum(/*$cash*/ ctx[13]) + "")) set_data_dev(t2, t2_value);
 
     			if (/*debug*/ ctx[12]) {
     				if (if_block0) {
@@ -1316,6 +1316,8 @@ var app = (function () {
     	let $light_orb;
     	let $basic_orb;
     	let $fighting;
+    	let $fight_cost;
+    	let $cash;
     	let $auto_fight;
     	let $afford_fight;
     	let $next_tower_lvl;
@@ -1325,7 +1327,6 @@ var app = (function () {
     	let $toggled;
     	let $ctrling;
     	let $shifting;
-    	let $cash;
     	let $render_mode;
     	let $offline_time;
     	let $collector_pos;
@@ -1343,36 +1344,38 @@ var app = (function () {
     	component_subscribe($$self, basic_orb, $$value => $$invalidate(19, $basic_orb = $$value));
     	validate_store(fighting, 'fighting');
     	component_subscribe($$self, fighting, $$value => $$invalidate(2, $fighting = $$value));
+    	validate_store(fight_cost, 'fight_cost');
+    	component_subscribe($$self, fight_cost, $$value => $$invalidate(43, $fight_cost = $$value));
+    	validate_store(cash, 'cash');
+    	component_subscribe($$self, cash, $$value => $$invalidate(13, $cash = $$value));
     	validate_store(auto_fight, 'auto_fight');
-    	component_subscribe($$self, auto_fight, $$value => $$invalidate(13, $auto_fight = $$value));
+    	component_subscribe($$self, auto_fight, $$value => $$invalidate(14, $auto_fight = $$value));
     	validate_store(afford_fight, 'afford_fight');
-    	component_subscribe($$self, afford_fight, $$value => $$invalidate(43, $afford_fight = $$value));
+    	component_subscribe($$self, afford_fight, $$value => $$invalidate(44, $afford_fight = $$value));
     	validate_store(next_tower_lvl, 'next_tower_lvl');
-    	component_subscribe($$self, next_tower_lvl, $$value => $$invalidate(14, $next_tower_lvl = $$value));
+    	component_subscribe($$self, next_tower_lvl, $$value => $$invalidate(15, $next_tower_lvl = $$value));
     	validate_store(mana, 'mana');
-    	component_subscribe($$self, mana, $$value => $$invalidate(44, $mana = $$value));
+    	component_subscribe($$self, mana, $$value => $$invalidate(45, $mana = $$value));
     	validate_store(rarities, 'rarities');
-    	component_subscribe($$self, rarities, $$value => $$invalidate(45, $rarities = $$value));
+    	component_subscribe($$self, rarities, $$value => $$invalidate(46, $rarities = $$value));
     	validate_store(bounce, 'bounce');
     	component_subscribe($$self, bounce, $$value => $$invalidate(3, $bounce = $$value));
     	validate_store(canvas_toggled, 'toggled');
     	component_subscribe($$self, canvas_toggled, $$value => $$invalidate(4, $toggled = $$value));
     	validate_store(ctrling, 'ctrling');
-    	component_subscribe($$self, ctrling, $$value => $$invalidate(46, $ctrling = $$value));
+    	component_subscribe($$self, ctrling, $$value => $$invalidate(47, $ctrling = $$value));
     	validate_store(shifting, 'shifting');
-    	component_subscribe($$self, shifting, $$value => $$invalidate(47, $shifting = $$value));
-    	validate_store(cash, 'cash');
-    	component_subscribe($$self, cash, $$value => $$invalidate(15, $cash = $$value));
+    	component_subscribe($$self, shifting, $$value => $$invalidate(48, $shifting = $$value));
     	validate_store(render_mode, 'render_mode');
-    	component_subscribe($$self, render_mode, $$value => $$invalidate(48, $render_mode = $$value));
+    	component_subscribe($$self, render_mode, $$value => $$invalidate(49, $render_mode = $$value));
     	validate_store(offline_time, 'offline_time');
-    	component_subscribe($$self, offline_time, $$value => $$invalidate(49, $offline_time = $$value));
+    	component_subscribe($$self, offline_time, $$value => $$invalidate(50, $offline_time = $$value));
     	validate_store(collector_pos, 'collector_pos');
-    	component_subscribe($$self, collector_pos, $$value => $$invalidate(50, $collector_pos = $$value));
+    	component_subscribe($$self, collector_pos, $$value => $$invalidate(51, $collector_pos = $$value));
     	validate_store(timer, 'timer');
-    	component_subscribe($$self, timer, $$value => $$invalidate(51, $timer = $$value));
+    	component_subscribe($$self, timer, $$value => $$invalidate(52, $timer = $$value));
     	validate_store(max_render, 'max_render');
-    	component_subscribe($$self, max_render, $$value => $$invalidate(52, $max_render = $$value));
+    	component_subscribe($$self, max_render, $$value => $$invalidate(53, $max_render = $$value));
     	validate_store(prestige, 'prestige');
     	component_subscribe($$self, prestige, $$value => $$invalidate(20, $prestige = $$value));
     	validate_store(orb_double, 'orb_double');
@@ -2368,17 +2371,15 @@ var app = (function () {
     						this.pt1.y + (this.pt2.y - this.pt1.y) / 2
     					]);
 
-    					// console.log(`1: Fighting: ${$fighting}, Auto: ${$auto_fight}`);
     					if (!$auto_fight) {
-    						// console.log("not auto");
     						set_store_value(fighting, $fighting = false, $fighting);
     					} else {
     						const afford = $afford_fight();
     						set_store_value(fighting, $fighting = afford, $fighting);
     						set_store_value(auto_fight, $auto_fight = afford, $auto_fight);
-    					} // console.log(`Can Afford: ${afford}`);
-    				} // console.log(`2: Fighting: ${$fighting}, Auto: ${$auto_fight}`);
-    				// console.log("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    						if (afford) set_store_value(cash, $cash -= $fight_cost, $cash);
+    					}
+    				}
     			}
     		}
     	};
@@ -2473,6 +2474,7 @@ var app = (function () {
     		collector_pos,
     		bounce,
     		render_mode,
+    		fight_cost,
     		basic_orb,
     		light_orb,
     		homing_orb,
@@ -2549,6 +2551,8 @@ var app = (function () {
     		$light_orb,
     		$basic_orb,
     		$fighting,
+    		$fight_cost,
+    		$cash,
     		$auto_fight,
     		$afford_fight,
     		$next_tower_lvl,
@@ -2558,7 +2562,6 @@ var app = (function () {
     		$toggled,
     		$ctrling,
     		$shifting,
-    		$cash,
     		$render_mode,
     		$offline_time,
     		$collector_pos,
@@ -2694,9 +2697,9 @@ var app = (function () {
     		monster_manager,
     		total_orbs,
     		debug,
+    		$cash,
     		$auto_fight,
     		$next_tower_lvl,
-    		$cash,
     		$spore_orb,
     		$homing_orb,
     		$light_orb,
@@ -2797,7 +2800,7 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			div = element("div");
-    			add_location(div, file$5, 105, 9, 3811);
+    			add_location(div, file$5, 105, 9, 3813);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -2838,9 +2841,9 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text("₪");
     			attr_dev(b, "class", "svelte-wh9235");
-    			add_location(b, file$5, 104, 72, 3760);
+    			add_location(b, file$5, 104, 72, 3762);
     			attr_dev(button, "class", "svelte-wh9235");
-    			add_location(button, file$5, 104, 17, 3705);
+    			add_location(button, file$5, 104, 17, 3707);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -3013,46 +3016,46 @@ var app = (function () {
     			t32 = text(t32_value);
     			attr_dev(h30, "id", "cash");
     			attr_dev(h30, "class", "svelte-wh9235");
-    			add_location(h30, file$5, 96, 1, 2897);
+    			add_location(h30, file$5, 96, 1, 2899);
     			attr_dev(b0, "class", "svelte-wh9235");
     			toggle_class(b0, "h", /*$ctrling*/ ctx[2]);
-    			add_location(b0, file$5, 97, 23, 2959);
+    			add_location(b0, file$5, 97, 23, 2961);
     			attr_dev(b1, "class", "svelte-wh9235");
     			toggle_class(b1, "h", /*$shifting*/ ctx[3]);
-    			add_location(b1, file$5, 97, 63, 2999);
+    			add_location(b1, file$5, 97, 63, 3001);
     			attr_dev(h31, "id", "max-buy-hint");
     			attr_dev(h31, "class", "svelte-wh9235");
-    			add_location(h31, file$5, 97, 1, 2937);
+    			add_location(h31, file$5, 97, 1, 2939);
     			attr_dev(hr, "id", "top-hr");
     			attr_dev(hr, "class", "svelte-wh9235");
-    			add_location(hr, file$5, 98, 1, 3047);
+    			add_location(hr, file$5, 98, 1, 3049);
     			attr_dev(b2, "class", "svelte-wh9235");
-    			add_location(b2, file$5, 100, 59, 3219);
+    			add_location(b2, file$5, 100, 59, 3221);
     			attr_dev(button0, "class", "svelte-wh9235");
-    			add_location(button0, file$5, 100, 1, 3161);
+    			add_location(button0, file$5, 100, 1, 3163);
     			attr_dev(b3, "class", "svelte-wh9235");
-    			add_location(b3, file$5, 101, 55, 3318);
+    			add_location(b3, file$5, 101, 55, 3320);
     			attr_dev(button1, "class", "svelte-wh9235");
-    			add_location(button1, file$5, 101, 1, 3264);
+    			add_location(button1, file$5, 101, 1, 3266);
     			attr_dev(b4, "class", "svelte-wh9235");
-    			add_location(b4, file$5, 102, 62, 3466);
+    			add_location(b4, file$5, 102, 62, 3468);
     			attr_dev(button2, "class", "svelte-wh9235");
-    			add_location(button2, file$5, 102, 1, 3405);
+    			add_location(button2, file$5, 102, 1, 3407);
     			attr_dev(b5, "class", "svelte-wh9235");
-    			add_location(b5, file$5, 103, 88, 3643);
+    			add_location(b5, file$5, 103, 88, 3645);
     			attr_dev(button3, "class", "svelte-wh9235");
-    			add_location(button3, file$5, 103, 1, 3556);
-    			add_location(div, file$5, 106, 1, 3830);
+    			add_location(button3, file$5, 103, 1, 3558);
+    			add_location(div, file$5, 106, 1, 3832);
     			attr_dev(h32, "id", "orb-info");
     			attr_dev(h32, "class", "svelte-wh9235");
-    			add_location(h32, file$5, 107, 1, 3843);
+    			add_location(h32, file$5, 107, 1, 3845);
     			attr_dev(b6, "class", "svelte-wh9235");
-    			add_location(b6, file$5, 108, 63, 4005);
+    			add_location(b6, file$5, 108, 63, 4007);
     			attr_dev(button4, "class", "svelte-wh9235");
-    			add_location(button4, file$5, 108, 1, 3943);
+    			add_location(button4, file$5, 108, 1, 3945);
     			attr_dev(main, "id", "main-shop");
     			attr_dev(main, "class", "svelte-wh9235");
-    			add_location(main, file$5, 95, 0, 2874);
+    			add_location(main, file$5, 95, 0, 2876);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3267,7 +3270,7 @@ var app = (function () {
     		if ($cash < $prestige.cost && bypass !== true) return;
     		set_store_value(cash, $cash = $starting_cash.amount, $cash);
     		basic_orb.update(v => (v.amount = 1, v.cost = 50, v));
-    		light_orb.update(v => (v.amount = 0, v.cost = 1, v));
+    		light_orb.update(v => (v.amount = 0, v.cost = 100, v));
     		homing_orb.update(v => (v.amount = 0, v.cost = 3, v));
     		spore_orb.update(v => (v.amount = 0, v.cost = 3, v));
 
@@ -3495,7 +3498,7 @@ var app = (function () {
     /* src/components/Lab.svelte generated by Svelte v3.46.4 */
     const file$3 = "src/components/Lab.svelte";
 
-    // (150:2) {:else}
+    // (151:2) {:else}
     function create_else_block_2(ctx) {
     	let h3;
     	let t0;
@@ -3511,7 +3514,7 @@ var app = (function () {
     			t2 = text(" Prestiges");
     			attr_dev(h3, "id", "info");
     			attr_dev(h3, "class", "svelte-150dccm");
-    			add_location(h3, file$3, 151, 3, 4633);
+    			add_location(h3, file$3, 152, 3, 4640);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h3, anchor);
@@ -3531,14 +3534,14 @@ var app = (function () {
     		block,
     		id: create_else_block_2.name,
     		type: "else",
-    		source: "(150:2) {:else}",
+    		source: "(151:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (135:2) {#if $unlocked_fighting}
+    // (136:2) {#if $unlocked_fighting}
     function create_if_block_4(ctx) {
     	let button0;
     	let t0;
@@ -3569,7 +3572,7 @@ var app = (function () {
     	let if_block3 = /*$rarities*/ ctx[12].u > 0 && /*$rarities*/ ctx[12].r > 0 && create_if_block_9(ctx);
     	let if_block4 = /*$rarities*/ ctx[12].r > 0 && create_if_block_8(ctx);
     	let if_block5 = (/*$rarities*/ ctx[12].c > 0 || /*$rarities*/ ctx[12].u > 0) && create_if_block_7(ctx);
-    	let if_block6 = /*$rarities*/ ctx[12].r > 0 && /*$rarities*/ ctx[12].l > 0 && create_if_block_6(ctx);
+    	let if_block6 = /*$rarities*/ ctx[12].u <= 0 && /*$rarities*/ ctx[12].r > 0 && /*$rarities*/ ctx[12].l > 0 && create_if_block_6(ctx);
     	let if_block7 = /*$rarities*/ ctx[12].l > 0 && create_if_block_5(ctx);
 
     	const block = {
@@ -3604,15 +3607,15 @@ var app = (function () {
     			attr_dev(button0, "id", "auto-fight");
     			attr_dev(button0, "style", button0_style_value = /*$auto_fight*/ ctx[6] ? "border-color: lime;" : "");
     			attr_dev(button0, "class", "svelte-150dccm");
-    			add_location(button0, file$3, 135, 3, 3629);
-    			add_location(b, file$3, 137, 42, 3894);
+    			add_location(button0, file$3, 136, 3, 3616);
+    			add_location(b, file$3, 138, 42, 3881);
     			attr_dev(h3, "id", "rarities");
     			attr_dev(h3, "class", "svelte-150dccm");
-    			add_location(h3, file$3, 138, 4, 3926);
+    			add_location(h3, file$3, 139, 4, 3913);
     			attr_dev(button1, "id", "fight-btn");
     			attr_dev(button1, "class", "svelte-150dccm");
     			toggle_class(button1, "disabled", /*$fighting*/ ctx[10]);
-    			add_location(button1, file$3, 136, 3, 3771);
+    			add_location(button1, file$3, 137, 3, 3758);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -3732,7 +3735,7 @@ var app = (function () {
     				if_block5 = null;
     			}
 
-    			if (/*$rarities*/ ctx[12].r > 0 && /*$rarities*/ ctx[12].l > 0) {
+    			if (/*$rarities*/ ctx[12].u <= 0 && /*$rarities*/ ctx[12].r > 0 && /*$rarities*/ ctx[12].l > 0) {
     				if (if_block6) ; else {
     					if_block6 = create_if_block_6(ctx);
     					if_block6.c();
@@ -3781,14 +3784,14 @@ var app = (function () {
     		block,
     		id: create_if_block_4.name,
     		type: "if",
-    		source: "(135:2) {#if $unlocked_fighting}",
+    		source: "(136:2) {#if $unlocked_fighting}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (140:5) {#if $rarities.c > 0}
+    // (141:5) {#if $rarities.c > 0}
     function create_if_block_12(ctx) {
     	let span;
     	let t0;
@@ -3803,7 +3806,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text("%");
     			set_style(span, "color", "#ddd");
-    			add_location(span, file$3, 139, 26, 3971);
+    			add_location(span, file$3, 140, 26, 3958);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -3823,14 +3826,14 @@ var app = (function () {
     		block,
     		id: create_if_block_12.name,
     		type: "if",
-    		source: "(140:5) {#if $rarities.c > 0}",
+    		source: "(141:5) {#if $rarities.c > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (141:5) {#if $rarities.c > 0 && $rarities.u > 0}
+    // (142:5) {#if $rarities.c > 0 && $rarities.u > 0}
     function create_if_block_11(ctx) {
     	let t;
 
@@ -3850,14 +3853,14 @@ var app = (function () {
     		block,
     		id: create_if_block_11.name,
     		type: "if",
-    		source: "(141:5) {#if $rarities.c > 0 && $rarities.u > 0}",
+    		source: "(142:5) {#if $rarities.c > 0 && $rarities.u > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (142:5) {#if $rarities.u > 0}
+    // (143:5) {#if $rarities.u > 0}
     function create_if_block_10(ctx) {
     	let span;
     	let t0;
@@ -3872,7 +3875,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text("%");
     			set_style(span, "color", "#B8E986");
-    			add_location(span, file$3, 141, 26, 4114);
+    			add_location(span, file$3, 142, 26, 4101);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -3892,14 +3895,14 @@ var app = (function () {
     		block,
     		id: create_if_block_10.name,
     		type: "if",
-    		source: "(142:5) {#if $rarities.u > 0}",
+    		source: "(143:5) {#if $rarities.u > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (143:5) {#if $rarities.u > 0 && $rarities.r > 0}
+    // (144:5) {#if $rarities.u > 0 && $rarities.r > 0}
     function create_if_block_9(ctx) {
     	let t;
 
@@ -3919,14 +3922,14 @@ var app = (function () {
     		block,
     		id: create_if_block_9.name,
     		type: "if",
-    		source: "(143:5) {#if $rarities.u > 0 && $rarities.r > 0}",
+    		source: "(144:5) {#if $rarities.u > 0 && $rarities.r > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (144:5) {#if $rarities.r > 0}
+    // (145:5) {#if $rarities.r > 0}
     function create_if_block_8(ctx) {
     	let span;
     	let t0;
@@ -3941,7 +3944,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text("%");
     			set_style(span, "color", "#48BAFF");
-    			add_location(span, file$3, 143, 26, 4261);
+    			add_location(span, file$3, 144, 26, 4248);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -3961,21 +3964,21 @@ var app = (function () {
     		block,
     		id: create_if_block_8.name,
     		type: "if",
-    		source: "(144:5) {#if $rarities.r > 0}",
+    		source: "(145:5) {#if $rarities.r > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (145:5) {#if $rarities.c > 0 || $rarities.u > 0}
+    // (146:5) {#if $rarities.c > 0 || $rarities.u > 0}
     function create_if_block_7(ctx) {
     	let br;
 
     	const block = {
     		c: function create() {
     			br = element("br");
-    			add_location(br, file$3, 144, 46, 4370);
+    			add_location(br, file$3, 145, 46, 4357);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, br, anchor);
@@ -3989,14 +3992,14 @@ var app = (function () {
     		block,
     		id: create_if_block_7.name,
     		type: "if",
-    		source: "(145:5) {#if $rarities.c > 0 || $rarities.u > 0}",
+    		source: "(146:5) {#if $rarities.c > 0 || $rarities.u > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (146:5) {#if $rarities.r > 0 && $rarities.l > 0}
+    // (147:5) {#if $rarities.u <= 0 && $rarities.r > 0 && $rarities.l > 0}
     function create_if_block_6(ctx) {
     	let t;
 
@@ -4016,14 +4019,14 @@ var app = (function () {
     		block,
     		id: create_if_block_6.name,
     		type: "if",
-    		source: "(146:5) {#if $rarities.r > 0 && $rarities.l > 0}",
+    		source: "(147:5) {#if $rarities.u <= 0 && $rarities.r > 0 && $rarities.l > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (147:5) {#if $rarities.l > 0}
+    // (148:5) {#if $rarities.l > 0}
     function create_if_block_5(ctx) {
     	let span;
     	let t0;
@@ -4038,7 +4041,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text("%");
     			set_style(span, "color", "#F8E71C");
-    			add_location(span, file$3, 146, 26, 4461);
+    			add_location(span, file$3, 147, 26, 4468);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -4058,14 +4061,14 @@ var app = (function () {
     		block,
     		id: create_if_block_5.name,
     		type: "if",
-    		source: "(147:5) {#if $rarities.l > 0}",
+    		source: "(148:5) {#if $rarities.l > 0}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (171:2) {:else}
+    // (172:2) {:else}
     function create_else_block_1(ctx) {
     	let button;
 
@@ -4075,7 +4078,7 @@ var app = (function () {
     			button.textContent = "?";
     			button.disabled = true;
     			attr_dev(button, "class", "svelte-150dccm");
-    			add_location(button, file$3, 170, 10, 5376);
+    			add_location(button, file$3, 171, 10, 5383);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -4090,14 +4093,14 @@ var app = (function () {
     		block,
     		id: create_else_block_1.name,
     		type: "else",
-    		source: "(171:2) {:else}",
+    		source: "(172:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (163:2) {#if $prestige.times >= 1}
+    // (164:2) {#if $prestige.times >= 1}
     function create_if_block_3(ctx) {
     	let button2;
     	let t0;
@@ -4132,16 +4135,16 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "Sell";
     			attr_dev(p, "class", "stat svelte-150dccm");
-    			add_location(p, file$3, 164, 3, 5115);
+    			add_location(p, file$3, 165, 3, 5122);
     			attr_dev(button0, "class", "buy-sell svelte-150dccm");
-    			add_location(button0, file$3, 166, 4, 5195);
+    			add_location(button0, file$3, 167, 4, 5202);
     			attr_dev(button1, "class", "buy-sell svelte-150dccm");
-    			add_location(button1, file$3, 167, 4, 5283);
+    			add_location(button1, file$3, 168, 4, 5290);
     			attr_dev(div, "class", "orb-info svelte-150dccm");
-    			add_location(div, file$3, 165, 3, 5168);
+    			add_location(div, file$3, 166, 3, 5175);
     			attr_dev(button2, "class", "trade-btn svelte-150dccm");
     			attr_dev(button2, "id", "light-btn");
-    			add_location(button2, file$3, 163, 2, 5065);
+    			add_location(button2, file$3, 164, 2, 5072);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button2, anchor);
@@ -4181,14 +4184,14 @@ var app = (function () {
     		block,
     		id: create_if_block_3.name,
     		type: "if",
-    		source: "(163:2) {#if $prestige.times >= 1}",
+    		source: "(164:2) {#if $prestige.times >= 1}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (187:2) {:else}
+    // (188:2) {:else}
     function create_else_block(ctx) {
     	let button0;
     	let t1;
@@ -4203,10 +4206,10 @@ var app = (function () {
     			button1.textContent = "?";
     			button0.disabled = true;
     			attr_dev(button0, "class", "svelte-150dccm");
-    			add_location(button0, file$3, 187, 2, 6052);
+    			add_location(button0, file$3, 188, 2, 6059);
     			button1.disabled = true;
     			attr_dev(button1, "class", "svelte-150dccm");
-    			add_location(button1, file$3, 188, 2, 6082);
+    			add_location(button1, file$3, 189, 2, 6089);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -4225,14 +4228,14 @@ var app = (function () {
     		block,
     		id: create_else_block.name,
     		type: "else",
-    		source: "(187:2) {:else}",
+    		source: "(188:2) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (172:2) {#if $got_mana}
+    // (173:2) {#if $got_mana}
     function create_if_block_2(ctx) {
     	let button2;
     	let t0;
@@ -4300,27 +4303,27 @@ var app = (function () {
     			button4 = element("button");
     			button4.textContent = "Sell";
     			attr_dev(p0, "class", "stat svelte-150dccm");
-    			add_location(p0, file$3, 173, 3, 5482);
+    			add_location(p0, file$3, 174, 3, 5489);
     			attr_dev(button0, "class", "buy-sell svelte-150dccm");
-    			add_location(button0, file$3, 175, 4, 5563);
+    			add_location(button0, file$3, 176, 4, 5570);
     			attr_dev(button1, "class", "buy-sell svelte-150dccm");
-    			add_location(button1, file$3, 176, 4, 5653);
+    			add_location(button1, file$3, 177, 4, 5660);
     			attr_dev(div0, "class", "orb-info svelte-150dccm");
-    			add_location(div0, file$3, 174, 3, 5536);
+    			add_location(div0, file$3, 175, 3, 5543);
     			attr_dev(button2, "class", "trade-btn svelte-150dccm");
     			attr_dev(button2, "id", "homing-btn");
-    			add_location(button2, file$3, 172, 2, 5430);
+    			add_location(button2, file$3, 173, 2, 5437);
     			attr_dev(p1, "class", "stat svelte-150dccm");
-    			add_location(p1, file$3, 180, 3, 5789);
+    			add_location(p1, file$3, 181, 3, 5796);
     			attr_dev(button3, "class", "buy-sell svelte-150dccm");
-    			add_location(button3, file$3, 182, 4, 5869);
+    			add_location(button3, file$3, 183, 4, 5876);
     			attr_dev(button4, "class", "buy-sell svelte-150dccm");
-    			add_location(button4, file$3, 183, 4, 5957);
+    			add_location(button4, file$3, 184, 4, 5964);
     			attr_dev(div1, "class", "orb-info svelte-150dccm");
-    			add_location(div1, file$3, 181, 3, 5842);
+    			add_location(div1, file$3, 182, 3, 5849);
     			attr_dev(button5, "class", "trade-btn svelte-150dccm");
     			attr_dev(button5, "id", "spore-btn");
-    			add_location(button5, file$3, 179, 2, 5739);
+    			add_location(button5, file$3, 180, 2, 5746);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button2, anchor);
@@ -4381,14 +4384,14 @@ var app = (function () {
     		block,
     		id: create_if_block_2.name,
     		type: "if",
-    		source: "(172:2) {#if $got_mana}",
+    		source: "(173:2) {#if $got_mana}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (199:2) {#if $prestige.times >= 1}
+    // (200:2) {#if $prestige.times >= 1}
     function create_if_block_1(ctx) {
     	let span;
     	let t0;
@@ -4403,8 +4406,8 @@ var app = (function () {
     			t1 = text(t1_value);
     			br = element("br");
     			set_style(span, "color", "#00cccc");
-    			add_location(span, file$3, 199, 3, 6756);
-    			add_location(br, file$3, 199, 71, 6824);
+    			add_location(span, file$3, 200, 3, 6763);
+    			add_location(br, file$3, 200, 71, 6831);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -4425,14 +4428,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1.name,
     		type: "if",
-    		source: "(199:2) {#if $prestige.times >= 1}",
+    		source: "(200:2) {#if $prestige.times >= 1}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (202:2) {#if $got_mana}
+    // (203:2) {#if $got_mana}
     function create_if_block(ctx) {
     	let span0;
     	let t0;
@@ -4456,10 +4459,10 @@ var app = (function () {
     			t3 = text("Spore Orbs: ");
     			t4 = text(t4_value);
     			set_style(span0, "color", "#cccc00");
-    			add_location(span0, file$3, 202, 3, 6858);
-    			add_location(br, file$3, 202, 73, 6928);
+    			add_location(span0, file$3, 203, 3, 6865);
+    			add_location(br, file$3, 203, 73, 6935);
     			set_style(span1, "color", "#ffaa00");
-    			add_location(span1, file$3, 203, 3, 6936);
+    			add_location(span1, file$3, 204, 3, 6943);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span0, anchor);
@@ -4487,7 +4490,7 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(202:2) {#if $got_mana}",
+    		source: "(203:2) {#if $got_mana}",
     		ctx
     	});
 
@@ -4653,54 +4656,54 @@ var app = (function () {
     			t36 = space();
     			create_component(artifacts.$$.fragment);
     			set_style(span0, "font-weight", "normal");
-    			add_location(span0, file$3, 132, 20, 3512);
+    			add_location(span0, file$3, 133, 20, 3499);
     			attr_dev(h30, "id", "mana");
     			attr_dev(h30, "class", "svelte-150dccm");
-    			add_location(h30, file$3, 132, 1, 3493);
+    			add_location(h30, file$3, 133, 1, 3480);
     			attr_dev(div0, "id", "hold-btn");
     			attr_dev(div0, "class", "svelte-150dccm");
-    			add_location(div0, file$3, 133, 1, 3579);
+    			add_location(div0, file$3, 134, 1, 3566);
     			attr_dev(p, "class", "stat svelte-150dccm");
-    			add_location(p, file$3, 156, 3, 4783);
+    			add_location(p, file$3, 157, 3, 4790);
     			attr_dev(button0, "class", "buy-sell svelte-150dccm");
-    			add_location(button0, file$3, 158, 4, 4863);
+    			add_location(button0, file$3, 159, 4, 4870);
     			attr_dev(button1, "class", "buy-sell svelte-150dccm");
-    			add_location(button1, file$3, 159, 4, 4951);
+    			add_location(button1, file$3, 160, 4, 4958);
     			attr_dev(div1, "class", "orb-info svelte-150dccm");
-    			add_location(div1, file$3, 157, 3, 4836);
+    			add_location(div1, file$3, 158, 3, 4843);
     			attr_dev(button2, "class", "trade-btn svelte-150dccm");
     			attr_dev(button2, "id", "basic-btn");
-    			add_location(button2, file$3, 155, 2, 4733);
+    			add_location(button2, file$3, 156, 2, 4740);
     			button3.disabled = true;
     			attr_dev(button3, "class", "svelte-150dccm");
-    			add_location(button3, file$3, 190, 2, 6120);
-    			add_location(br0, file$3, 191, 55, 6241);
-    			add_location(em, file$3, 191, 67, 6253);
+    			add_location(button3, file$3, 191, 2, 6127);
+    			add_location(br0, file$3, 192, 55, 6248);
+    			add_location(em, file$3, 192, 67, 6260);
     			attr_dev(h31, "id", "basic-info");
     			attr_dev(h31, "class", "svelte-150dccm");
-    			add_location(h31, file$3, 191, 2, 6188);
-    			add_location(br1, file$3, 192, 61, 6337);
+    			add_location(h31, file$3, 192, 2, 6195);
+    			add_location(br1, file$3, 193, 61, 6344);
     			attr_dev(h32, "id", "light-info");
     			attr_dev(h32, "class", "svelte-150dccm");
-    			add_location(h32, file$3, 192, 2, 6278);
-    			add_location(br2, file$3, 193, 64, 6446);
+    			add_location(h32, file$3, 193, 2, 6285);
+    			add_location(br2, file$3, 194, 64, 6453);
     			attr_dev(h33, "id", "homing-info");
     			attr_dev(h33, "class", "svelte-150dccm");
-    			add_location(h33, file$3, 193, 2, 6384);
+    			add_location(h33, file$3, 194, 2, 6391);
     			attr_dev(h34, "id", "spore-info");
     			attr_dev(h34, "class", "svelte-150dccm");
-    			add_location(h34, file$3, 194, 2, 6497);
+    			add_location(h34, file$3, 195, 2, 6504);
     			attr_dev(div2, "id", "orb-row");
     			attr_dev(div2, "class", "svelte-150dccm");
-    			add_location(div2, file$3, 154, 1, 4712);
+    			add_location(div2, file$3, 155, 1, 4719);
     			set_style(span1, "color", "#ccc");
-    			add_location(span1, file$3, 197, 2, 6654);
-    			add_location(br3, file$3, 197, 67, 6719);
+    			add_location(span1, file$3, 198, 2, 6661);
+    			add_location(br3, file$3, 198, 67, 6726);
     			attr_dev(h35, "id", "orb-stats");
     			attr_dev(h35, "class", "svelte-150dccm");
-    			add_location(h35, file$3, 196, 1, 6632);
+    			add_location(h35, file$3, 197, 1, 6639);
     			attr_dev(main, "class", "svelte-150dccm");
-    			add_location(main, file$3, 131, 0, 3485);
+    			add_location(main, file$3, 132, 0, 3472);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -4941,7 +4944,7 @@ var app = (function () {
     	set_store_value(afford_fight, $afford_fight = () => $cash >= $fight_cost, $afford_fight);
 
     	const click_fight = () => {
-    		if ($cash < $fight_cost || $fighting) return;
+    		if ($cash < $fight_cost) return;
     		set_store_value(cash, $cash -= $fight_cost, $cash);
     		set_store_value(fighting, $fighting = true, $fighting);
     		set_store_value(canvas_toggled, $canvas_toggled = true, $canvas_toggled);

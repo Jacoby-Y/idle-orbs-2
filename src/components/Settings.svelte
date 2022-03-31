@@ -1,7 +1,7 @@
 <script>
 	import { render_mode, get_data, load_data, max_render } from "../stores.js";
 	export let open;
-	export let settings;
+	export let settings = undefined;
 
 	let get_data_str = "";
 	let load_data_str = "";

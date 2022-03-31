@@ -1,3 +1,10 @@
+## v0.8.2
+- Squashed more bugs
+- Added info text for when hovering over fight button
+- replaced orb value doubler with a linear percentage increase 
+- Increased cash per second calculation accuracy 
+- Fixed a svelte warning
+
 ## v0.8.1
 - Squashed some bugs
 

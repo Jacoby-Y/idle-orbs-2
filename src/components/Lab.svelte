@@ -6,6 +6,14 @@
 	} from "../stores.js";
 	import Artifacts from "./Artifacts.svelte";
 
+	let hover_fight = false;
+	let fight_btn = null
+	$: {if (fight_btn != null){
+		fight_btn.onmouseenter = ()=>{ hover_fight = true; };
+		fight_btn.onmouseleave = ()=>{ hover_fight = false; };
+	}}
+	// $: console.log(hover_fight);
+
 	$: if (!$unlocked_fighting && $prestige.times >= 3) $unlocked_fighting = true;
 	$: if (!$got_mana && $mana > 0) $got_mana = true;
 	$: {
@@ -135,7 +143,7 @@
 	<div id="hold-btn">
 		{#if $unlocked_fighting}
 			<button id="auto-fight" style="{$auto_fight ? "border-color: lime;" : ""}" on:click={()=> $auto_fight = !$auto_fight}>Auto Fight?</button>
-			<button on:click={()=> click_fight()} class:disabled={$fighting} id="fight-btn">
+			<button on:click={()=> click_fight()} class:disabled={$fighting} id="fight-btn" bind:this={fight_btn}>
 				Monster Tower Lvl {$next_tower_lvl} | <b>${fnum($fight_cost)}</b>
 				<h3 id="rarities">
 					{#if $rarities.c > 0}<span style="color: #ddd;">Common: {$rarities.c}%</span>{/if} 
@@ -155,7 +163,7 @@
 	</div>
 	<div id="orb-row">
 		<button class="trade-btn" id="basic-btn">Basic
-			<p class="stat">Dmg/Value: {$basic_orb.value}</p>
+			<p class="stat">Value: {$basic_orb.value}</p>
 			<div class="orb-info">
 				<button class="buy-sell" on:click={buy_basic}>Buy ${fnum($basic_orb.cost)}</button>
 				<button class="buy-sell" on:click={sell_basic}>Sell</button>
@@ -163,7 +171,7 @@
 		</button>
 		{#if $prestige.times >= 1}
 		<button class="trade-btn" id="light-btn">Light
-			<p class="stat">Dmg/Value: {$light_orb.value}</p>
+			<p class="stat">Value: {$light_orb.value}</p>
 			<div class="orb-info">
 				<button class="buy-sell" on:click={buy_light}>Buy ${fnum($light_orb.cost)}</button>
 				<button class="buy-sell" on:click={sell_light}>Sell</button>
@@ -172,14 +180,14 @@
 		{:else} <button disabled>?</button> {/if}
 		{#if $got_mana}
 		<button class="trade-btn" id="homing-btn">Homing
-			<p class="stat">Dmg/Value: {$homing_orb.value}</p>
+			<p class="stat">Value: {$homing_orb.value}</p>
 			<div class="orb-info">
 				<button class="buy-sell" on:click={buy_homing}>Buy {fnum($homing_orb.cost)}₪</button>
 				<button class="buy-sell" on:click={sell_homing}>Sell</button>
 			</div>
 		</button>
 		<button class="trade-btn" id="spore-btn">Spore
-			<p class="stat">Dmg/Value: {$spore_orb.value}</p>
+			<p class="stat">Value: {$spore_orb.value}</p>
 			<div class="orb-info">
 				<button class="buy-sell" on:click={buy_spore}>Buy {fnum($spore_orb.cost)}₪</button>
 				<button class="buy-sell" on:click={sell_spore}>Sell</button>
@@ -194,6 +202,7 @@
 		<h3 id="light-info">Low gravity and drag, but normal value.<br>Like an aerodynamic ping pong ball!</h3>
 		<h3 id="homing-info">Lower value, but orbits around the mouse.<br>Buy a bunch and watch the satisfaction!</h3>
 		<h3 id="spore-info">Normal gravity, drag, and value. Spawns smaller, lower value, orbs that despawn after a few seconds.</h3>
+		<h3 id="fight-info" style="display: {hover_fight ? "block" : ""};">Use your orbs in The Monster Tower to get Mana.<br>An orb's damage is equal to its cash value.</h3>
 	</div>
 	<h3 id="orb-stats">
 		<span style="color: #ccc;">Basic Orbs: {$basic_orb.amount}</span><br>
@@ -217,15 +226,6 @@
 		display: grid;
 		grid-template-rows: max-content 30% repeat(2, max-content);
 		padding: 1rem;
-	}
-	#img {
-		position: absolute;
-		left: 50%;
-		top: 50%;
-		transform: translate(-50%, -50%);
-		width: 5rem;
-		height: 5rem;
-		border: 1px solid white;
 	}
 	#info {
 		position: absolute;
@@ -364,5 +364,6 @@
 	#light-btn:hover ~ #light-info { display: block; }
 	#homing-btn:hover ~ #homing-info { display: block; }
 	#spore-btn:hover ~ #spore-info { display: block; }
+	/* #fight-btn:hover, #fight-info { display: block; } */
 	/* #basic-btn:hover ~ #basic-info { display: block; } */
 </style>

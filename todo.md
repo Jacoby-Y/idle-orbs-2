@@ -1,18 +1,17 @@
 ToDo: 
 - probably color change for Lab
 - Settings style change (looks ugly!!!)
+- Boss every 5th? floor
 
 Notes: 
 - Different fighting areas for different artifacts?
 - Restart with a % of money/mana
-- gui that give info on the monster tower
 - Every 5 levels there's a boss that gives an artifact?
 - Total prestige? (New Game+)
 - Fighting bug (beat monster, then pause) (honestly, it's a feature)
 
 
 Events:
-- Orb fountain
 - Double Money
 
 New Game+:
@@ -34,4 +33,64 @@ Artifacts:
 ex: 100 = 10 * (1.2^x)
 
 
-	
+
+Frequency after 10 secs: < power lvl: orb count | mean>
+- 1: 534, 569, 558, 562, 531, 546, 532, 562, 545, 552 | 549
+- 2: 626, 629, 666, 658, 638, 655, 648, 642, 640, 638 | 644
+- 3: 674, 705, 720, 714, 758, 708, 745, 731, 726, 738 | 722
+- 4: 744, 730, 757, 739, 769, 775, 741, 762, 737, 770 | 752
+
+Power: 30,   Times: 576, 569, 534, 565, 522, 534, 570, 538, 566, 546          | 552
+Power: 32.5, Times: 655, 646, 632, 633, 649, 653, 642, 638, 633, 650          | 643
+Power: 35,   Times: 718, 720, 722, 734, 705, 718, 724, 730, 733, 734          | 724
+Power: 37.5, Times: 732, 752, 732, 735, 735, 755, 741, 741, 748, 749          | 742
+Power: 40,   Times: 807, 810, 827, 811, 836, 836, 815, 382, 816, 818          | 776
+Power: 42.5, Times: 892, 928, 919, 927, 874, 888, 871, 905, 899, 927          | 903
+Power: 45,   Times: 917, 922, 908, 889, 930, 894, 875, 903, 930, 900          | 907
+Power: 47.5, Times: 928, 895, 945, 909, 900, 898, 905, 873, 912, 949          | 911
+Power: 50, Times: 953, 1002, 925, 978, 965, 979, 961, 974, 950, 971           | 966
+Power: 52.5, Times: 1007, 936, 977, 961, 981, 994, 973, 969, 988, 969         | 976
+Power: 55, Times: 979, 956, 962, 938, 960, 957, 962, 948, 950, 949            | 956
+Power: 57.5, Times: 954, 1040, 1072, 1048, 1131, 1104, 1108, 1097, 1051, 1077 | 1068
+Power: 60, Times: 1094, 1019, 1035, 1067, 1053, 1090, 1023, 1072, 1056, 1010  | 1052
+Power: 62.5, Times: 1036, 1015, 1058, 1033, 998, 1036, 1004, 1030, 1034, 1031 | 1028
+Power: 65, Times: 1070, 1176, 1243, 1211, 1201, 1212, 1268, 1284, 1241, 1242  | 1215
+
+< time : # increase to next : % increase>
+ 552 : 0
+ 643 : 91
+ 724 : 81
+ 742 : 52
+ 776 : 34
+ 903 : 127
+ 907 : 4
+ 911 : 4
+ 966 : 55
+ 976 : 10
+ 956 : -20
+1068 : 112
+1052 : -16
+1028 : -14
+1215 : 187
+
+Mean Times: 552, 643, 724, 742, 776, 903, 907, 911, 966, 976, 956, 1068, 1052, 1028, 1215
+Time Increases: 91, 81, 52, 34, 127, 4, 4, 55, 10, -20, 112, -16, -14, 187
+Mean Time Increase: 50.5
+Conclusion: On Average every 2.5 power increase over 30, orbs get collected 50.5 more times
+
+100 orbs over 10 seconds get collected 50.5 more times per 2.5 power over 30 for bounce power
+1 orbs
+1 sec
+.0505 per 2.5
+
+100 orbs
+10 secs
+552 collections
+
+collection per orb 552/100 == 5.52 per 10 seconds == 0.552 per second
+
+s = seconds
+v = value
+p = (power-30) / 2.5
+
+v * ((0.552+(0.0505*p))*s)

@@ -2,7 +2,7 @@
 	import { onMount } from "svelte";
 	import { 
 		timer, cash, mana, collector_pos, bounce, render_mode, fight_cost,
-		basic_orb, light_orb, homing_orb, auto_fight, afford_fight, orb_double,
+		basic_orb, light_orb, homing_orb, auto_fight, afford_fight, orb_mult,
 		canvas_toggled as toggled, fighting, shifting, ctrling, rarities, next_tower_lvl, prestige, spore_orb, clear_storage, offline_time, max_render,
 		} from "../stores.js";
 	import { manager, small_explosion, big_explosion } from "../particles.js";
@@ -37,17 +37,17 @@
 	}
 	$: {
 		basic_orb.update( v => (
-			v.value = (1*(2**$orb_double.value)) + 0.5*$prestige.times,
+			v.value = (1*(1+($orb_mult/100))) + 0.5*$prestige.times,
 		v) );
 		light_orb.update( v => (
-			v.value = (1*(2**$orb_double.value)) + 0.5*$prestige.times,
+			v.value = (1*(1+($orb_mult/100))) + 0.5*$prestige.times,
 		v) );
 		homing_orb.update( v => (
-			v.value = (0.5*(2**$orb_double.value)) + 0.5*$prestige.times,
+			v.value = (0.5*(1+($orb_mult/100))) + 0.5*$prestige.times,
 		v) );
 		spore_orb.update( v => (
-			v.value = (1*(2**$orb_double.value)) + 1*$prestige.times,
-			v.sub_value = (0.2*(2**$orb_double.value)) + 0.2*$prestige.times,
+			v.value = (1*(1+($orb_mult/100))) + 1*$prestige.times,
+			v.sub_value = (0.2*(1+($orb_mult/100))) + 0.2*$prestige.times,
 		v) );
 	}
 	$: { $prestige.times;
@@ -133,6 +133,7 @@
 			life_span: 100,
 		}
 		let cash_hold = 0;
+		let coll_num = 0;
 
 		const push_to = (orb, pos1, pos2, mult)=>{
 			const ang = Math.atan2((pos1.y-10)-pos2.y, (pos1.x-10)-pos2.x);
@@ -281,6 +282,7 @@
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
 							cash_hold += this.value.basic; //$basic_orb.value + (($basic_orb.value * basic.over)/basic.l.length);
+							coll_num++;
 						}
 					} else {
 						const hit = collide_monster(orb);
@@ -319,6 +321,7 @@
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
 							cash_hold += this.value.light; //$light_orb.value + (($light_orb.value * light.over)/light.l.length);
+							coll_num++;
 						}
 					} else {
 						const hit = collide_monster(orb);
@@ -373,6 +376,7 @@
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
 							cash_hold += this.value.homing; //$homing_orb.value + (($homing_orb.value * homing.over)/homing.l.length);
+							coll_num++;
 						}
 					} else {
 						const hit = collide_monster(orb);
@@ -408,6 +412,7 @@
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
 							cash_hold += this.value.spore; //$spore_orb.value + (($spore_orb.value * spore.over)/spore.l.length);
+							coll_num++;
 						}
 					} else {
 						const hit = collide_monster(orb);
@@ -440,6 +445,7 @@
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
 							cash_hold += this.value.sub_spore; //$spore_orb.sub_value + (($spore_orb.sub_value * sub_spore.over)/sub_spore.l.length);
+							coll_num++;
 						}
 					} else {
 						const hit = collide_monster(orb);
@@ -479,6 +485,7 @@
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
 							cash_hold += total_value/10;//($basic_orb.value*10) + ((($basic_orb.value*10) * basic.over)/basic.l.length);
+							coll_num++;
 						}
 					}
 
@@ -586,35 +593,33 @@
 				get homing() { return $homing_orb.value + (($homing_orb.value * homing.over)/homing.l.length); },
 				get spore() { return $spore_orb.value + (($spore_orb.value * spore.over)/spore.l.length); },
 				get sub_spore() { return $spore_orb.sub_value + (($spore_orb.sub_value * spore.over)/spore.l.length); },
-			}
+			},
+			get coll_num() { return coll_num; },
+			set coll_num(x) { coll_num = x; },
 		}
 	})();
 
 	//#endregion
 	//#region | Cash/Sec
 	let calc_cps = 0;
-	let first_cps_set = false;
 	let offline_get = false;
 	let offline_gain = 0;
 	let show_earnings = true;
 	const check_cps = ()=>{
-		if (offline_get) return;
-		if (!offline_get && first_cps_set) {
-			offline_get = true;
-			offline_gain = calc_cps*$offline_time;
-			$cash += offline_gain;
-		}
-		if (!first_cps_set) first_cps_set = true;
+		// console.log(`Check cps! offline: ${calc_cps*$offline_time}`);
+		offline_get = true;
+		offline_gain = calc_cps*$offline_time;
+		$cash += offline_gain;
 	}
 	$: { // $basic_orb; $light_orb; $spore_orb; $homing_orb;
 		calc_cps = 
-			(orbs.total.basic * $basic_orb.value +
+			((orbs.total.basic * $basic_orb.value +
 			orbs.total.light * $light_orb.value +
 			orbs.total.spore * $spore_orb.value + 
-			orbs.total.sub_spore * $spore_orb.sub_value)*($bounce.auto_unlocked ? 1 : 0)*(1 + ($bounce.power-30)/2.5 * 0.025) + 
+			orbs.total.sub_spore * $spore_orb.sub_value) * (0.552+(0.0505*(($bounce.power-30)/2.5))))*($bounce.auto_unlocked ? 1 : 0) + 
 			(orbs.total.homing * $homing_orb.value * 2);
 		//
-		check_cps();
+		if (!offline_get) check_cps();
 	}
 
 	let total_value = 0;
@@ -757,6 +762,7 @@
 		else if (k == ")") homing_orb.update( v => (v.amount += 20000000, v));
 		else if (k == "h") monster_manager.hit(1e10);
 		else if (k == "R") clear_storage();
+		else if (k == "f") (console.log("Collecting orbs..."), collect_freq());
 		else if (k == "S") {
 			basic_orb.update( v => (v.amount += 200, v));  
 			light_orb.update( v => (v.amount += 200, v));  
@@ -995,6 +1001,25 @@
 	}
 
 	let debug = false;
+	
+	let coll_total = 0;
+	let numbers = [];
+	const collect_freq = ()=>{
+		orbs.coll_num = 0;
+		setTimeout(() => {
+			// console.log(`Collected ${orbs.coll_num} Orbs in 10 seconds`);
+			numbers.push(orbs.coll_num);
+			coll_total++;
+			if (coll_total < 10) collect_freq();
+			else {
+				console.log(`Power: ${$bounce.power}, Times: ${numbers.join(", ")} | ${Math.round(numbers.reduce((p,c)=>p+c)/numbers.length)}`);
+				numbers = [];
+				coll_total = 0;
+				$bounce.power += 2.5;
+				collect_freq();
+			}
+		}, 10000);
+	}
 	//#endregion
 
 </script>

@@ -58,10 +58,11 @@ export const starting_cash = w("starting_cash", {
 	cost: 25,
 	amount: 0,
 });
-export const orb_double = w("orb_double", {
-	cost: 50,
-	value: 0,
-});
+// export const orb_double = w("orb_double", {
+// 	cost: 50,
+// 	value: 0,
+// });
+export const orb_mult = w("orb_mult", 0);
 //#endregion
 //#region | Orbs
 export const basic_orb = w("basic_orb", { //-! DEBUG

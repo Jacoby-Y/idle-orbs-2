@@ -23,7 +23,7 @@
 	<Shop/>
 	<Lab/>
 	<img on:click={toggled_settings} id="settings" src="./assets/settings.svg" alt="Settings">
-	<Settings bind:settings bind:open={settings_open}/>
+	<Settings bind:settings={settings} bind:open={settings_open}/>
 </main>
 
 <style>

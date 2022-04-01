@@ -6,6 +6,9 @@
 	} from "../stores.js";
 	import Artifacts from "./Artifacts.svelte";
 
+	// $: console.log($homing_orb);
+
+	//#region | Fight Stuff
 	let hover_fight = false;
 	let fight_btn = null
 	$: {if (fight_btn != null){
@@ -60,7 +63,7 @@
 		}
 	}
 	$afford_fight = ()=> $cash >= $fight_cost;
-
+	//#endregion
 	//#region | Fight Button
 	$: $fight_cost = 1e3 * (1 + 1.2 * ($next_tower_lvl-1));
 
@@ -71,10 +74,10 @@
 		$canvas_toggled = true;
 	}
 	//#endregion
-
+	//#region | Total Orbs
 	let total_orbs = 0;
 	$: total_orbs = $basic_orb.amount + $light_orb.amount + $homing_orb.amount + $spore_orb.amount;
-
+	//#endregion
 	//#region | Basic Orb
 	const buy_basic = ()=>{
 		if ($cash < $basic_orb.cost) return;
@@ -110,28 +113,28 @@
 	const buy_homing = ()=>{
 		if ($mana < $homing_orb.cost) return;
 		$mana -= $homing_orb.cost;
-		homing_orb.update( v => (v.cost += 2, v.amount++, v) );
+		homing_orb.update( v => ( v.amount++, v) );
 		if ($shifting) buy_homing();
 		if ($ctrling) run_n(buy_homing, 9);
 	};
 	const sell_homing = ()=>{
 		if (total_orbs <= 1) return;
 		$mana += Math.floor($homing_orb.cost/2.2);
-		homing_orb.update( v => (v.cost -= 2, v.amount--, v) );
+		homing_orb.update( v => (v.amount--, v) );
 	}
 	//#endregion
 	//#region | Spore Orb
 	const buy_spore = ()=>{
 		if ($mana < $spore_orb.cost) return;
 		$mana -= $spore_orb.cost;
-		spore_orb.update( v => (v.cost += 2, v.amount++, v) );
+		spore_orb.update( v => (v.amount++, v) );
 		if ($shifting) buy_spore();
 		if ($ctrling) run_n(buy_spore, 9);
 	};
 	const sell_spore = ()=>{
 		if (total_orbs <= 1) return;
 		$mana += Math.floor($spore_orb.cost/2.2);
-		spore_orb.update( v => (v.cost -= 2, v.amount--, v) );
+		spore_orb.update( v => (v.amount--, v) );
 	}
 	//#endregion
 	//#endregion

@@ -13,8 +13,8 @@
 	<div class="sect">
 		<h3 class="sect-title">Rendering Mode</h3>
 		<div class="rendering-row">
-			<button class:selected={$render_mode == 0} on:click={()=> $render_mode = 0}>Squares</button>
 			<button class:selected={$render_mode == 1} on:click={()=> $render_mode = 1}>Circles</button>
+			<button class:selected={$render_mode == 0} on:click={()=> $render_mode = 0}>Squares</button>
 			<button class:selected={$render_mode == 2} on:click={()=> $render_mode = 2}>Sand</button>
 			<button class:selected={$render_mode == 3} on:click={()=> $render_mode = 3}>Pixelated</button>
 			<button class:selected={$render_mode == 4} on:click={()=> $render_mode = 4}>None</button>

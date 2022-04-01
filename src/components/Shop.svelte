@@ -49,8 +49,8 @@
 		$cash = $starting_cash.amount;
 		basic_orb.update( v => (v.amount = 1, v.cost = 50, v));
 		light_orb.update( v => (v.amount = 0, v.cost = 100, v));
-		homing_orb.update( v => (v.amount = 0, v.cost = 3, v));
-		spore_orb.update( v => (v.amount = 0, v.cost = 3, v));
+		homing_orb.update( v => (v.amount = 0, v));
+		spore_orb.update( v => (v.amount = 0, v));
 		$bounce = {
 			power: 30,
 			power_cost: 250,

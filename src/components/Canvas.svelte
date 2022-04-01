@@ -8,6 +8,8 @@
 	import { manager, small_explosion, big_explosion } from "../particles.js";
 	import { fnum } from "../functions.js";
  
+	const get_orb_bonus = base => base*((1+$orb_mult/100) + 0.5*$prestige.times);
+
 	//#region | Orb Stuff
 	const reset_orbs = ()=>{
 		// console.log($basic_orb);
@@ -37,17 +39,17 @@
 	}
 	$: {
 		basic_orb.update( v => (
-			v.value = (1*(1+($orb_mult/100))) + 0.5*$prestige.times,
+			v.value = get_orb_bonus(1),
 		v) );
 		light_orb.update( v => (
-			v.value = (1*(1+($orb_mult/100))) + 0.5*$prestige.times,
+			v.value = get_orb_bonus(1),
 		v) );
 		homing_orb.update( v => (
-			v.value = (0.5*(1+($orb_mult/100))) + 0.5*$prestige.times,
+			v.value = get_orb_bonus(4),
 		v) );
 		spore_orb.update( v => (
-			v.value = (1*(1+($orb_mult/100))) + 1*$prestige.times,
-			v.sub_value = (0.2*(1+($orb_mult/100))) + 0.2*$prestige.times,
+			v.value = get_orb_bonus(6),
+			v.sub_value = get_orb_bonus(0.5),
 		v) );
 	}
 	$: { $prestige.times;
@@ -375,7 +377,7 @@
 
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
-							cash_hold += this.value.homing; //$homing_orb.value + (($homing_orb.value * homing.over)/homing.l.length);
+							cash_hold += this.value.homing; 
 							coll_num++;
 						}
 					} else {
@@ -553,6 +555,7 @@
 					const orb = basic.l[i];
 					if (orb.y < 600-$bounce.size-30) continue;
 
+					orb.vx += Math.random()-0.5;
 					orb.vy -= ($bounce.power+(Math.random()*-5));
 					if (pos != null) orb.vx += ((pos.x-10-orb.x)/100)*(Math.random()*0.5+0.5);
 					orb.grounded = false;
@@ -561,6 +564,7 @@
 					const orb = light.l[i];
 					if (orb.y < 600-$bounce.size-30) continue;
 
+					orb.vx += Math.random()-0.5;
 					if (orb.vy > 0) orb.vy = -1*($bounce.power-(Math.random()*-5));
 					else orb.vy -= ($bounce.power+(Math.random()*-5));
 					if (pos != null) orb.vx += ((pos.x-10-orb.x)/100)*(Math.random()*0.5+0.5);
@@ -570,6 +574,7 @@
 					const orb = spore.l[i];
 					if (orb.y < 600-$bounce.size-30) continue;
 
+					orb.vx += Math.random()-0.5;
 					orb.vy -= ($bounce.power+(Math.random()*-5));
 					if (pos != null) orb.vx += ((pos.x-10-orb.x)/100)*(Math.random()*0.5+0.5);
 					orb.grounded = false;
@@ -618,6 +623,7 @@
 			orbs.total.spore * $spore_orb.value + 
 			orbs.total.sub_spore * $spore_orb.sub_value) * (0.552+(0.0505*(($bounce.power-30)/2.5))))*($bounce.auto_unlocked ? 1 : 0) + 
 			(orbs.total.homing * $homing_orb.value * 2);
+		calc_cps = Math.round(calc_cps);
 		//
 		if (!offline_get) check_cps();
 	}
@@ -644,7 +650,8 @@
 	let fps = 0;
 	let before_frame = Date.now();
 	let after_frame = Date.now();
-	let fps_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+	let fps_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+	let min_fps = 1000;
 	let fps_index = 0;
 	const main_loop = (v)=>{
 		if (pause && !step) return;
@@ -685,11 +692,13 @@
 		if ($fighting) monster_manager.draw();
 
 		after_frame = Date.now();
-
-		fps_list[fps_index] = Math.round(1000/(after_frame-before_frame));
+		const frame_time = Math.round(1000/(after_frame-before_frame));
+		fps_list[fps_index] = frame_time;
+		min_fps = Math.min(min_fps, frame_time);
 		if (fps_index >= fps_list.length-1) fps_index = 0;
 		else fps_index++;
 		fps = Math.min(1000, Math.round(fps_list.reduce((p, c)=> p+c)/fps_list.length));
+		// console.log(fps);
 	};
 	onMount(()=>{
 		ctx = canvas.getContext("2d");
@@ -762,7 +771,8 @@
 		else if (k == ")") homing_orb.update( v => (v.amount += 20000000, v));
 		else if (k == "h") monster_manager.hit(1e10);
 		else if (k == "R") clear_storage();
-		else if (k == "f") (console.log("Collecting orbs..."), collect_freq());
+		else if (k == "f") min_fps = 1000;
+		// else if (k == "f") (console.log("Collecting orbs..."), collect_freq());
 		else if (k == "S") {
 			basic_orb.update( v => (v.amount += 200, v));  
 			light_orb.update( v => (v.amount += 200, v));  
@@ -777,7 +787,22 @@
 		if (!debug) return;
 		if (k == "c") $cash += 1e5;
 	};
-	window.onblur = ()=> $shifting = $ctrling = false;
+	let blur_time = Date.now();
+	let blur_cash = $cash;
+	window.onblur = ()=> { 
+		$shifting = $ctrling = false; 
+		blur_time = Date.now();
+		blur_cash = $cash;
+	}
+	window.onfocus = ()=>{
+		const inactive_time = Math.round((Date.now() - blur_time)/1000);
+		const inactive_cash = $cash - blur_cash;
+		const calc_inactive = inactive_time*calc_cps;
+		// console.log(`Cash: ${$cash}\nInactive cash: ${inactive_cash}\ncalc_cash: ${inactive_time*calc_cps}`);
+		if (inactive_cash >= calc_inactive) return;
+		if (inactive_cash * 1.2 > calc_inactive) return;
+		$cash += calc_inactive;
+	}
 	
 	// $: if ($toggled && canvas != undefined) canvas.onmousedown({ layerX: 0, layerY: 0 });
 
@@ -1032,7 +1057,7 @@
 		{#if debug} 
 			$/sec: {fnum(cps)} <br> 
 			Calc $/sec: {fnum(calc_cps)} <br> 
-			FPS: {fps} <br> 
+			FPS: {fps} | Min: {min_fps}<br> 
 			Total Orbs: {fnum(total_orbs)} <br> {/if}
 	</h3>  
 	<h3 id="toggle-txt" style="bottom: {$bounce.size}px;">Press "Esc" to toggle shop</h3>

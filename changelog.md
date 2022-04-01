@@ -1,3 +1,9 @@
+## v0.8.3
+- Game catches up with idle gains when the window blurs and focuses
+- Added title sequence
+- Buffed mana-bought orbs
+- Made circles the default rendering mode
+
 ## v0.8.2
 - Squashed more bugs
 - Added info text for when hovering over fight button

@@ -77,13 +77,13 @@ export const light_orb = w("light_orb", {
 });
 export const homing_orb = w("homing_orb", {
 	amount: 0,
-	cost: 3,
-	value: 2,
+	cost: 2,
+	value: 4,
 });
 export const spore_orb = w("spore_orb", {
 	amount: 0,
 	cost: 3,
-	value: 3,
+	value: 6,
 	sub_value: 0.5,
 });
 //#endregion
@@ -113,7 +113,7 @@ export const canvas_toggled = writable(true);
 export const shifting = writable(false);
 export const ctrling = writable(false);
 
-export const render_mode = w("render_mode", 0);
+export const render_mode = w("render_mode", 1);
 export const max_render = w("max_render", 100);
 
 export const clear_storage = ()=>{

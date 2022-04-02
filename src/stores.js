@@ -63,6 +63,7 @@ export const starting_cash = w("starting_cash", {
 // 	value: 0,
 // });
 export const orb_mult = w("orb_mult", 0);
+export const orb_mult_cost = 5;
 //#endregion
 //#region | Orbs
 export const basic_orb = w("basic_orb", { //-! DEBUG
@@ -110,12 +111,16 @@ export const mana = w("mana", 0);
 //#endregion
 
 export const canvas_toggled = writable(true);
-export const shifting = writable(false);
-export const ctrling = writable(false);
+// export const shifting = writable(false);
+// export const ctrling = writable(false);
+/** Buy... 0: 1 | 1: 10 | 2: 100 | 3: Max */
+export const buy_amount = writable(0);
 
 export const render_mode = w("render_mode", 1);
 export const max_render = w("max_render", 100);
+export const render_mod = w("render_mod", 1);
 
+export const on_mobile = writable((/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)));
 
 export const get_orb_bonus = ()=>{
 	const pt = get(prestige).times;
@@ -182,9 +187,10 @@ const get_store_obj = ()=>{
 	store_keys.forEach((k)=> store_obj[k] = get(writables[k]) );
 	return store_obj;
 }
-
-window.onbeforeunload = ()=>{
+export const store_to_local = ()=>{
 	unload_time.set(Math.floor(Date.now()/1000));
 	localStorage.IdleOrbs2 = JSON.stringify(get_store_obj());
 }
+
+window.onbeforeunload = store_to_local;
 //#endregion

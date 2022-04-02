@@ -1,3 +1,15 @@
+## v0.10
+- Refactored code
+- Get mana after prestige (amount proportional to number of mana-bought orbs)
+- Added "render every __ ticks" settings option
+- Added save/clear local storage in settings
+- Alluded to a "New Game+"
+- Game now scales to fit screen
+- Made more mobile accessible
+- Balancing changes
+	- Nerfed orb multiplier upgrade
+	- Made monsters harder
+
 ## v0.9
 - Squashed a bunch of bugs
 - Added monster "bosses" to fight every five levels

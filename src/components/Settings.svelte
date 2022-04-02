@@ -1,17 +1,21 @@
 <script>
-	import { render_mode, get_data, load_data, max_render } from "../stores.js";
+	import { render_mode, get_data, load_data, max_render, render_mod, clear_storage, store_to_local } from "../stores.js";
 	export let open;
 	export let settings = undefined;
 
 	let get_data_str = "";
 	let load_data_str = "";
 	let render_amount = 100;
-	// $: console.log(render_amount);
+
+	const copy_data = ()=>{
+		get_data_str = get_data();
+		navigator.clipboard.writeText(get_data_str);
+	}
 </script>
 
 <main class:open id="settings" bind:this={settings}>
 	<div class="sect">
-		<h3 class="sect-title">Rendering Mode</h3>
+		<h3 class="sect-title" style="padding-top: .3rem; padding-bottom: .7rem;">Rendering Mode</h3>
 		<div class="rendering-row">
 			<button class:selected={$render_mode == 1} on:click={()=> $render_mode = 1}>Circles</button>
 			<button class:selected={$render_mode == 0} on:click={()=> $render_mode = 0}>Squares</button>
@@ -24,14 +28,24 @@
 	<div class="sect" id="render-amount">
 		<h3 class="sect-title">Max Rendered Orbs: {render_amount}</h3>
 		<div>
-			<button on:click={()=> $max_render = render_amount}>Set</button> <input placeholder="Set max orbs rendered. Default: 200" type="range" step="10" min="10" max="1000" id="render" bind:value={render_amount}>
+			<button on:click={()=> $max_render = render_amount}>Set</button> <input type="range" step="10" min="10" max="1000" id="render" bind:value={render_amount}>
 		</div>
 		<p>Default: 100. Save data before changing to a really high number! (Could crash game)</p>
 	</div>
 	<hr>
+	<div class="sect" id="render-mod">
+		<h3 class="sect-title">Render once every {$render_mod == 1 ? "tick" : `${$render_mod} ticks`}</h3>
+		<input type="range" step="1" min="1" max="30" id="render" bind:value={$render_mod}>
+	</div>
+	<hr>
 	<div class="sect" id="data">
-		<button on:click={()=> get_data_str = get_data()}>Get Data</button> <input placeholder="Your data will appear here" type="text" name="get" id="get" bind:value={get_data_str}>
-		<button on:click={()=> load_data(load_data_str)}>Load Data</button> <input placeholder="Paste your data here" type="text" name="load" id="load" bind:value={load_data_str}>
+		<button on:click={copy_data}>Get Data</button> <input placeholder="Your data will automatically be copied" type="text" name="get" id="get" bind:value={get_data_str}>
+		<button on:click={()=> void(load_data(load_data_str), load_data_str="")}>Load Data</button> <input placeholder="Paste your data here" type="text" name="load" id="load" bind:value={load_data_str}>
+	</div>
+	<div class="sect" id="btn-trio">
+		<button on:click={store_to_local}>Save Locally</button> 
+		<button on:click={clear_storage}>Clear Game Data</button> 
+		<button disabled>*Secret*</button> 
 	</div>
 </main>
 
@@ -72,7 +86,7 @@
 		display: grid;
 		grid-template-columns: repeat(5, 1fr);
 	}
-	.rendering-row button {
+	.rendering-row button, #btn-trio button {
 		background: #444;
 		color: white;
 		border: none;
@@ -96,6 +110,7 @@
 		border: none;
 		padding: 0.5rem 0.7rem;
 	}
+
 	#render-amount {
 		display: grid;
 		/* grid-template-columns: max-content 1fr; */
@@ -115,5 +130,22 @@
 		color: #bbb;
 		text-align: center;
 		padding-top: 0.3rem;
+	}
+
+	#render-mod {
+		display: grid;
+		grid-template-rows: max-content max-content;
+		grid-template-columns: 1fr;
+	}
+
+	#btn-trio {
+		display: grid;
+		grid-template-columns: 1fr 1fr 1fr;
+		gap: 0.5rem;
+	}
+	#btn-trio button:disabled {
+		background-color: #333;
+		color: #777;
+		pointer-events: none;
 	}
 </style>

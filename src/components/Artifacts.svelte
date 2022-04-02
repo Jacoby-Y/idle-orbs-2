@@ -3,7 +3,7 @@
 </script>
 
 <main>
-	<h3>Artifacts Coming Soon!</h3>
+	<h3>Unlock Artifacts in "New Game+"</h3>
 </main>
 
 <style>
@@ -26,5 +26,6 @@
 		left: 50%; top: 50%;
 		transform: translate(-50%, -50%);
 		color: white;
+		width: max-content;
 	}
 </style>

@@ -1,17 +1,19 @@
 <script>
 	import { onMount } from "svelte";
-	import { manager, small_explosion, big_explosion } from "../particles.js";
-	import { fnum } from "../functions.js";
+	import { manager as particle_manager, small_explosion, big_explosion } from "../utils/particles.js";
+	import { fnum } from "../utils/functions.js";
 	import { 
 		// Base Utils and Data
 			timer,
 			cash,
 			mana,
-			shifting,
-			ctrling,
+			// shifting,
+			// ctrling,
+			buy_amount,
 			prestige,
 			clear_storage,
 			canvas_toggled as toggled,
+			on_mobile,
 		// Orb Objects
 			basic_orb,
 			light_orb,
@@ -33,6 +35,7 @@
 			offline_time,
 			max_render,
 			render_mode,
+			render_mod,
 	} from "../stores.js";
  
 	// const get_orb_bonus = base => base*((1+$orb_mult/100) + 0.5*$prestige.times);
@@ -267,7 +270,7 @@
 				shadow.l = [];
 				shadow.over = 0;
 			},
-			update() {
+			update(draw=true) {
 				if (basic.max != $max_render) {
 					basic.max = $max_render;
 					light.max = $max_render;
@@ -282,20 +285,23 @@
 				for (let i = 0; i < basic.l.length; i++) {
 					const orb = basic.l[i];
 					ctx.fillStyle = "#e3ffcfdd";
-					switch ($render_mode) {
-						case 0:
-							ctx.fillRect(orb.x, orb.y, 20, 20);
-							break;
-						case 1:
-							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill(); 
-							break;
-						case 2:
-							ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
-							break;
-						case 3:
-							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
-							ctx.fillRect(x, y, 20, 20);
-							break;
+					if (draw) {
+						// console.log("rendering orb!");
+						switch ($render_mode) {
+							case 0:
+								ctx.fillRect(orb.x, orb.y, 20, 20);
+								break;
+							case 1:
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill(); 
+								break;
+							case 2:
+								ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
+								break;
+							case 3:
+								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+								ctx.fillRect(x, y, 20, 20);
+								break;
+						}
 					}
 
 					orb.vx *= 0.98;
@@ -314,27 +320,29 @@
 				for (let i = 0; i < light.l.length; i++) {
 					const orb = light.l[i];
 					ctx.fillStyle = "#aae8e088"; 
-					switch ($render_mode) {
-						case 0:
-							ctx.fillRect(orb.x, orb.y, 20, 20);
-							ctx.fillRect(orb.x+2, orb.y+2, 16, 16);
-							ctx.fillRect(orb.x+4, orb.y+4, 12, 12);
-							ctx.fillRect(orb.x+6, orb.y+6, 8, 8);
-							break;
-						case 1:
-							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill();
-							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 8, 0, 2 * Math.PI); ctx.fill();
-							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 6, 0, 2 * Math.PI); ctx.fill();
-							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 4, 0, 2 * Math.PI); ctx.fill();
-							break;
-						case 2:
-							ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
-							break;
-						case 3:
-							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
-							ctx.fillRect(x, y, 20, 20);
-							ctx.fillRect(x+2, y+2, 16, 16);
-							break;
+					if (draw) {
+						switch ($render_mode) {
+							case 0:
+								ctx.fillRect(orb.x, orb.y, 20, 20);
+								ctx.fillRect(orb.x+2, orb.y+2, 16, 16);
+								ctx.fillRect(orb.x+4, orb.y+4, 12, 12);
+								ctx.fillRect(orb.x+6, orb.y+6, 8, 8);
+								break;
+							case 1:
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill();
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 8, 0, 2 * Math.PI); ctx.fill();
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 6, 0, 2 * Math.PI); ctx.fill();
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 4, 0, 2 * Math.PI); ctx.fill();
+								break;
+							case 2:
+								ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
+								break;
+							case 3:
+								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+								ctx.fillRect(x, y, 20, 20);
+								ctx.fillRect(x+2, y+2, 16, 16);
+								break;
+						}
 					}
 
 					orb.vx *= 0.99;
@@ -352,32 +360,34 @@
 				}
 				for (let i = 0; i < homing.l.length; i++) {
 					const orb = homing.l[i];
-					switch ($render_mode) {
-						case 0:
-							ctx.strokeStyle = "#c7fda533";
-							ctx.strokeRect(orb.x, orb.y, 20, 20);
-							ctx.fillStyle = "#73bd4599";
-							ctx.fillRect(orb.x+7.5, orb.y+5, 5 , 10); 
-							ctx.fillRect(orb.x+5, orb.y+7.5, 10, 5 ); 
-							break;
-						case 1:
-							ctx.strokeStyle = "#c7fda533";
-							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.stroke();
-							ctx.fillStyle = "#73bd4599";
-							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 5, 0, 2 * Math.PI); ctx.fill();
-							break;
-						case 2:
-							ctx.strokeStyle = "#c7fda533";
-							ctx.strokeRect(orb.x+9, orb.y+9, 2, 2);
-							break;
-						case 3:
-							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
-							ctx.strokeStyle = "#c7fda533";
-							ctx.strokeRect(x, y, 20, 20);
-							ctx.fillStyle = "#73bd4599";
-							ctx.fillRect(x+7.5, y+5, 5 , 10); 
-							ctx.fillRect(x+5, y+7.5, 10, 5 ); 
-							break;
+					if (draw) {
+						switch ($render_mode) {
+							case 0:
+								ctx.strokeStyle = "#c7fda533";
+								ctx.strokeRect(orb.x, orb.y, 20, 20);
+								ctx.fillStyle = "#73bd4599";
+								ctx.fillRect(orb.x+7.5, orb.y+5, 5 , 10); 
+								ctx.fillRect(orb.x+5, orb.y+7.5, 10, 5 ); 
+								break;
+							case 1:
+								ctx.strokeStyle = "#c7fda533";
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.stroke();
+								ctx.fillStyle = "#73bd4599";
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 5, 0, 2 * Math.PI); ctx.fill();
+								break;
+							case 2:
+								ctx.strokeStyle = "#c7fda533";
+								ctx.strokeRect(orb.x+9, orb.y+9, 2, 2);
+								break;
+							case 3:
+								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+								ctx.strokeStyle = "#c7fda533";
+								ctx.strokeRect(x, y, 20, 20);
+								ctx.fillStyle = "#73bd4599";
+								ctx.fillRect(x+7.5, y+5, 5 , 10); 
+								ctx.fillRect(x+5, y+7.5, 10, 5 ); 
+								break;
+						}
 					}
 
 					orb.vx *= 0.9;
@@ -408,24 +418,26 @@
 				for (let i = 0; i < spore.l.length; i++) {
 					const orb = spore.l[i];
 					ctx.fillStyle = "#dfac33dd"; 
-					switch ($render_mode) {
-						case 0:
-							ctx.fillRect(orb.x+2, orb.y, 20-4 , 20);
-							ctx.fillRect(orb.x, orb.y+2, 20, 20-4 );
-							break;
-						case 1:
-							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill();
-							ctx.fillStyle = "#dfac33"; 
-							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 5, 0, 2 * Math.PI); ctx.fill();
-							break;
-						case 2:
-							ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
-							break;
-						case 3:
-							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
-							ctx.fillRect(x, y, 20, 20);
-							ctx.fillRect(x+2, y+2, 16, 16);
-							break;
+					if (draw) {
+						switch ($render_mode) {
+							case 0:
+								ctx.fillRect(orb.x+2, orb.y, 20-4 , 20);
+								ctx.fillRect(orb.x, orb.y+2, 20, 20-4 );
+								break;
+							case 1:
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill();
+								ctx.fillStyle = "#dfac33"; 
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 5, 0, 2 * Math.PI); ctx.fill();
+								break;
+							case 2:
+								ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
+								break;
+							case 3:
+								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+								ctx.fillRect(x, y, 20, 20);
+								ctx.fillRect(x+2, y+2, 16, 16);
+								break;
+						}
 					}
 
 					orb.vx *= 0.98;
@@ -445,20 +457,22 @@
 					const orb = sub_spore.l[i];
 					if (orb == undefined) continue;
 					ctx.fillStyle = "#dfac33dd"; 
-					switch ($render_mode) {
-						case 0:
-							ctx.fillRect(orb.x, orb.y, 10 , 10);
-							break;
-						case 1:
-							ctx.beginPath(); ctx.arc(orb.x+5, orb.y+5, 5, 0, 2 * Math.PI); ctx.fill();
-							break;
-						case 2:
-							ctx.fillRect(orb.x+4, orb.y+4, 2, 2);
-							break;
-						case 3:
-							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
-							ctx.fillRect(x+5, y+5, 10, 10);
-							break;
+					if (draw) {
+						switch ($render_mode) {
+							case 0:
+								ctx.fillRect(orb.x, orb.y, 10 , 10);
+								break;
+							case 1:
+								ctx.beginPath(); ctx.arc(orb.x+5, orb.y+5, 5, 0, 2 * Math.PI); ctx.fill();
+								break;
+							case 2:
+								ctx.fillRect(orb.x+4, orb.y+4, 2, 2);
+								break;
+							case 3:
+								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+								ctx.fillRect(x+5, y+5, 10, 10);
+								break;
+						}
 					}
 
 					orb.vx *= 0.98;
@@ -484,20 +498,22 @@
 					const orb = shadow.l[i];
 					if (orb == undefined) continue;
 					ctx.fillStyle = "#00004455";
-					switch ($render_mode) {
-						case 0:
-							ctx.fillRect(orb.x, orb.y, 20, 20);
-							break;
-						case 1:
-							ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill(); 
-							break;
-						case 2:
-							ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
-							break;
-						case 3:
-							let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
-							ctx.fillRect(x, y, 20, 20);
-							break;
+					if (draw) {
+						switch ($render_mode) {
+							case 0:
+								ctx.fillRect(orb.x, orb.y, 20, 20);
+								break;
+							case 1:
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill(); 
+								break;
+							case 2:
+								ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
+								break;
+							case 3:
+								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+								ctx.fillRect(x, y, 20, 20);
+								break;
+						}
 					}
 
 					// orb.vx *= 0.99;
@@ -687,18 +703,22 @@
 	let fps_list = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 	let min_fps = 1000;
 	let fps_index = 0;
+	let render_tick = 1;
 	const main_loop = (v)=>{
 		if (pause && !step) return;
 		if (step) step = false;
-
 		before_frame = Date.now();
 
-		if (!visible && !$toggled) {
-			orbs.update();
-			manager.update(false);
+		// if (render_tick >= $render_mod)
+
+		if (!$toggled || render_tick < $render_mod) {
+			if ($toggled) render_tick++;
+			orbs.update(false);
+			particle_manager.update(0, false);
 			auto_bounce_loop(v);
 			return;
 		}
+		if (render_tick >= $render_mod) render_tick = 1;
 
 		// Background
 		ctx.fillStyle = background_color;
@@ -719,7 +739,7 @@
 			ctx.stroke();
 		} 
 
-		manager.update($render_mode);
+		particle_manager.update($render_mode);
 		orbs.update();
 		event_manager.update(v);
 
@@ -782,11 +802,11 @@
 		const k = e.key;
 		if (k == "d") debug = !debug;
 		else if (k == "Escape") $toggled = !$toggled;
-		else if (k == "Tab" && $bounce.auto_unlocked) ($bounce.auto_on = !$bounce.auto_on, $bounce = $bounce);
+		else if (k == "Tab" && $bounce.auto_unlocked) bounce.update((v)=>(v.auto_on=!v.auto_on,v));// ($bounce.auto_on = !$bounce.auto_on, $bounce = $bounce);
 		else if (k == "o") console.log(orbs.basic);
 		else if (k == "r") reset_orbs();
-		else if (k == "Shift") $shifting = false;
-		else if (k == "Control") $ctrling = false;
+		// else if (k == "Shift") $shifting = false;
+		// else if (k == "Control") $ctrling = false;
 		if (!debug) return;
 		if (k == "s") step = !step;
 		else if (k == " ") pause = !pause;
@@ -819,8 +839,8 @@
 	};
 	const key_down = (e)=>{
 		const k = e.key;
-		if (k == "Shift") $shifting = true;
-		else if (k == "Control") $ctrling = true;
+		// if (k == "Shift") $shifting = true;
+		// else if (k == "Control") $ctrling = true;
 		if (!debug) return;
 		if (k == "c") $cash += 1e5;
 		else if (k == "C") $cash += 1e12;
@@ -830,11 +850,12 @@
 	let blur_time = Date.now();
 	let blur_cash = $cash;
 	window.onblur = ()=> { 
-		$shifting = $ctrling = false; 
+		// $shifting = $ctrling = false; 
 		blur_time = Date.now();
 		blur_cash = $cash;
 	}
 	window.onfocus = ()=>{
+		if ($fighting) return;
 		const inactive_time = Math.round((Date.now() - blur_time)/1000);
 		const inactive_cash = $cash - blur_cash;
 		const calc_inactive = inactive_time*calc_cps;
@@ -920,7 +941,7 @@
 		const r = $rarities.c + $rarities.u + $rarities.r;
 
 		const set_monster = (name, hp, worth)=>{
-			monster_manager.max_hp = hp*(1 + 0.35*($next_tower_lvl-1));
+			monster_manager.max_hp = hp*(1 + 0.5*($next_tower_lvl-1));
 			monster_manager.hp = monster_manager.max_hp;
 			monster_manager.name = name;
 			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
@@ -993,8 +1014,11 @@
 			this.hp -= dmg;
 			if (this.hp <= 0) {
 				this.tick = 0;
-				if (($next_tower_lvl-1) % 5 == 0 && ($next_tower_lvl-1) > 0) this.total_health += this.max_hp;
-				$mana += Math.round(this.worth*(1 + 0.05*($next_tower_lvl-1)));
+				if ($next_tower_lvl % 5 == 0 && $next_tower_lvl > 0) {
+					this.total_health += this.max_hp;
+					// console.log([this.max_hp, this.total_health]);
+				};
+				$mana += Math.round(this.worth*(1 + 0.05*$next_tower_lvl));
 				this.kill_index++;
 				if (this.kill_index >= 10) {
 					// console.log(($next_tower_lvl) % 5, ($next_tower_lvl) > 0, this.is_boss == false);
@@ -1110,9 +1134,9 @@
 			FPS: {fps} | Min: {min_fps}<br> 
 			Total Orbs: {fnum(total_orbs)} <br> {/if}
 	</h3>  
-	<h3 id="toggle-txt" style="bottom: {$bounce.size}px;">Press "Esc" to toggle shop</h3>
+	<h3 id="toggle-txt" style="bottom: {$bounce.size}px;" class:no-click={!$toggled} on:click={()=> void($toggled = !$toggled)}>{$on_mobile ? "Tap" : "Press \"Esc\""} to toggle shop</h3>
 	{#if $bounce.auto_unlocked}
-		<h3 id="toggle-bounce" style="bottom: {$bounce.size}px;">Press "Tab" to turn {$bounce.auto_on ? "off" : "on"} auto bounce</h3>
+		<h3 id="toggle-bounce" style="bottom: {$bounce.size}px;" class:no-click={!$toggled} on:click={()=> void bounce.update((v)=>(v.auto_on=!v.auto_on,v))}>{$on_mobile ? "Tap" : "Press \"Tab\""} to turn {$bounce.auto_on ? "off" : "on"} auto bounce</h3>
 		{/if}
 	{#if $fighting} 
 		<button id="quit" on:click={()=> ($fighting = false, $auto_fight = false)}>Quit</button> 
@@ -1165,9 +1189,11 @@
 		position: absolute;
 		bottom: 100px;
 		padding: 0.5rem 0.6rem;
-		color: #999;
+		color: #ddd;
 		font-weight: normal;
+		cursor: pointer;
 	}
+	#toggle-txt:not(.no-click), #toggle-bounce:not(.no-click) { pointer-events: auto; }
 	#toggle-txt {
 		left: 0;
 	}

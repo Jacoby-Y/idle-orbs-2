@@ -1,8 +1,8 @@
 <script>
-	import { fnum, run_n, spend_cash_add } from "../functions.js";
+	import { fnum, run_n, spend_cash_add } from "../utils/functions.js";
 	import { 
 		canvas_toggled, fighting, mana, cash, fight_cost, auto_fight, afford_fight,
-		basic_orb, light_orb, homing_orb, spore_orb, prestige, rarities, unlocked_fighting, got_mana, next_tower_lvl, shifting, ctrling,
+		basic_orb, light_orb, homing_orb, spore_orb, prestige, rarities, unlocked_fighting, got_mana, next_tower_lvl, buy_amount,
 	} from "../stores.js";
 	import Artifacts from "./Artifacts.svelte";
 
@@ -84,12 +84,13 @@
 		$cash -= $basic_orb.cost;
 		basic_orb.update( v => (v.cost += 10, v.amount++, v) );
 		// basic_orb.update( v => (v.cost = Math.floor(v.cost*1.1), v.amount++, v) );
-		if ($shifting) {
+		if ($buy_amount == 3) {
 			const res = spend_cash_add($cash, $basic_orb.cost, 10);
 			$cash = res.cash;
 			basic_orb.update( v => (v.cost = res.cost, v.amount += res.i, v) );
 		}
-		if ($ctrling) run_n(buy_basic, 9);
+		else if ($buy_amount == 1) run_n(buy_basic, 9);
+		else if ($buy_amount == 2) run_n(buy_basic, 99);
 	};
 	const sell_basic = ()=>{
 		if (total_orbs <= 1) return;
@@ -103,12 +104,13 @@
 		if ($cash < $light_orb.cost) return;
 		$cash -= $light_orb.cost;
 		light_orb.update( v => (v.cost += 15, v.amount++, v) );
-		if ($shifting) {
+		if ($buy_amount == 3) {
 			const res = spend_cash_add($cash, $light_orb.cost, 15);
 			$cash = res.cash;
 			light_orb.update( v => (v.cost = res.cost, v.amount += res.i, v) );
 		}
-		if ($ctrling) run_n(buy_light, 9);
+		else if ($buy_amount == 1) run_n(buy_light, 9);
+		else if ($buy_amount == 2) run_n(buy_light, 99);
 
 	};
 	const sell_light = ()=>{
@@ -122,12 +124,13 @@
 		if ($mana < $homing_orb.cost) return;
 		$mana -= $homing_orb.cost;
 		homing_orb.update( v => ( v.amount++, v) );
-		if ($shifting) {
+		if ($buy_amount == 3) {
 			const res = spend_cash_add($mana, $homing_orb.cost, 0);
 			$mana = res.cash;
 			homing_orb.update( v => (v.amount += res.i, v) );
 		}
-		if ($ctrling) run_n(buy_homing, 9);
+		else if ($buy_amount == 1) run_n(buy_homing, 9);
+		else if ($buy_amount == 2) run_n(buy_homing, 99);
 	};
 	const sell_homing = ()=>{
 		if (total_orbs <= 1) return;
@@ -140,12 +143,13 @@
 		if ($mana < $spore_orb.cost) return;
 		$mana -= $spore_orb.cost;
 		spore_orb.update( v => (v.amount++, v) );
-		if ($shifting) {
+		if ($buy_amount == 3) {
 			const res = spend_cash_add($mana, $spore_orb.cost, 0);
 			$mana = res.cash;
 			spore_orb.update( v => (v.amount += res.i, v) );
 		}
-		if ($ctrling) run_n(buy_spore, 9);
+		else if ($buy_amount == 1) run_n(buy_spore, 9);
+		else if ($buy_amount == 2) run_n(buy_spore, 99);
 	};
 	const sell_spore = ()=>{
 		if (total_orbs <= 1) return;
@@ -153,8 +157,6 @@
 		spore_orb.update( v => (v.amount--, v) );
 	}
 	//#endregion
-	//#endregion
-	//console.log(fnum($light_orb.cost));
 </script>
 
 <main>

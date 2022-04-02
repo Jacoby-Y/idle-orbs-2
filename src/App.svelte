@@ -3,9 +3,8 @@
 	import Canvas from "./components/Canvas.svelte";
 	import Main from "./components/Main.svelte";
 	import { cash, prestige } from "./stores.js";
-	import {  } from "./functions.js";
 
-	let intro1, intro2, intro3;
+	let intro1, intro2, intro3, main;
 	let gaming = false;
 
 	$: {
@@ -30,6 +29,7 @@
 	}
 
 	onMount(()=>{
+		window.onresize();
 		if ($cash > 0 || $prestige.times > 0) {
 			gaming = true;
 			return;
@@ -38,10 +38,19 @@
 		intro3.style.transitionDuration = "3s";
 		run_cine(0);
 	});
+	window.onresize = ()=>{
+		let scale = 1;
+		const w = document.body.clientWidth;
+		const h = document.body.clientHeight;
+		if (w*0.6 >= h) scale = h/600;
+		else scale = w/1000;
+		
+		main.style.transform = `translate(-50%, -50%) scale(${scale-0.02}, ${scale-0.02})`;
+	}
 
 </script>
 
-<main on:click={()=> gaming=true}>
+<main bind:this={main} on:click={()=> gaming=true}>
 	{#if gaming}
 		<Main/>
 		<Canvas/>
@@ -60,7 +69,6 @@
 		position: absolute;
 		left: 50%;
 		top: 50%;
-		transform: translate(-50%, -50%);
 		overflow: hidden;
 		/* background-color: #444; */
 	}

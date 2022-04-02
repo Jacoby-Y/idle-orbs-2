@@ -44,6 +44,7 @@ export const fnum = (num, round_to=1, i=0, past_thresh=false)=>{
     return fnum(div, round_to, i+1, thresh);
 }
 
+/** c: cash | x: starting about | m: increase */
 export const mult_comp = (c, x, m)=>{
   // c = x * (m^n);
   // c/x = m^n
@@ -56,6 +57,7 @@ export const mult_comp = (c, x, m)=>{
     total,
   }
 }
+/** c: starting cost | i: increments | x: increase */
 export const add_comp = (c, i, x)=>{
   // 50 * 5 + 10 * m;
   const m = (i-1)/2 * i;
@@ -69,4 +71,38 @@ export const run_n = (func=()=>{}, n)=>{
   run_n_save = func;
   for (let i = 0; i < n; i++) func();
   run_n_save = null;
+}
+
+export const spend_cash_add = (cash, cost, incr)=>{
+  let i = 0;
+  if (incr == 0) {
+    i = Math.floor(cash/cost);
+    cash -= i*cost;
+  } else {
+    for ([]; cost <= cash; (cost += incr, i++)) {
+      cash -= cost;
+    }
+  }
+  return {
+    cash,
+    cost,
+    i,
+  }
+}
+export const spend_cash_mult = (cash, cost, incr)=>{
+  let i = 0;
+  if (incr == 0) {
+    i = Math.floor(cash/cost);
+    cash -= i*cost;
+  } else {
+    for ([]; cash > cost; (cost *= incr, i++)) {
+      cash -= cost;
+      console.log(cash);
+    }
+  }
+  return {
+    cash,
+    cost,
+    i,
+  }
 }

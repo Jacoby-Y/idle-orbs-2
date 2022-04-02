@@ -1,3 +1,13 @@
+## v0.9
+- Squashed a bunch of bugs
+- Added monster "bosses" to fight every five levels
+- A lot of balancing changes
+	- Buffed shadow orb
+	- Buffed prestige bonus value
+	- Made monsters tougher
+	- Nerfed orb multiplier upgrade
+	- Nerfed homing and spore orbs
+
 ## v0.8.3
 - Game catches up with idle gains when the window blurs and focuses
 - Added title sequence

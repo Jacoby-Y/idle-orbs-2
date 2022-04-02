@@ -77,12 +77,12 @@ export const light_orb = w("light_orb", {
 });
 export const homing_orb = w("homing_orb", {
 	amount: 0,
-	cost: 2,
+	cost: 7,
 	value: 4,
 });
 export const spore_orb = w("spore_orb", {
 	amount: 0,
-	cost: 3,
+	cost: 10,
 	value: 6,
 	sub_value: 0.5,
 });
@@ -115,6 +115,16 @@ export const ctrling = writable(false);
 
 export const render_mode = w("render_mode", 1);
 export const max_render = w("max_render", 100);
+
+
+export const get_orb_bonus = ()=>{
+	const pt = get(prestige).times;
+	const mult = get(orb_mult);
+	const prest = (((pt-1)/2*pt)* 0.5) + (pt > 0 ? 0.5 : 0);
+	return 1 + prest + (mult/100)
+}
+// prestige.subscribe(()=> console.log(get_orb_bonus()));
+
 
 export const clear_storage = ()=>{
 	window.onbeforeunload = null;

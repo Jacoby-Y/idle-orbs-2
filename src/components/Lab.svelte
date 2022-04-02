@@ -1,5 +1,5 @@
 <script>
-	import { fnum, run_n } from "../functions.js";
+	import { fnum, run_n, spend_cash_add } from "../functions.js";
 	import { 
 		canvas_toggled, fighting, mana, cash, fight_cost, auto_fight, afford_fight,
 		basic_orb, light_orb, homing_orb, spore_orb, prestige, rarities, unlocked_fighting, got_mana, next_tower_lvl, shifting, ctrling,
@@ -84,7 +84,11 @@
 		$cash -= $basic_orb.cost;
 		basic_orb.update( v => (v.cost += 10, v.amount++, v) );
 		// basic_orb.update( v => (v.cost = Math.floor(v.cost*1.1), v.amount++, v) );
-		if ($shifting) buy_basic();
+		if ($shifting) {
+			const res = spend_cash_add($cash, $basic_orb.cost, 10);
+			$cash = res.cash;
+			basic_orb.update( v => (v.cost = res.cost, v.amount += res.i, v) );
+		}
 		if ($ctrling) run_n(buy_basic, 9);
 	};
 	const sell_basic = ()=>{
@@ -99,7 +103,11 @@
 		if ($cash < $light_orb.cost) return;
 		$cash -= $light_orb.cost;
 		light_orb.update( v => (v.cost += 15, v.amount++, v) );
-		if ($shifting) buy_light();
+		if ($shifting) {
+			const res = spend_cash_add($cash, $light_orb.cost, 15);
+			$cash = res.cash;
+			light_orb.update( v => (v.cost = res.cost, v.amount += res.i, v) );
+		}
 		if ($ctrling) run_n(buy_light, 9);
 
 	};
@@ -114,7 +122,11 @@
 		if ($mana < $homing_orb.cost) return;
 		$mana -= $homing_orb.cost;
 		homing_orb.update( v => ( v.amount++, v) );
-		if ($shifting) buy_homing();
+		if ($shifting) {
+			const res = spend_cash_add($mana, $homing_orb.cost, 0);
+			$mana = res.cash;
+			homing_orb.update( v => (v.amount += res.i, v) );
+		}
 		if ($ctrling) run_n(buy_homing, 9);
 	};
 	const sell_homing = ()=>{
@@ -128,7 +140,11 @@
 		if ($mana < $spore_orb.cost) return;
 		$mana -= $spore_orb.cost;
 		spore_orb.update( v => (v.amount++, v) );
-		if ($shifting) buy_spore();
+		if ($shifting) {
+			const res = spend_cash_add($mana, $spore_orb.cost, 0);
+			$mana = res.cash;
+			spore_orb.update( v => (v.amount += res.i, v) );
+		}
 		if ($ctrling) run_n(buy_spore, 9);
 	};
 	const sell_spore = ()=>{
@@ -166,7 +182,7 @@
 	</div>
 	<div id="orb-row">
 		<button class="trade-btn" id="basic-btn">Basic
-			<p class="stat">Value: {$basic_orb.value}</p>
+			<p class="stat">Value: {fnum($basic_orb.value)}</p>
 			<div class="orb-info">
 				<button class="buy-sell" on:click={buy_basic}>Buy ${fnum($basic_orb.cost)}</button>
 				<button class="buy-sell" on:click={sell_basic}>Sell</button>
@@ -174,7 +190,7 @@
 		</button>
 		{#if $prestige.times >= 1}
 		<button class="trade-btn" id="light-btn">Light
-			<p class="stat">Value: {$light_orb.value}</p>
+			<p class="stat">Value: {fnum($light_orb.value)}</p>
 			<div class="orb-info">
 				<button class="buy-sell" on:click={buy_light}>Buy ${fnum($light_orb.cost)}</button>
 				<button class="buy-sell" on:click={sell_light}>Sell</button>
@@ -183,14 +199,14 @@
 		{:else} <button disabled>?</button> {/if}
 		{#if $got_mana}
 		<button class="trade-btn" id="homing-btn">Homing
-			<p class="stat">Value: {$homing_orb.value}</p>
+			<p class="stat">Value: {fnum($homing_orb.value)}</p>
 			<div class="orb-info">
 				<button class="buy-sell" on:click={buy_homing}>Buy {fnum($homing_orb.cost)}₪</button>
 				<button class="buy-sell" on:click={sell_homing}>Sell</button>
 			</div>
 		</button>
 		<button class="trade-btn" id="spore-btn">Spore
-			<p class="stat">Value: {$spore_orb.value}</p>
+			<p class="stat">Value: {fnum($spore_orb.value)}</p>
 			<div class="orb-info">
 				<button class="buy-sell" on:click={buy_spore}>Buy {fnum($spore_orb.cost)}₪</button>
 				<button class="buy-sell" on:click={sell_spore}>Sell</button>
@@ -208,13 +224,13 @@
 		<h3 id="fight-info" style="display: {hover_fight ? "block" : ""};">Use your orbs in The Monster Tower to get Mana.<br>An orb's damage is equal to its cash value.</h3>
 	</div>
 	<h3 id="orb-stats">
-		<span style="color: #ccc;">Basic Orbs: {$basic_orb.amount}</span><br>
+		<span style="color: #ccc;">Basic Orbs: {fnum($basic_orb.amount)}</span><br>
 		{#if $prestige.times >= 1}
-			<span style="color: #00cccc;">Light Orbs: {$light_orb.amount}</span><br>
+			<span style="color: #00cccc;">Light Orbs: {fnum($light_orb.amount)}</span><br>
 		{/if}
 		{#if $got_mana}
-			<span style="color: #cccc00;">Homing Orbs: {$homing_orb.amount}</span><br>
-			<span style="color: #ffaa00;">Spore Orbs: {$spore_orb.amount}</span>
+			<span style="color: #cccc00;">Homing Orbs: {fnum($homing_orb.amount)}</span><br>
+			<span style="color: #ffaa00;">Spore Orbs: {fnum($spore_orb.amount)}</span>
 		{/if}
 	</h3>
 

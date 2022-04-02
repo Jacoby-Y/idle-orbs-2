@@ -24,7 +24,7 @@
 	<div class="sect" id="render-amount">
 		<h3 class="sect-title">Max Rendered Orbs: {render_amount}</h3>
 		<div>
-			<button on:click={()=> $max_render = render_amount}>Set</button> <input placeholder="Set max orbs rendered. Default: 200" type="range" step="10" min="0" max="1000" id="render" bind:value={render_amount}>
+			<button on:click={()=> $max_render = render_amount}>Set</button> <input placeholder="Set max orbs rendered. Default: 200" type="range" step="10" min="10" max="1000" id="render" bind:value={render_amount}>
 		</div>
 		<p>Default: 100. Save data before changing to a really high number! (Could crash game)</p>
 	</div>

@@ -8,6 +8,11 @@
 	let intro1, intro2, intro3;
 	let gaming = false;
 
+	$: {
+		if (gaming && timeout != null) {
+			window.clearTimeout(timeout);
+		}
+	}
 
 	const cinemachine = [];
 	cinemachine.push([ ()=> intro1.style.opacity = 1, 500 ]);
@@ -17,9 +22,11 @@
 	cinemachine.push([ ()=> intro3.style.opacity = 1, 1000 ]);
 	cinemachine.push([ ()=> intro3.style.opacity = 0, 3000 ]);
 	cinemachine.push([ ()=> gaming = true, 3000 ]);
+
+	let timeout = null;
 	const run_cine = (i)=>{
 		if (i >= cinemachine.length) return;
-		setTimeout(()=> (cinemachine[i][0](), run_cine(i+1)), cinemachine[i][1]);
+		timeout = setTimeout(()=> (cinemachine[i][0](), run_cine(i+1)), cinemachine[i][1]);
 	}
 
 	onMount(()=>{
@@ -34,7 +41,7 @@
 
 </script>
 
-<main>
+<main on:click={()=> gaming=true}>
 	{#if gaming}
 		<Main/>
 		<Canvas/>

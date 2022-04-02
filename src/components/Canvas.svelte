@@ -1,106 +1,126 @@
 <script>
 	import { onMount } from "svelte";
-	import { 
-		timer, cash, mana, collector_pos, bounce, render_mode, fight_cost,
-		basic_orb, light_orb, homing_orb, auto_fight, afford_fight, orb_mult,
-		canvas_toggled as toggled, fighting, shifting, ctrling, rarities, next_tower_lvl, prestige, spore_orb, clear_storage, offline_time, max_render,
-		} from "../stores.js";
 	import { manager, small_explosion, big_explosion } from "../particles.js";
 	import { fnum } from "../functions.js";
+	import { 
+		// Base Utils and Data
+			timer,
+			cash,
+			mana,
+			shifting,
+			ctrling,
+			prestige,
+			clear_storage,
+			canvas_toggled as toggled,
+		// Orb Objects
+			basic_orb,
+			light_orb,
+			homing_orb,
+			spore_orb,
+		// Orb Utils and Extras
+			orb_mult,
+			collector_pos,
+			bounce,
+			get_orb_bonus,
+		// Fighting
+			fighting,
+			rarities,
+			auto_fight,
+			afford_fight,
+			fight_cost,
+			next_tower_lvl,
+		// Settings
+			offline_time,
+			max_render,
+			render_mode,
+	} from "../stores.js";
  
-	const get_orb_bonus = base => base*((1+$orb_mult/100) + 0.5*$prestige.times);
+	// const get_orb_bonus = base => base*((1+$orb_mult/100) + 0.5*$prestige.times);
 
 	//#region | Orb Stuff
+	/** Clears orb structure and re-adds orbs. | (Rarely ever done, I don't think it will cause much for lag) */
 	const reset_orbs = ()=>{
-		// console.log($basic_orb);
 		orbs.free_all();
 		for (let i = 0; i < $basic_orb.amount; i++) {
+			if (i >= $max_render) {
+				orbs.over.basic = $basic_orb.amount - $max_render;
+				break;
+			}
 			orbs.new.basic(Math.round(Math.random()*1000), 580, 0, 0);
 		}
 		for (let i = 0; i < $light_orb.amount; i++) {
+			if (i >= $max_render) {
+				orbs.over.light = $light_orb.amount - $max_render;
+				break;
+			}
 			orbs.new.light(Math.round(Math.random()*1000), 580, 0, 0);
 		}
 		for (let i = 0; i < $homing_orb.amount; i++) {
+			if (i >= $max_render) {
+				orbs.over.homing = $homing_orb.amount - $max_render;
+				break;
+			}
 			orbs.new.homing(Math.round(Math.random()*1000), 580, 0, 0);
 		}
 		for (let i = 0; i < $spore_orb.amount; i++) {
+			if (i >= $max_render) {
+				orbs.over.spore = $spore_orb.amount - $max_render;
+				break;
+			}
 			orbs.new.spore(Math.round(Math.random()*1000), 580, 0, 0);
 		}
-		// console.log(orbs.basic);
-		// $basic_orb = $basic_orb;
 	}; 
-
-	$: {
-		$basic_orb;
-		$light_orb;
-		$homing_orb;
-		$spore_orb;
-		reset_orbs();
-	}
-	$: {
+	/** Sets orbs value based on prestige times and the orb multiplier */
+	const set_orb_values = ()=>{
 		basic_orb.update( v => (
-			v.value = get_orb_bonus(1),
+			v.value = 1 * get_orb_bonus(),
 		v) );
 		light_orb.update( v => (
-			v.value = get_orb_bonus(1),
+			v.value = 1 * get_orb_bonus(),
 		v) );
 		homing_orb.update( v => (
-			v.value = get_orb_bonus(4),
+			v.value = 4 * get_orb_bonus(),
 		v) );
 		spore_orb.update( v => (
-			v.value = get_orb_bonus(6),
-			v.sub_value = get_orb_bonus(0.5),
+			v.value = 6 * get_orb_bonus(),
+			v.sub_value = 0.5 * get_orb_bonus(),
 		v) );
 	}
-	$: { $prestige.times;
+
+	$: { $basic_orb; $light_orb; $homing_orb; $spore_orb; $prestige; $orb_mult;
 		reset_orbs();
+		set_orb_values();
 	}
 	//#endregion
 	//#region | Canvas
+	/** <main> holding all html of the game (not shop) */
 	let main;
-	/** @type {HTMLCanvasElement} */
+	/** @type {HTMLCanvasElement}*/
 	let canvas;
-	/** @type {CanvasRenderingContext2D} */
+	/** @type {CanvasRenderingContext2D}*/
 	let ctx;
+	/** Causes main_loop to not run if true */
 	let pause = false;
+	/** If paused is true: then it runs main_loop once and goes back to being paused */
 	let step = false;
+	/** Background color of the canvas */
 	const background_color = "#3c5b5f";
-
-	// $: console.log(`Fighting: ${$fighting} | Pause: ${pause}`);
-
+	/** Width and height of canvas */
 	let w, h; 
 	//#endregion
 	//#region | Orbs
 	
 	//#region | Functions for Orbs
+	/** Gets distance between two objects with an x and y number property */
 	const distance = (pos1, pos2)=>{
 		let y = pos2.y - pos1.y;
     let x = pos2.x - pos1.x;
     
     return Math.sqrt(x * x + y * y);
 	}
-	const rand_width = ()=>{
-		return Math.round(Math.random()*1000);
-	}
-	const rand_height = ()=>{
-		return Math.round(Math.random()*600);
-	}
-	const rand_pos = ()=>{
-		return { 
-			x: Math.round(Math.random()*1000),
-			y: Math.round(Math.random()*1000),
-		}
-	}
-	const F_acos = (x) => { return (-0.698 * x * x - 0.872) * x + 1.570; };
-	const F_atan2 = (y, x) => { 
-		let z = y/x;
-		let neg = 1;
-		if (z < 0) z *= -1; neg = -1;
-		if (z > 1) return 1.571 - F_atan2(1, z);
-		return neg*(z * (0.785 - (z - 1)*(0.244 + 0.067 * z))); // 14: 0.244 | 3.83: 0.067
-	}
 	//#endregion
 	
+	/** holds all info on updating, drawing, and collecting orbs */
 	const orbs = (()=>{
 		const basic = {
 			l: [],
@@ -486,7 +506,7 @@
 
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
-							cash_hold += total_value/10;//($basic_orb.value*10) + ((($basic_orb.value*10) * basic.over)/basic.l.length);
+							cash_hold += total_value/2;//($basic_orb.value*10) + ((($basic_orb.value*10) * basic.over)/basic.l.length);
 							coll_num++;
 						}
 					}
@@ -591,6 +611,20 @@
 				get homing() { return homing.l.length + homing.over; },
 				get spore() { return spore.l.length + spore.over; },
 				get sub_spore() { return sub_spore.l.length + sub_spore.over; },
+			},
+			over: {
+				set basic(x) {
+					basic.over = x;
+				},
+				set light(x) {
+					light.over = x;
+				},
+				set homing(x) {
+					homing.over = x;
+				},
+				set spore(x) {
+					spore.over = x;
+				},
 			},
 			value: {
 				get basic() { return $basic_orb.value + (($basic_orb.value * basic.over)/basic.l.length); },
@@ -715,6 +749,7 @@
 	});
 	//#endregion
 	//#region | Events
+	//#region | Mouse
 	const mouse = {
 		x: 0, y: 0,
 		hovering: false,
@@ -741,6 +776,8 @@
 		small_explosion(ctx, [x, y]);
 		last_click = Date.now();
 	}
+	//#endregion
+	//#region | Keys
 	const key_up = (e)=>{
 		const k = e.key;
 		if (k == "d") debug = !debug;
@@ -755,9 +792,9 @@
 		else if (k == " ") pause = !pause;
 		// else if (k == "l") console.log(orbs.list.length + orbs.homing.length);
 		else if (k == "a") console.log(monster_manager);
-		else if (k == "c") $cash += 10000;
+		// else if (k == "c") $cash += 10000;
 		else if (k == "b") orbs.bounce(null);
-		else if (k == "M") console.log(mouse);
+		else if (k == "M") $mana += 1e20;
 		else if (k == "m") $mana += 100;
 		else if (k == "1") basic_orb.update( v => (v.amount++, v));  
 		else if (k == "2") light_orb.update( v => (v.amount++, v));  
@@ -786,7 +823,10 @@
 		else if (k == "Control") $ctrling = true;
 		if (!debug) return;
 		if (k == "c") $cash += 1e5;
+		else if (k == "C") $cash += 1e12;
 	};
+	//#endregion
+	//#region | Blur/Focus
 	let blur_time = Date.now();
 	let blur_cash = $cash;
 	window.onblur = ()=> { 
@@ -803,9 +843,7 @@
 		if (inactive_cash * 1.2 > calc_inactive) return;
 		$cash += calc_inactive;
 	}
-	
-	// $: if ($toggled && canvas != undefined) canvas.onmousedown({ layerX: 0, layerY: 0 });
-
+	//#endregion
 	$: { if (canvas != undefined) {
 		canvas.onmousedown = mouse_down;
 		canvas.onmousemove = mouse_move;
@@ -865,6 +903,12 @@
 			"Elder Dragon",
 			"Block Head",
 			"Seagull",
+		],
+		boss: [
+			"Viking Boss",
+			"Lich Boss",
+			"Big Boss",
+			"Baby Boss",
 		]
 	}
 	const spawn_monster = ()=>{
@@ -875,45 +919,39 @@
 		const u = $rarities.c + $rarities.u;
 		const r = $rarities.c + $rarities.u + $rarities.r;
 
+		const set_monster = (name, hp, worth)=>{
+			monster_manager.max_hp = hp*(1 + 0.35*($next_tower_lvl-1));
+			monster_manager.hp = monster_manager.max_hp;
+			monster_manager.name = name;
+			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
+			monster_manager.worth = worth;
+		}
+
 		const rand = Math.round(Math.random()*100);
-		if (rand <= c) { 
-			// Common
+		if (rand <= c) { // Common
 			const name = rand_in_list(monsters.common);
-			// console.log(`Spawning a ${name}`);
-			monster_manager.max_hp = 100*(1 + 0.2*($next_tower_lvl-1));
-			monster_manager.hp = monster_manager.max_hp;
-			monster_manager.name = name;
-			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
-			monster_manager.worth = 1;
-		} else if (rand <= u) {
-			// Uncommon
+			set_monster(name, 1500, 1);
+		} else if (rand <= u) { // Uncommon
 			const name = rand_in_list(monsters.uncommon);
-			// console.log(`Spawning a ${name}`);
-			monster_manager.max_hp = 250*(1 + 0.2*($next_tower_lvl-1));
-			monster_manager.hp = monster_manager.max_hp;
-			monster_manager.name = name;
-			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
-			monster_manager.worth = 3;
-		} else if (rand <= r) {
-			// Rare
+			set_monster(name, 4000, 3);
+		} else if (rand <= r) { // Rare
 			const name = rand_in_list(monsters.rare);
-			// console.log(`Spawning a ${name}`);
-			monster_manager.max_hp = 500*(1 + 0.2*($next_tower_lvl-1));
-			monster_manager.hp = monster_manager.max_hp;
-			monster_manager.name = name;
-			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
-			monster_manager.worth = 10;
-		} else {
-			// Legendary
+			set_monster(name, 15000, 10);
+		} else { // Legendary
 			const name = rand_in_list(monsters.legendary);
-			// console.log(`Spawning a ${name}`);
-			monster_manager.max_hp = 1000*(1 + 0.2*($next_tower_lvl-1));
-			monster_manager.hp = monster_manager.max_hp;
-			monster_manager.name = name;
-			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
-			monster_manager.worth = 25;
+			set_monster(name, 40000, 25);
 		}
 		monster_manager = monster_manager;
+	}
+	const spawn_boss = ()=>{
+		const set_monster = (name)=>{
+			monster_manager.max_hp = Math.round(Math.max(15000, monster_manager.total_health));
+			monster_manager.hp = monster_manager.max_hp;
+			monster_manager.name = name;
+			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
+			monster_manager.worth = 50;
+		}
+		set_monster(rand_in_list(monsters.boss))
 	}
 	let monster_manager = {
 		hp: 100,
@@ -926,6 +964,8 @@
 		total_ticks: 600,
 		worth: 1,
 		kill_index: 0,
+		total_health: 0,
+		is_boss: false,
 		draw() {
 			// Base Background
 			ctx.fillStyle = "#444";
@@ -933,9 +973,9 @@
 			// Health bar background
 			ctx.fillStyle = "#333";
 			ctx.fillRect(this.pt1.x+10, this.pt2.y-30, this.pt2.x-this.pt1.x-20, 20);
-			// Health bar fill color
+			// Health bar fill
 			ctx.fillStyle = "#33aa33";
-			ctx.fillRect(this.pt1.x+10, this.pt2.y-30, (this.pt2.x-this.pt1.x-20)*(this.hp/this.max_hp), 20);
+			ctx.fillRect(this.pt1.x+10, this.pt2.y-30, (this.pt2.x-this.pt1.x-20)*(Math.max(0, this.hp)/this.max_hp), 20);
 			// Kill Index bar
 			ctx.fillStyle = "#ffffff66";
 			ctx.fillRect(this.pt1.x+1, this.pt1.y+1, (this.pt2.x-this.pt1.x)*((this.kill_index+1)/10)-2, 5);
@@ -953,11 +993,19 @@
 			this.hp -= dmg;
 			if (this.hp <= 0) {
 				this.tick = 0;
-				// console.log("Mana increasing by: " + this.worth);
-				$mana += Math.round(this.worth*(1 + 0.1*($next_tower_lvl-1)));
-				spawn_monster();
+				if (($next_tower_lvl-1) % 5 == 0 && ($next_tower_lvl-1) > 0) this.total_health += this.max_hp;
+				$mana += Math.round(this.worth*(1 + 0.05*($next_tower_lvl-1)));
 				this.kill_index++;
 				if (this.kill_index >= 10) {
+					// console.log(($next_tower_lvl) % 5, ($next_tower_lvl) > 0, this.is_boss == false);
+					if (($next_tower_lvl) % 5 == 0 && ($next_tower_lvl) > 0 && this.is_boss == false) {
+						this.kill_index--;
+						this.is_boss = true;
+						spawn_boss();
+						return;
+					}
+					this.is_boss = false;
+					this.total_health = 0;
 					$next_tower_lvl++;
 					this.kill_index = 0;
 					big_explosion(ctx, [this.pt1.x+((this.pt2.x-this.pt1.x)/2), this.pt1.y+((this.pt2.y-this.pt1.y)/2)]);
@@ -970,6 +1018,8 @@
 						$auto_fight = afford;
 						if (afford) $cash -= $fight_cost;
 					}
+				} else {
+					spawn_monster();
 				}
 			}
 		}

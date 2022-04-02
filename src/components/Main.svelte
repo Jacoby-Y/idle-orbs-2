@@ -22,7 +22,7 @@
 <main on:click={click}>
 	<Shop/>
 	<Lab/>
-	<img on:click={toggled_settings} id="settings" src="./assets/settings.svg" alt="Settings">
+	<img on:click={toggled_settings} id="settings" src="./assets/settings.svg" alt="Settings" draggable="false">
 	<Settings bind:settings={settings} bind:open={settings_open}/>
 </main>
 

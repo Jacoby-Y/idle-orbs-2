@@ -1,7 +1,7 @@
 <script>
 	// import { timer, cash, bounce_size, collector_pos, orb_count } from "../stores.js";
-	import { cash, mana, shifting, ctrling, basic_orb, light_orb, homing_orb, spore_orb, prestige, starting_cash, bounce, got_mana, orb_mult } from "../stores.js";
-	import { fnum, run_n } from "../functions.js";
+	import { cash, mana, shifting, ctrling, basic_orb, light_orb, homing_orb, spore_orb, prestige, starting_cash, bounce, got_mana, orb_mult, get_orb_bonus } from "../stores.js";
+	import { fnum, run_n, spend_cash_mult } from "../functions.js";
 
 	//#region | Buy Bounce Power
 	const buy_bounce_power = ()=>{
@@ -9,9 +9,9 @@
 		$cash -= $bounce.power_cost;
 		$bounce.power += 2.5;
 		$bounce.power_cost = Math.floor($bounce.power_cost * 1.5);
-		$bounce = $bounce;
 		if ($shifting) buy_bounce_power();
 		if ($ctrling) run_n(buy_bounce_power, 9);
+		$bounce = $bounce;
 	}
 	//#endregion
 	//#region | Auto Bounce
@@ -28,9 +28,9 @@
 		$cash -= $bounce.size_cost;
 		$bounce.size_cost *= 2;
 		$bounce.size += 25;
-		$bounce = $bounce;
 		if ($shifting) increase_bounce_area();
 		if ($ctrling) run_n(increase_bounce_area, 9);
+		$bounce = $bounce;
 	}
 	//#endregion
 	//#region | Prestige
@@ -84,8 +84,9 @@
 	const click_orb_mult = ()=>{
 		if ($mana < 1) return;
 		if ($shifting) {
-			$orb_mult += $mana;
-			$mana = 0;
+			const total = Math.floor($mana / 2);
+			$orb_mult += total;
+			$mana -= 2*total;
 		} else if ($ctrling) {
 			$orb_mult += Math.min(10, $mana);
 			$mana -= Math.min(10, $mana);
@@ -94,15 +95,6 @@
 			$orb_mult++;
 		}
 	}
-	// const double_values = ()=>{
-	// 	if ($mana < $orb_double.cost) return;
-	// 	$mana -= $orb_double.cost;
-	// 	$orb_double.cost *= 3;
-	// 	$orb_double.value++;
-	// 	$orb_double = $orb_double;
-	// 	if ($shifting) double_values();
-	// 	if ($ctrling) run_n(double_values, 9);
-	// }
 	//#endregion
 </script>
 
@@ -116,10 +108,10 @@
 	<button on:click={increase_bounce_area}>Increase Bounce Area <b> {#if $bounce.size < 275} ${fnum($bounce.size_cost)} {:else} Max! {/if} </b></button>
 	<button on:click={buy_starting_cash}>Starting Cash +1 (${fnum($starting_cash.amount)}) <b>${fnum($starting_cash.cost)}</b></button>
 	<!-- {#if $got_mana} <button on:click={double_values}>Double All Orb Values <b>{fnum($orb_double.cost)}₪</b></button> -->
-	{#if $got_mana} <button on:click={click_orb_mult}>Increase Orb Value +1% <b>1₪</b></button>
+	{#if $got_mana} <button on:click={click_orb_mult}>Increase Orb Value +1% <b>2₪</b></button>
 	{:else} <div></div> {/if}
 	<div></div>
-	<h3 id="orb-info">Orb Value Bonus: +{fnum($prestige.times*50+$orb_mult)}% {prest_hover ? "(+50%)" : ""}</h3>
+	<h3 id="orb-info">Orb Value Bonus: +{($prestige, $orb_mult, fnum(get_orb_bonus()*100-100))}% {prest_hover ? "(Increases per prestige)" : ""}</h3>
 	<button bind:this={prest_btn} on:click={do_prestige}>Prestige <b>${fnum($prestige.cost)}</b></button>
 </main>
 

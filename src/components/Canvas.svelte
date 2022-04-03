@@ -7,6 +7,7 @@
 			timer,
 			cash,
 			mana,
+			new_game_plus,
 			// shifting,
 			// ctrling,
 			buy_amount,
@@ -14,6 +15,7 @@
 			clear_storage,
 			canvas_toggled as toggled,
 			on_mobile,
+			set_to_default,
 		// Orb Objects
 			basic_orb,
 			light_orb,
@@ -76,17 +78,17 @@
 	/** Sets orbs value based on prestige times and the orb multiplier */
 	const set_orb_values = ()=>{
 		basic_orb.update( v => (
-			v.value = 1 * get_orb_bonus(),
+			v.value = 1 * get_orb_bonus() / ($new_game_plus ? 2 : 1),
 		v) );
 		light_orb.update( v => (
-			v.value = 1 * get_orb_bonus(),
+			v.value = 1 * get_orb_bonus() / ($new_game_plus ? 2 : 1),
 		v) );
 		homing_orb.update( v => (
-			v.value = 4 * get_orb_bonus(),
+			v.value = 4 * get_orb_bonus() / ($new_game_plus ? 2 : 1),
 		v) );
 		spore_orb.update( v => (
-			v.value = 6 * get_orb_bonus(),
-			v.sub_value = 0.5 * get_orb_bonus(),
+			v.value = 6 * get_orb_bonus() / ($new_game_plus ? 2 : 1),
+			v.sub_value = 0.5 * get_orb_bonus() / ($new_game_plus ? 2 : 1),
 		v) );
 	}
 
@@ -798,6 +800,7 @@
 	}
 	//#endregion
 	//#region | Keys
+	let last_buy_amount = $buy_amount;
 	const key_up = (e)=>{
 		const k = e.key;
 		if (k == "d") debug = !debug;
@@ -805,6 +808,7 @@
 		else if (k == "Tab" && $bounce.auto_unlocked) bounce.update((v)=>(v.auto_on=!v.auto_on,v));// ($bounce.auto_on = !$bounce.auto_on, $bounce = $bounce);
 		else if (k == "o") console.log(orbs.basic);
 		else if (k == "r") reset_orbs();
+		else if (k == "Shift") $buy_amount = last_buy_amount;
 		// else if (k == "Shift") $shifting = false;
 		// else if (k == "Control") $ctrling = false;
 		if (!debug) return;
@@ -827,7 +831,7 @@
 		else if (k == "0") homing_orb.update( v => (v.amount += 200, v));
 		else if (k == ")") homing_orb.update( v => (v.amount += 20000000, v));
 		else if (k == "h") monster_manager.hit(1e10);
-		else if (k == "R") clear_storage();
+		else if (k == "R") set_to_default();
 		else if (k == "f") min_fps = 1000;
 		// else if (k == "f") (console.log("Collecting orbs..."), collect_freq());
 		else if (k == "S") {
@@ -841,6 +845,7 @@
 		const k = e.key;
 		// if (k == "Shift") $shifting = true;
 		// else if (k == "Control") $ctrling = true;
+		if (k == "Shift") (last_buy_amount = $buy_amount, $buy_amount = 3);
 		if (!debug) return;
 		if (k == "c") $cash += 1e5;
 		else if (k == "C") $cash += 1e12;
@@ -900,26 +905,22 @@
 	//#region | Monster
 	const rand_in_list = (list)=> list[Math.floor(Math.random()*list.length)];
 	const monsters = {
-		// hp: 100, worth: 1
 		common: [ // white
 			"Zombie",
 			"Boar",
 			"Sea Monster",
 			"Young Sea Monster"
 		],
-		// hp: 250, worth: 3
 		uncommon: [ // light green
 			"Stone Golem",
 			"Young Wyvern",
 			"Possessed Sword"
 		],
-		// hp: 500, worth: 10
 		rare: [ // aqua
 			"Young Dragon",
 			"Crystal Golem",
 			"J Walker",
 		],
-		// hp: 1000, worth: 25
 		legendary: [ // gold
 			"Elder Dragon",
 			"Block Head",
@@ -931,6 +932,35 @@
 			"Big Boss",
 			"Baby Boss",
 		]
+	};
+	const monsters_plus = {
+		common: [ // white
+			"Angler",
+			"Fire Wisp",
+		],
+		uncommon: [ // light green
+			"Bugger",
+			"Arsonist",
+		],
+		rare: [ // aqua
+			"Brain Suckler",
+			"Squatch",
+		],
+		legendary: [ // gold
+			"Gold Axolotl",
+			"Typhoid Rat",
+		],
+		boss: [
+			"Chad Viking",
+			"Axolotl Boss",
+		]
+	}
+	const get_rand_monster = (rarity)=>{
+		if ($new_game_plus) {
+			return rand_in_list(monsters[rarity].concat(monsters_plus[rarity])); 
+		} else {
+			return rand_in_list(monsters[rarity]);
+		}
 	}
 	const spawn_monster = ()=>{
 		// Chances for common, uncommon, rare, legendary
@@ -950,16 +980,16 @@
 
 		const rand = Math.round(Math.random()*100);
 		if (rand <= c) { // Common
-			const name = rand_in_list(monsters.common);
+			const name = get_rand_monster("common");
 			set_monster(name, 1500, 1);
 		} else if (rand <= u) { // Uncommon
-			const name = rand_in_list(monsters.uncommon);
+			const name = get_rand_monster("uncommon");
 			set_monster(name, 4000, 3);
 		} else if (rand <= r) { // Rare
-			const name = rand_in_list(monsters.rare);
+			const name = get_rand_monster("rare");
 			set_monster(name, 15000, 10);
 		} else { // Legendary
-			const name = rand_in_list(monsters.legendary);
+			const name = get_rand_monster("legendary");
 			set_monster(name, 40000, 25);
 		}
 		monster_manager = monster_manager;
@@ -972,7 +1002,7 @@
 			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
 			monster_manager.worth = 50;
 		}
-		set_monster(rand_in_list(monsters.boss))
+		set_monster(get_rand_monster("boss"));
 	}
 	let monster_manager = {
 		hp: 100,

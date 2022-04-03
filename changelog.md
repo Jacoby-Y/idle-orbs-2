@@ -1,3 +1,8 @@
+## v0.10.1
+- Started functionality for New Game+
+- Added the new monsters that will spawn in NG+
+- Refactored some code, again
+
 ## v0.10
 - Refactored code
 - Get mana after prestige (amount proportional to number of mana-bought orbs)

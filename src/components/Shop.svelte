@@ -185,8 +185,4 @@
 		border-radius: 5px;
 		border-bottom: 2px solid #4d8b4d;
 	}
-
-	.h {
-		color: #95b973;
-	}
 </style>

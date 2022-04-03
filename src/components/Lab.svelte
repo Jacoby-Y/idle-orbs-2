@@ -1,12 +1,10 @@
 <script>
 	import { fnum, run_n, spend_cash_add } from "../utils/functions.js";
 	import { 
-		canvas_toggled, fighting, mana, cash, fight_cost, auto_fight, afford_fight,
+		canvas_toggled, fighting, mana, cash, fight_cost, auto_fight, afford_fight, new_game_plus,
 		basic_orb, light_orb, homing_orb, spore_orb, prestige, rarities, unlocked_fighting, got_mana, next_tower_lvl, buy_amount,
 	} from "../stores.js";
 	import Artifacts from "./Artifacts.svelte";
-
-	// $: console.log($homing_orb);
 
 	//#region | Fight Stuff
 	let hover_fight = false;
@@ -15,7 +13,6 @@
 		fight_btn.onmouseenter = ()=>{ hover_fight = true; };
 		fight_btn.onmouseleave = ()=>{ hover_fight = false; };
 	}}
-	// $: console.log(hover_fight);
 
 	$: if (!$unlocked_fighting && $prestige.times >= 3) $unlocked_fighting = true;
 	$: if (!$got_mana && $mana > 0) $got_mana = true;
@@ -163,6 +160,7 @@
 	<h3 id="mana">Mana <span style="font-weight: normal;">(₪)</span>: {fnum($mana)}</h3>
 	<div id="hold-btn">
 		{#if $unlocked_fighting}
+			{#if $rarities.l >= 100} <h3 id="secret-hint">Check settings...</h3> {/if}
 			<button id="auto-fight" style="{$auto_fight ? "border-color: lime;" : ""}" on:click={()=> $auto_fight = !$auto_fight}>Auto Fight?</button>
 			<button on:click={()=> click_fight()} class:disabled={$fighting} id="fight-btn" bind:this={fight_btn}>
 				Monster Tower Lvl {$next_tower_lvl} | <b>${fnum($fight_cost)}</b>
@@ -218,7 +216,9 @@
 		<button disabled>?</button>
 		<button disabled>?</button>
 		{/if}
-		<button disabled on:click={()=> $next_tower_lvl += 10}>?</button>
+		{#if $new_game_plus}
+		<button>?</button>
+		{:else} <button disabled>?</button> {/if}
 		<h3 id="basic-info">Normal gravity, drag, value, etc.<br>Just... <em>Average</em>.</h3>
 		<h3 id="light-info">Low gravity and drag, but normal value.<br>Like an aerodynamic ping pong ball!</h3>
 		<h3 id="homing-info">Lower value, but orbits around the mouse.<br>Buy a bunch and watch the satisfaction!</h3>
@@ -387,4 +387,12 @@
 	#spore-btn:hover ~ #spore-info { display: block; }
 	/* #fight-btn:hover, #fight-info { display: block; } */
 	/* #basic-btn:hover ~ #basic-info { display: block; } */
+
+	#secret-hint {
+		position: absolute;
+		left: 50%;
+		bottom: 65%;
+		transform: translate(-50%, 0);
+		color: #547375aa;
+	}
 </style>

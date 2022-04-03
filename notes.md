@@ -1,7 +1,6 @@
 ToDo: 
-- probably color change for Lab
-- Settings style change (looks ugly!!!)
-- Boss every 5th? floor
+- New game plus
+- mod/plugin -able?
 
 Notes: 
 - Different fighting areas for different artifacts?

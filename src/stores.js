@@ -7,15 +7,20 @@ const loaded = is_nullish(localStorage.IdleOrbs2) ? {} : JSON.parse(localStorage
 
 const get_or = (k, v)=> is_nullish(loaded[k]) ? v : loaded[k];
 
-const w = (k, v)=>{
-	store_keys.push(k);
+let w_index = 0;
+const w = (v)=>{
+	let k = `_${w_index}`;
+	default_vals[k] = (typeof v == "object" ? {...v} : v);
+	// store_keys.push(k);
 	writables[k] = writable(get_or(k, v));
+	w_index++;
 	return writables[k];
 };
 // const w = writable;
 
-const store_keys = [];
+// const store_keys = [];
 const writables = {};
+const default_vals = {};
 // window.writables = {};
 //#endregion
 
@@ -29,7 +34,7 @@ const timer_loop = setInterval(() => {
 //#endregion
 //#region | Cash
 let deci = 0;
-export const cash = w("cash", 0);
+export const cash = w(0);
 cash.subscribe((v)=>{
 	if (Math.floor(v) != v) {
 		deci += v - Math.floor(v);
@@ -45,7 +50,7 @@ cash.subscribe((v)=>{
 //#endregion
 //#region | Shop
 export const collector_pos = writable(250);
-export const bounce = w("bounce", {
+export const bounce = w({
 	power: 30,
 	power_cost: 250,
 	size: 75,
@@ -54,34 +59,34 @@ export const bounce = w("bounce", {
 	auto_unlocked: false,
 	auto_on: true,
 });
-export const starting_cash = w("starting_cash", {
+export const starting_cash = w({
 	cost: 25,
 	amount: 0,
 });
-// export const orb_double = w("orb_double", {
+// export const orb_double = w({
 // 	cost: 50,
 // 	value: 0,
 // });
-export const orb_mult = w("orb_mult", 0);
+export const orb_mult = w(0);
 export const orb_mult_cost = 5;
 //#endregion
 //#region | Orbs
-export const basic_orb = w("basic_orb", { //-! DEBUG
+export const basic_orb = w({
 	amount: 1,
 	cost: 50,
 	value: 1
 });
-export const light_orb = w("light_orb", {
+export const light_orb = w({
 	amount: 0,
 	cost: 100,
 	value: 1
 });
-export const homing_orb = w("homing_orb", {
+export const homing_orb = w({
 	amount: 0,
 	cost: 7,
 	value: 4,
 });
-export const spore_orb = w("spore_orb", {
+export const spore_orb = w({
 	amount: 0,
 	cost: 10,
 	value: 6,
@@ -89,14 +94,14 @@ export const spore_orb = w("spore_orb", {
 });
 //#endregion
 //#region | Prestige
-export const prestige = w("prestige", {
+export const prestige = w({
 	cost: 1e5,
 	times: 0,
 });
 //#endregion
 //#region | Fighting
-export const next_tower_lvl = w("next_tower_lvl", 1);
-export const fight_cost = w("fight_cost", 1e3);
+export const next_tower_lvl = w(1);
+export const fight_cost = w(1e3);
 export const unlocked_fighting = writable(false);
 export const fighting = writable(false);
 export const afford_fight = writable(()=> false );
@@ -106,8 +111,8 @@ export const rarities = writable({
 });
 //#endregion
 //#region | Mana
-export const got_mana = w("got_mana", false);
-export const mana = w("mana", 0);
+export const got_mana = w(false);
+export const mana = w(0);
 //#endregion
 
 export const canvas_toggled = writable(true);
@@ -116,9 +121,11 @@ export const canvas_toggled = writable(true);
 /** Buy... 0: 1 | 1: 10 | 2: 100 | 3: Max */
 export const buy_amount = writable(0);
 
-export const render_mode = w("render_mode", 1);
-export const max_render = w("max_render", 100);
-export const render_mod = w("render_mod", 1);
+export const render_mode = w(1);
+export const max_render = w(100);
+export const render_mod = w(1);
+
+export const new_game_plus = w(false);
 
 export const on_mobile = writable((/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)));
 
@@ -128,24 +135,38 @@ export const get_orb_bonus = ()=>{
 	const prest = (((pt-1)/2*pt)* 0.5) + (pt > 0 ? 0.5 : 0);
 	return 1 + prest + (mult/100)
 }
-// prestige.subscribe(()=> console.log(get_orb_bonus()));
 
 
 export const clear_storage = ()=>{
 	window.onbeforeunload = null;
 	localStorage.clear();
 	location.reload();
+};
+window.clear_storage = clear_storage;
+
+export const set_to_default = ()=>{
+	// load_data(`0Zb9q.Z8"cZ:mtlbdZ80ZnmudpZ8{"cZnmudpabmqrZ81}"cZqgxdZ8(}cZqgxdabmqrZ8}""cZ9trmabmqrZ8{}"cZ9trmatljmbid_Z8,9jqdcZ9trmamlZ8rptd2cZqr9prglfab9q.Z80ZbmqrZ81}cZ9kmtlrZ8"2cZmp:aktjrZ8"cZ:9qgbamp:Z80Z9kmtlrZ8'cZbmqrZ8}"cZy9jtdZ8'2cZjgf.ramp:Z80Z9kmtlrZ8"cZbmqrZ8'""cZy9jtdZ8'2cZ.mkglfamp:Z80Z9kmtlrZ8"cZbmqrZ8(cZy9jtdZ832cZqnmpdamp:Z80Z9kmtlrZ8"cZbmqrZ8'"cZy9jtdZ85cZqt:ay9jtdZ8"e}2cZnpdqrgfdZ80ZbmqrZ8'"""""cZrgkdqZ8"2cZldvrarmudpajyjZ8'cZ,gf.rabmqrZ8'"""cZfmrak9l9Z8,9jqdcZk9l9Z8"cZpdl_dpakm_dZ8'cZk9vapdl_dpZ8'""cZpdl_dpakm_Z8'cZtljm9_argkdZ8'537)}7"))2`);
+	for (const k in default_vals) {
+		if (!Object.hasOwnProperty.call(default_vals, k)) continue;
+		const v = default_vals[k];
+		writables[k].set(v);
+	}
+};
+export const set_new_game_plus = ()=>{
+	set_to_default();
+	new_game_plus.set(true);
+	fighting.set(false);
 }
 
 export const reset_orbs = writable(()=>{});
 
 //#region | Offline
-export const unload_time = w("unload_time", Math.floor(Date.now()/1000));
+export const unload_time = w(Math.floor(Date.now()/1000));
 export const load_time = writable(Math.floor(Date.now()/1000));
 export const offline_time = writable(get(load_time) - get(unload_time));
 //#endregion
 //#region | Saving/Loading Data
-const chars = ` "'01{23}45(67)89:ab_cd,ef.ghijklmnopqrstyuvwxyzACBDEFGHIJKLMNOPQRSTYUVWXYZ`;
+const chars = ` "'0_1{23}45(67)89:abcd,ef.ghijklmnopqrstyuvwxyzACBDEFGHIJKLMNOPQRSTYUVWXYZ`;
 export const get_data = ()=>{
 	const str = JSON.stringify(get_store_obj()).split("");
 	let build = "";
@@ -184,9 +205,13 @@ export const load_data = (load)=>{
 
 const get_store_obj = ()=>{
 	let store_obj = {};
-	store_keys.forEach((k)=> store_obj[k] = get(writables[k]) );
+	for (let i = 0; i < w_index; i++) {
+		store_obj[`_${i}`] = get(writables[`_${i}`])
+	}
+	// store_keys.forEach((k)=> store_obj[k] = get(writables[k]) );
 	return store_obj;
 }
+console.log(get_store_obj());
 export const store_to_local = ()=>{
 	unload_time.set(Math.floor(Date.now()/1000));
 	localStorage.IdleOrbs2 = JSON.stringify(get_store_obj());

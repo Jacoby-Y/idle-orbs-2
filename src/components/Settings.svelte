@@ -1,11 +1,12 @@
 <script>
-	import { render_mode, get_data, load_data, max_render, render_mod, clear_storage, store_to_local } from "../stores.js";
+	import { render_mode, get_data, load_data, max_render, render_mod, clear_storage, store_to_local, rarities, set_new_game_plus } from "../stores.js";
 	export let open;
 	export let settings = undefined;
 
 	let get_data_str = "";
 	let load_data_str = "";
 	let render_amount = 100;
+	let show_secret = false;
 
 	const copy_data = ()=>{
 		get_data_str = get_data();
@@ -45,7 +46,24 @@
 	<div class="sect" id="btn-trio">
 		<button on:click={store_to_local}>Save Locally</button> 
 		<button on:click={clear_storage}>Clear Game Data</button> 
-		<button disabled>*Secret*</button> 
+		<button disabled={$rarities.l < 100} on:click={()=> void(show_secret=true)}>*Secret*</button> 
+	</div>
+
+	<div id="secret" class:show-secret={show_secret}>
+		<h3>You've gotten pretty far...<br>How about starting over?</h3>
+		<hr>
+		<p>
+			In this fresh start, called "New Game+", 
+			you will unlock the elusive <em>5th Orb</em>, 
+			artifacts, more events (like those shadow orbs), and more monsters.
+			<br><br>"That's cool and all, but what's the catch?" I here you say. 
+			Well, the game is twice as hard.<br><br>
+			<b>So, what'll it be?</b>
+		</p>
+		<div>
+			<button on:click={()=> void(show_secret=false, set_new_game_plus())}>Yeah, I guess</button>
+			<button on:click={()=> void(show_secret=false)}>Hm... nah</button>
+		</div>
 	</div>
 </main>
 
@@ -66,6 +84,7 @@
 		gap: 0.5rem;
 		border: 1px solid white;
 		border-radius: 10px;
+		overflow: hidden;
 	}
 	.open {
 		bottom: 50%;
@@ -147,5 +166,50 @@
 		background-color: #333;
 		color: #777;
 		pointer-events: none;
+	}
+
+	#secret {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: calc(100% - 2rem);
+		height: calc(100% - 2rem);;
+		background-color: #333;
+		color: #ddd;
+		display: grid;
+		align-content: center;
+		justify-content: center;
+		text-align: center;
+		padding: 1rem;
+		transition-duration: 0.3s;
+		/* color: white; */
+	}
+	#secret:not(.show-secret) {
+		opacity: 0;
+		pointer-events: none;
+	}
+	#secret hr {
+		width: 50%;
+		margin: 0.5rem auto;
+	}
+	#secret h3 {
+		padding: 0.5rem 0.7rem;
+		font-size: 2rem;
+	}
+	#secret p {
+		padding: 0.5rem 0.7rem;
+		font-size: 1.1rem;
+	}
+	#secret div {
+		padding: 0.5rem 5rem;
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 0.5rem;
+	}
+	#secret div button {
+		padding: 0.5rem 0.7rem;
+		background-color: #555;
+		color: white;
+		border: none;
 	}
 </style>

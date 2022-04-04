@@ -84,13 +84,18 @@ export const light_orb = w({
 export const homing_orb = w({
 	amount: 0,
 	cost: 7,
-	value: 4,
+	value: 2.5,
 });
 export const spore_orb = w({
 	amount: 0,
 	cost: 10,
-	value: 6,
+	value: 3,
 	sub_value: 0.5,
+});
+export const titan_orb = w({
+	amount: 0,
+	cost: 10,
+	value: 15,
 });
 //#endregion
 //#region | Prestige
@@ -211,7 +216,7 @@ const get_store_obj = ()=>{
 	// store_keys.forEach((k)=> store_obj[k] = get(writables[k]) );
 	return store_obj;
 }
-console.log(get_store_obj());
+// console.log(get_store_obj());
 export const store_to_local = ()=>{
 	unload_time.set(Math.floor(Date.now()/1000));
 	localStorage.IdleOrbs2 = JSON.stringify(get_store_obj());

@@ -1,6 +1,6 @@
 <script>
 	// import { timer, cash, bounce_size, collector_pos, orb_count } from "../stores.js";
-	import { cash, mana, buy_amount, basic_orb, light_orb, homing_orb, spore_orb, prestige, starting_cash, bounce, got_mana, orb_mult, orb_mult_cost, get_orb_bonus, canvas_toggled } from "../stores.js";
+	import { cash, mana, buy_amount, basic_orb, light_orb, homing_orb, spore_orb, titan_orb, prestige, starting_cash, bounce, got_mana, orb_mult, orb_mult_cost, get_orb_bonus, canvas_toggled } from "../stores.js";
 	import { fnum, run_n, spend_cash_mult } from "../utils/functions.js";
 
 	//#region | Buy Bounce Power
@@ -50,9 +50,10 @@
 		$cash = $starting_cash.amount;
 		basic_orb.update( v => (v.amount = 1, v.cost = 50, v));
 		light_orb.update( v => (v.amount = 0, v.cost = 100, v));
-		$mana += $homing_orb.amount + $spore_orb.amount;
-		homing_orb.update( v => (v.amount = 0, v));
-		spore_orb.update( v => (v.amount = 0, v));
+		$mana += $homing_orb.amount + $spore_orb.amount + $titan_orb.amount*5;
+		homing_orb.update( v => (v.cost = 7, v.amount = 0, v));
+		spore_orb.update( v => (v.cost = 10, v.amount = 0, v));
+		titan_orb.update( v => (v.cost = 10, v.amount = 0, v));
 		$bounce = {
 			power: 30,
 			power_cost: 250,

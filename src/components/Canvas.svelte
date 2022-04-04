@@ -21,6 +21,7 @@
 			light_orb,
 			homing_orb,
 			spore_orb,
+			titan_orb,
 		// Orb Utils and Extras
 			orb_mult,
 			collector_pos,
@@ -74,6 +75,13 @@
 			}
 			orbs.new.spore(Math.round(Math.random()*1000), 580, 0, 0);
 		}
+		for (let i = 0; i < $titan_orb.amount; i++) {
+			if (i >= $max_render) {
+				orbs.over.titan = $titan_orb.amount - $max_render;
+				break;
+			}
+			orbs.new.titan(Math.round(Math.random()*1000), 580, 0, 0);
+		}
 	}; 
 	/** Sets orbs value based on prestige times and the orb multiplier */
 	const set_orb_values = ()=>{
@@ -90,9 +98,12 @@
 			v.value = 6 * get_orb_bonus() / ($new_game_plus ? 2 : 1),
 			v.sub_value = 0.5 * get_orb_bonus() / ($new_game_plus ? 2 : 1),
 		v) );
+		titan_orb.update( v => (
+			v.value = 15 * get_orb_bonus() / ($new_game_plus ? 2 : 1),
+		v) );
 	}
 
-	$: { $basic_orb; $light_orb; $homing_orb; $spore_orb; $prestige; $orb_mult;
+	$: { $basic_orb; $light_orb; $homing_orb; $spore_orb; $titan_orb; $prestige; $orb_mult;
 		reset_orbs();
 		set_orb_values();
 	}
@@ -154,6 +165,12 @@
 			life_span: 100,
 		}
 		const shadow = {
+			l: [],
+			max: 100,
+			over: 0,
+			life_span: 100,
+		}
+		const titan = {
 			l: [],
 			max: 100,
 			over: 0,
@@ -257,6 +274,14 @@
 						ticks: shadow.life_span+Math.floor(Math.random()*10),
 					});
 				},
+				titan(x,y, vx,vy) {
+					if (titan.l.length >= titan.max) { titan.over++; return; }
+					else titan.over = 0;
+					titan.l.push({
+						x,y, vx, vy,
+						lx: x, ly: y,
+					});
+				},
 			},
 			free_all() {
 				basic.l = [];
@@ -271,6 +296,8 @@
 				sub_spore.over = 0;
 				shadow.l = [];
 				shadow.over = 0;
+				titan.l = [];
+				titan.over = 0;
 			},
 			update(draw=true) {
 				if (basic.max != $max_render) {
@@ -283,7 +310,7 @@
 					reset_orbs();
 					return;
 				}
-				const all = [].concat(basic.l).concat(light.l).concat(homing.l).concat(spore.l).concat(sub_spore.l).concat(shadow.l); //...
+				const all = [].concat(basic.l).concat(light.l).concat(homing.l).concat(spore.l).concat(sub_spore.l).concat(shadow.l).concat(titan.l); //...
 				for (let i = 0; i < basic.l.length; i++) {
 					const orb = basic.l[i];
 					ctx.fillStyle = "#e3ffcfdd";
@@ -306,8 +333,10 @@
 						}
 					}
 
-					orb.vx *= 0.98;
-					orb.vy *= 0.98;
+					if (!no_gravity) {
+						orb.vx *= 0.98;
+						orb.vy *= 0.98;
+					}
 
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
@@ -347,8 +376,10 @@
 						}
 					}
 
-					orb.vx *= 0.99;
-					orb.vy *= 0.99;
+					if (!no_gravity) {
+						orb.vx *= 0.99;
+						orb.vy *= 0.99;
+					}
 
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
@@ -395,14 +426,15 @@
 					orb.vx *= 0.9;
 					orb.vy *= 0.9;
 
-					if (mouse.hovering) {
+					if (mouse.hovering || mouse.db_click != null) {
 						const to_pos = { x: undefined, y: undefined };
+						const offset = mouse.db_click != null ? mouse.db_click : mouse;
 						if (orb.index % 2 == 0) {
-							to_pos.x = Math.cos((6.242)/homing.l.length * orb.index + (6.282*($timer/29)))*100 + mouse.x, 
-							to_pos.y = Math.cos((6.242)/homing.l.length * orb.index + (6.282*($timer/29)))*100 + mouse.y  
+							to_pos.x = Math.cos((6.242)/homing.l.length * orb.index + (6.282*($timer/29)))*100 + offset.x, 
+							to_pos.y = Math.cos((6.242)/homing.l.length * orb.index + (6.282*($timer/29)))*100 + offset.y  
 						} else {
-							to_pos.x = Math.cos((6.282/homing.l.length * orb.index + (6.282*($timer/29)))%6.282)*50 + mouse.x, 
-							to_pos.y = Math.sin((6.282/homing.l.length * orb.index + (6.282*($timer/29)))%6.282)*50 + mouse.y  
+							to_pos.x = Math.cos((6.282/homing.l.length * orb.index + (6.282*($timer/29)))%6.282)*50 + offset.x, 
+							to_pos.y = Math.sin((6.282/homing.l.length * orb.index + (6.282*($timer/29)))%6.282)*50 + offset.y  
 						}
 						push_to(orb, to_pos, orb, distance(orb, to_pos) < 200 ? 1.2 : 2);
 					}
@@ -442,8 +474,10 @@
 						}
 					}
 
-					orb.vx *= 0.98;
-					orb.vy *= 0.98;
+					if (!no_gravity) {
+						orb.vx *= 0.98;
+						orb.vy *= 0.98;
+					}
 
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
@@ -477,8 +511,10 @@
 						}
 					}
 
-					orb.vx *= 0.98;
-					orb.vy *= 0.98;
+					if (!no_gravity) {
+						orb.vx *= 0.98;
+						orb.vy *= 0.98;
+					}
 
 					if (!$fighting) {
 						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
@@ -518,8 +554,6 @@
 						}
 					}
 
-					// orb.vx *= 0.99;
-					// orb.vy *= 0.99;
 					orb.vy--;
 
 					if (!$fighting) {
@@ -535,6 +569,47 @@
 						i--;
 					}
 				}
+				for (let i = 0; i < titan.l.length; i++) {
+					const orb = titan.l[i];
+					ctx.fillStyle = "#dd54d2dd";
+					ctx.strokeStyle = "#700368dd";
+					if (draw) {
+						// console.log("rendering orb!");
+						switch ($render_mode) {
+							case 0:
+								ctx.fillRect(orb.x, orb.y, 20, 20);
+								ctx.strokeRect(orb.x, orb.y, 20, 20);
+								break;
+							case 1:
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.fill(); 
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.stroke(); 
+								break;
+							case 2:
+								ctx.fillRect(orb.x+9, orb.y+9, 2, 2);
+								break;
+							case 3:
+								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
+								ctx.fillRect(x, y, 20, 20);
+								ctx.strokeRect(x, y, 20, 20);
+								break;
+						}
+					}
+
+					if (!no_gravity) {
+						orb.vx *= 0.96;
+						orb.vy *= 0.96;
+					}
+
+					if (!$fighting) {
+						if (orb.ly <= $collector_pos && orb.y > $collector_pos || orb.ly >= $collector_pos && orb.y < $collector_pos) {
+							cash_hold += this.value.titan;
+							coll_num++;
+						}
+					} else {
+						const hit = collide_monster(orb);
+						if (hit) monster_manager.hit(this.value.titan*1.5);
+					}
+				}
 
 				for (let i = 0; i < all.length; i++) {
 					const orb = all[i];
@@ -548,7 +623,7 @@
 					orb.y += orb.vy*1.5;
 					
 					if (!orb.grounded || is_homing) {
-						if (!is_homing) orb.vy++;
+						if (!is_homing && !no_gravity) orb.vy++;
 						const offset = is_sub_spore ? 10 : 20;
 						let collided = false;
 						if (orb.x < 0) {
@@ -617,18 +692,29 @@
 					if (pos != null) orb.vx += ((pos.x-10-orb.x)/100)*(Math.random()*0.5+0.5);
 					orb.grounded = false;
 				}
+				for (let i = 0; i < titan.l.length; i++) {
+					const orb = titan.l[i];
+					if (orb.y < 600-$bounce.size-30) continue;
+
+					orb.vx += Math.random()-0.5;
+					orb.vy -= ($bounce.power+(Math.random()*-4.5));
+					if (pos != null) orb.vx += ((pos.x-10-orb.x)/100)*(Math.random()*0.5+0.5);
+					orb.grounded = false;
+				}
 			},
 			get basic() { return basic; },
 			get light() { return light; },
 			get homing() { return homing; },
 			get spore() { return spore; },
 			get sub_spore() { return sub_spore; },
+			get titan() { return titan; },
 			total: {
 				get basic() { return basic.l.length + basic.over; },
 				get light() { return light.l.length + light.over; },
 				get homing() { return homing.l.length + homing.over; },
 				get spore() { return spore.l.length + spore.over; },
 				get sub_spore() { return sub_spore.l.length + sub_spore.over; },
+				get titan() { return titan.l.length + titan.over; },
 			},
 			over: {
 				set basic(x) {
@@ -643,6 +729,9 @@
 				set spore(x) {
 					spore.over = x;
 				},
+				set titan(x) {
+					titan.over = x;
+				},
 			},
 			value: {
 				get basic() { return $basic_orb.value + (($basic_orb.value * basic.over)/basic.l.length); },
@@ -650,6 +739,7 @@
 				get homing() { return $homing_orb.value + (($homing_orb.value * homing.over)/homing.l.length); },
 				get spore() { return $spore_orb.value + (($spore_orb.value * spore.over)/spore.l.length); },
 				get sub_spore() { return $spore_orb.sub_value + (($spore_orb.sub_value * spore.over)/spore.l.length); },
+				get titan() { return $titan_orb.value + (($titan_orb.value * titan.over)/titan.l.length); },
 			},
 			get coll_num() { return coll_num; },
 			set coll_num(x) { coll_num = x; },
@@ -711,7 +801,12 @@
 		if (step) step = false;
 		before_frame = Date.now();
 
-		// if (render_tick >= $render_mod)
+		if (no_gravity) {
+			events.gravity.ticks--;
+			if (events.gravity.ticks <= 0) {
+				no_gravity = false;
+			}
+		}
 
 		if (!$toggled || render_tick < $render_mod) {
 			if ($toggled) render_tick++;
@@ -732,6 +827,13 @@
 		draw_auto_bounce_bar();
 		auto_bounce_loop(v);
 
+		// No Gravity Line
+		if (no_gravity) {
+			const perc = events.gravity.ticks / events.gravity.max_tick;
+			ctx.fillStyle = "#000000aa";
+			ctx.fillRect(990, 0, 10, 600*perc);
+		}
+
 		// Collector Line
 		if (!$fighting) {
 			ctx.strokeStyle = "lime";
@@ -740,6 +842,18 @@
 			ctx.lineTo(1000, 250);
 			ctx.stroke();
 		} 
+
+		// Mouse Locked Position
+		if (mouse.db_click != null && $homing_orb.amount > 0) {
+			const { x, y } = mouse.db_click;
+			ctx.strokeStyle = "red";
+			ctx.lineWidth = 2;
+			ctx.beginPath();
+			ctx.moveTo(x-7, y-7); ctx.lineTo(x+7, y+7);
+			ctx.moveTo(x-7, y+7); ctx.lineTo(x+7, y-7);
+			ctx.stroke();
+			ctx.lineWidth = 1;
+		}
 
 		particle_manager.update($render_mode);
 		orbs.update();
@@ -775,6 +889,7 @@
 	const mouse = {
 		x: 0, y: 0,
 		hovering: false,
+		db_click: null,
 	}
 	/** @param {MouseEvent} e*/
 	const mouse_move = (e)=>{
@@ -783,6 +898,11 @@
 	};
 	const mouse_enter = ()=> mouse.hovering = true;
 	const mouse_leave = ()=> mouse.hovering = false;
+	const double_click = (e)=>{
+		const [x, y] = (e.offsetX == 0 ? [e.layerX, e.layerY] : [e.offsetX, e.offsetY]);
+		if (mouse.db_click == null) mouse.db_click = { x, y };
+		else mouse.db_click = null;
+	}
 
 	let last_click = Date.now();
 	const mouse_down = (e)=>{
@@ -833,6 +953,8 @@
 		else if (k == "h") monster_manager.hit(1e10);
 		else if (k == "R") set_to_default();
 		else if (k == "f") min_fps = 1000;
+		else if (k == "e") console.log(event_manager);
+		else if (k == "n") $new_game_plus = true;
 		// else if (k == "f") (console.log("Collecting orbs..."), collect_freq());
 		else if (k == "S") {
 			basic_orb.update( v => (v.amount += 200, v));  
@@ -875,6 +997,7 @@
 		canvas.onmousemove = mouse_move;
 		canvas.onmouseenter = mouse_enter;
 		canvas.onmouseleave = mouse_leave;
+		canvas.ondblclick = double_click;
 		document.body.onkeyup = key_up;
 		document.body.onkeydown = key_down;
 		// window.addEventListener("keyup", key_up, false);
@@ -1081,8 +1204,52 @@
 	$: if ($fighting) { spawn_monster(); reset_orbs(); }
 	//#endregion
 	//#region | Game Events
+	let no_gravity = false;
+	const events = {
+		shadow: {
+			draw(v) {
+				ctx.fillStyle = "#000044aa";
+				ctx.beginPath(); ctx.arc(event_manager.pos.x, event_manager.pos.y, 25, 0, 2 * Math.PI); ctx.fill();
+				ctx.strokeStyle = "#ffffffaa";
+				ctx.beginPath(); ctx.arc(event_manager.pos.x, event_manager.pos.y, (25*(v/29)), 0, 2 * Math.PI); ctx.stroke();
+				ctx.beginPath(); ctx.arc(event_manager.pos.x, event_manager.pos.y, (25), 0, 2 * Math.PI); ctx.stroke();
+			},
+			activate() {
+				for (let i = 0; i < 50; i++) {
+					const ang = (3.141/5)*(i/50)+(3.141/5*2);
+					orbs.new.shadow(event_manager.pos.x, event_manager.pos.y, Math.cos(ang)*20+(Math.random()*5), Math.sin(ang)*20+(Math.random()*5));
+				}
+			}
+		},
+		gravity: {
+			draw(v) {
+				ctx.fillStyle = "#00000099";
+				ctx.beginPath(); ctx.arc(event_manager.pos.x, event_manager.pos.y, 25, 0, 2 * Math.PI); ctx.fill();
+				ctx.strokeStyle = "#ffffffaa";
+				// ctx.arc(event_manager.pos.x, event_manager.pos.y, (25*(v/29)), 0, 2 * Math.PI); ctx.stroke();
+				ctx.beginPath();
+				ctx.moveTo(event_manager.pos.x-26*Math.cos(3.141*(((v+15)%30)/29)), (event_manager.pos.y+25)- 50*(v/29));
+				ctx.lineTo(event_manager.pos.x+26*Math.cos(3.141*(((v+15)%30)/29)), (event_manager.pos.y+25)- 50*(v/29));
+
+				ctx.moveTo(event_manager.pos.x-26*Math.cos(3.141*(((((v+15)%30)+15)%30)/29)), (event_manager.pos.y+25)- 50*(((v+15)%30)/29));
+				ctx.lineTo(event_manager.pos.x+26*Math.cos(3.141*(((((v+15)%30)+15)%30)/29)), (event_manager.pos.y+25)- 50*(((v+15)%30)/29));
+				ctx.stroke();
+				ctx.beginPath(); ctx.arc(event_manager.pos.x, event_manager.pos.y, (25), 0, 2 * Math.PI); ctx.stroke();
+			},
+			activate() { no_gravity = true; this.ticks = this.max_tick; },
+			ticks: 0,
+			max_tick: 300,
+		},
+	}
+	const event_keys = ["shadow"];
+	const event_keys_plus = ["gravity"];
+	const get_rand_event = ()=>{
+		if ($new_game_plus) return rand_in_list(event_keys.concat(event_keys_plus));
+		return rand_in_list(event_keys);
+	}
 	const event_manager = {
 		pos: { x: 0, y: 0 },
+		tag: null,
 		on: false,
 		next_ticks: 1800 + Math.floor(Math.random()*1800),
 		click(pos) {
@@ -1090,22 +1257,17 @@
 			if (distance(pos, this.pos) < 25) {
 				this.on = false;
 				this.next_ticks = 1800 + Math.floor(Math.random()*1800);
-				for (let i = 0; i < 50; i++) {
-					const ang = (3.141/5)*(i/50)+(3.141/5*2);
-					orbs.new.shadow(pos.x, pos.y, Math.cos(ang)*20+(Math.random()*5), Math.sin(ang)*20+(Math.random()*5));
-				}
+				events[this.tag].activate();
 				return true;
 			}
 			return false;
 		},
 		update(v) {
+			if (no_gravity) return;
 			if ($fighting) return;
-			if (this.on) {
-				ctx.fillStyle = "#000044aa";
-				ctx.beginPath(); ctx.arc(this.pos.x, this.pos.y, 25, 0, 2 * Math.PI); ctx.fill();
-				ctx.strokeStyle = "#ffffffaa";
-				ctx.beginPath(); ctx.arc(this.pos.x, this.pos.y, (25*(v/29)), 0, 2 * Math.PI); ctx.stroke();
-				ctx.beginPath(); ctx.arc(this.pos.x, this.pos.y, (25), 0, 2 * Math.PI); ctx.stroke();
+			if (this.on && this.tag != null) {
+				if (events[this.tag] != undefined) events[this.tag].draw(v);
+				else console.error(`events[${this.tag}] == undefined`);
 				return;
 			}
 			this.next_ticks--;
@@ -1114,6 +1276,7 @@
 				this.pos.x = Math.round(Math.random()*(1000-60))+30;
 				this.pos.y = Math.round(Math.random()*(100))+30;
 				this.on = true;
+				this.tag = get_rand_event();
 				this.next_ticks = 60;
 			}
 		}

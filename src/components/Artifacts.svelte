@@ -3,7 +3,7 @@
 </script>
 
 <main>
-	<h3>Unlock Artifacts in "New Game+"</h3>
+	<h3>Coming soon!</h3>
 </main>
 
 <style>

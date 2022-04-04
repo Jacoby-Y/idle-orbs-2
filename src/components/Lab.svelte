@@ -1,8 +1,8 @@
 <script>
 	import { fnum, run_n, spend_cash_add } from "../utils/functions.js";
 	import { 
-		canvas_toggled, fighting, mana, cash, fight_cost, auto_fight, afford_fight, new_game_plus,
-		basic_orb, light_orb, homing_orb, spore_orb, prestige, rarities, unlocked_fighting, got_mana, next_tower_lvl, buy_amount,
+		canvas_toggled, fighting, mana, cash, fight_cost, auto_fight, afford_fight, new_game_plus, on_mobile,
+		basic_orb, light_orb, homing_orb, spore_orb, titan_orb, prestige, rarities, unlocked_fighting, got_mana, next_tower_lvl, buy_amount,
 	} from "../stores.js";
 	import Artifacts from "./Artifacts.svelte";
 
@@ -73,7 +73,7 @@
 	//#endregion
 	//#region | Total Orbs
 	let total_orbs = 0;
-	$: total_orbs = $basic_orb.amount + $light_orb.amount + $homing_orb.amount + $spore_orb.amount;
+	$: total_orbs = $basic_orb.amount + $light_orb.amount + $homing_orb.amount + $spore_orb.amount + $titan_orb.amount;
 	//#endregion
 	//#region | Basic Orb
 	const buy_basic = ()=>{
@@ -90,7 +90,7 @@
 		else if ($buy_amount == 2) run_n(buy_basic, 99);
 	};
 	const sell_basic = ()=>{
-		if (total_orbs <= 1) return;
+		if (total_orbs <= 1 || $basic_orb.amount <= 0) return;
 		basic_orb.update( v => (v.cost -= 10, v.amount--, v) );
 		$cash += Math.floor($basic_orb.cost/2);
 		// basic_orb.update( v => (v.cost = Math.ceil(v.cost/1.2), v.amount--, v) );
@@ -111,7 +111,7 @@
 
 	};
 	const sell_light = ()=>{
-		if (total_orbs <= 1) return;
+		if (total_orbs <= 1 || $light_orb.amount <= 0) return;
 		$cash += Math.floor($light_orb.cost/2.2);
 		light_orb.update( v => (v.cost -= 15, v.amount--, v) );
 	}
@@ -120,18 +120,21 @@
 	const buy_homing = ()=>{
 		if ($mana < $homing_orb.cost) return;
 		$mana -= $homing_orb.cost;
+		$homing_orb.cost++;
 		homing_orb.update( v => ( v.amount++, v) );
 		if ($buy_amount == 3) {
-			const res = spend_cash_add($mana, $homing_orb.cost, 0);
+			const res = spend_cash_add($mana, $homing_orb.cost, 1);
 			$mana = res.cash;
+			$homing_orb.cost = res.cost;
 			homing_orb.update( v => (v.amount += res.i, v) );
 		}
 		else if ($buy_amount == 1) run_n(buy_homing, 9);
 		else if ($buy_amount == 2) run_n(buy_homing, 99);
-	};
+	}
 	const sell_homing = ()=>{
-		if (total_orbs <= 1) return;
+		if (total_orbs <= 1 || $homing_orb.amount <= 0) return;
 		$mana += Math.floor($homing_orb.cost/2.2);
+		$homing_orb.cost--;
 		homing_orb.update( v => (v.amount--, v) );
 	}
 	//#endregion
@@ -139,19 +142,53 @@
 	const buy_spore = ()=>{
 		if ($mana < $spore_orb.cost) return;
 		$mana -= $spore_orb.cost;
-		spore_orb.update( v => (v.amount++, v) );
+		$spore_orb.cost++;
+		spore_orb.update( v => ( v.amount++, v) );
 		if ($buy_amount == 3) {
-			const res = spend_cash_add($mana, $spore_orb.cost, 0);
+			const res = spend_cash_add($mana, $spore_orb.cost, 1);
 			$mana = res.cash;
+			$spore_orb.cost = res.cost;
 			spore_orb.update( v => (v.amount += res.i, v) );
 		}
 		else if ($buy_amount == 1) run_n(buy_spore, 9);
 		else if ($buy_amount == 2) run_n(buy_spore, 99);
 	};
 	const sell_spore = ()=>{
-		if (total_orbs <= 1) return;
+		if (total_orbs <= 1 || $spore_orb.amount <= 0) return;
 		$mana += Math.floor($spore_orb.cost/2.2);
+		$spore_orb.cost--;
 		spore_orb.update( v => (v.amount--, v) );
+	}
+	//#endregion
+	//#region | Titan Orb
+	const buy_titan = ()=>{
+		if ($mana < $titan_orb.cost || $basic_orb.amount < 1 || $light_orb.amount < 1 || $homing_orb.amount < 1 || $spore_orb.amount < 1) return;
+		$mana -= $titan_orb.cost;
+		$basic_orb.amount--; 
+		$light_orb.amount--; 
+		$homing_orb.amount--; 
+		$spore_orb.amount--; 
+		$titan_orb.cost++;
+		titan_orb.update( v => ( v.amount++, v) );
+		if ($buy_amount == 3) {
+			const res = spend_cash_add($mana, $titan_orb.cost, 1);
+			$mana = res.cash;
+			$titan_orb.cost = res.cost;
+			titan_orb.update( v => (v.amount += res.i, v) );
+		}
+		else if ($buy_amount == 1) run_n(buy_titan, 9);
+		else if ($buy_amount == 2) run_n(buy_titan, 99);
+		$basic_orb = $basic_orb; $light_orb = $light_orb; $homing_orb = $homing_orb; $spore_orb = $spore_orb;
+	}
+	const sell_titan = ()=>{
+		if (total_orbs <= 1 || $titan_orb.amount <= 0) return;
+		$basic_orb.amount++; 
+		$light_orb.amount++; 
+		$homing_orb.amount++; 
+		$spore_orb.amount++; 
+		$titan_orb.amount--; 
+		$titan_orb.cost--;
+		$basic_orb = $basic_orb; $light_orb = $light_orb; $homing_orb = $homing_orb; $spore_orb = $spore_orb; $titan_orb = $titan_orb;
 	}
 	//#endregion
 </script>
@@ -184,7 +221,7 @@
 		<button class="trade-btn" id="basic-btn">Basic
 			<p class="stat">Value: {fnum($basic_orb.value)}</p>
 			<div class="orb-info">
-				<button class="buy-sell" on:click={buy_basic}>Buy ${fnum($basic_orb.cost)}</button>
+				<button class="buy-sell" on:click={buy_basic}>Cost ${fnum($basic_orb.cost)}</button>
 				<button class="buy-sell" on:click={sell_basic}>Sell</button>
 			</div>
 		</button>
@@ -192,7 +229,7 @@
 		<button class="trade-btn" id="light-btn">Light
 			<p class="stat">Value: {fnum($light_orb.value)}</p>
 			<div class="orb-info">
-				<button class="buy-sell" on:click={buy_light}>Buy ${fnum($light_orb.cost)}</button>
+				<button class="buy-sell" on:click={buy_light}>Cost ${fnum($light_orb.cost)}</button>
 				<button class="buy-sell" on:click={sell_light}>Sell</button>
 			</div>
 		</button>
@@ -201,14 +238,14 @@
 		<button class="trade-btn" id="homing-btn">Homing
 			<p class="stat">Value: {fnum($homing_orb.value)}</p>
 			<div class="orb-info">
-				<button class="buy-sell" on:click={buy_homing}>Buy {fnum($homing_orb.cost)}₪</button>
+				<button class="buy-sell" on:click={buy_homing}>Cost {fnum($homing_orb.cost)}₪</button>
 				<button class="buy-sell" on:click={sell_homing}>Sell</button>
 			</div>
 		</button>
 		<button class="trade-btn" id="spore-btn">Spore
 			<p class="stat">Value: {fnum($spore_orb.value)}</p>
 			<div class="orb-info">
-				<button class="buy-sell" on:click={buy_spore}>Buy {fnum($spore_orb.cost)}₪</button>
+				<button class="buy-sell" on:click={buy_spore}>Cost {fnum($spore_orb.cost)}₪</button>
 				<button class="buy-sell" on:click={sell_spore}>Sell</button>
 			</div>
 		</button>
@@ -217,12 +254,19 @@
 		<button disabled>?</button>
 		{/if}
 		{#if $new_game_plus}
-		<button>?</button>
+		<button class="trade-btn" id="titan-btn">Titan
+			<p class="stat">Value: {fnum($titan_orb.value)}</p>
+			<div class="orb-info">
+				<button class="buy-sell" on:click={buy_titan}>Cost {fnum($titan_orb.cost)}₪</button>
+				<button class="buy-sell" on:click={sell_titan}>Sell</button>
+			</div>
+		</button>
 		{:else} <button disabled>?</button> {/if}
 		<h3 id="basic-info">Normal gravity, drag, value, etc.<br>Just... <em>Average</em>.</h3>
 		<h3 id="light-info">Low gravity and drag, but normal value.<br>Like an aerodynamic ping pong ball!</h3>
-		<h3 id="homing-info">Lower value, but orbits around the mouse.<br>Buy a bunch and watch the satisfaction!</h3>
-		<h3 id="spore-info">Normal gravity, drag, and value. Spawns smaller, lower value, orbs that despawn after a few seconds.</h3>
+		<h3 id="homing-info">Likes to follow you around.<br>Double {on_mobile === true ? "tap" : "click"} to lock orbit position</h3>
+		<h3 id="spore-info">Normal gravity, drag, and value. Spawns smaller, lower value orbs that despawn after a few seconds.</h3>
+		<h3 id="titan-info">Heavy and slow, but has high value and does bonus damage to monsters. Additionally, this orb requires 1 of each other orb.</h3>
 		<h3 id="fight-info" style="display: {hover_fight ? "block" : ""};">Use your orbs in The Monster Tower to get Mana.<br>An orb's damage is equal to its cash value.</h3>
 	</div>
 	<h3 id="orb-stats">
@@ -232,7 +276,10 @@
 		{/if}
 		{#if $got_mana}
 			<span style="color: #cccc00;">Homing Orbs: {fnum($homing_orb.amount)}</span><br>
-			<span style="color: #ffaa00;">Spore Orbs: {fnum($spore_orb.amount)}</span>
+			<span style="color: #ffaa00;">Spore Orbs: {fnum($spore_orb.amount)}</span><br>
+		{/if}
+		{#if $new_game_plus}
+		<span style="color: #e170d8;">Titan Orbs: {fnum($titan_orb.amount)}</span>
 		{/if}
 	</h3>
 
@@ -346,6 +393,7 @@
 	#light-btn  { background-color: #1c6f77; }
 	#homing-btn { background-color: #71771c; }
 	#spore-btn { background-color: #aa771c; }
+	#titan-btn { background-color: #8f408a; }
 	button:disabled {
 		background-color: #52575f;
 		pointer-events: none;
@@ -385,6 +433,7 @@
 	#light-btn:hover ~ #light-info { display: block; }
 	#homing-btn:hover ~ #homing-info { display: block; }
 	#spore-btn:hover ~ #spore-info { display: block; }
+	#titan-btn:hover ~ #titan-info { display: block; }
 	/* #fight-btn:hover, #fight-info { display: block; } */
 	/* #basic-btn:hover ~ #basic-info { display: block; } */
 

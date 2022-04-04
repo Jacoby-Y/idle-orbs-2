@@ -1,3 +1,11 @@
+## v0.10.2
+- Changed up some text
+- Added ability to lock homing orbit position in place
+- Made the cost of mana-bought orbs increase
+- Added stuff to New Game+
+	- Added anti-gravity
+	- Added titan orb
+
 ## v0.10.1
 - Started functionality for New Game+
 - Added the new monsters that will spawn in NG+

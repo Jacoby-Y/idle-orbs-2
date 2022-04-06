@@ -4142,7 +4142,7 @@ var app = (function () {
     			t2 = text(" Prestiges");
     			attr_dev(h3, "id", "info");
     			attr_dev(h3, "class", "svelte-1d0j5jl");
-    			add_location(h3, file$3, 216, 3, 7203);
+    			add_location(h3, file$3, 216, 3, 7295);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h3, anchor);
@@ -4239,15 +4239,15 @@ var app = (function () {
     			attr_dev(button0, "id", "auto-fight");
     			attr_dev(button0, "style", button0_style_value = /*$auto_fight*/ ctx[8] ? "border-color: lime;" : "");
     			attr_dev(button0, "class", "svelte-1d0j5jl");
-    			add_location(button0, file$3, 200, 3, 6157);
-    			add_location(b, file$3, 202, 42, 6444);
+    			add_location(button0, file$3, 200, 3, 6249);
+    			add_location(b, file$3, 202, 42, 6536);
     			attr_dev(h3, "id", "rarities");
     			attr_dev(h3, "class", "svelte-1d0j5jl");
-    			add_location(h3, file$3, 203, 4, 6476);
+    			add_location(h3, file$3, 203, 4, 6568);
     			attr_dev(button1, "id", "fight-btn");
     			attr_dev(button1, "class", "svelte-1d0j5jl");
     			toggle_class(button1, "disabled", /*$fighting*/ ctx[13]);
-    			add_location(button1, file$3, 201, 3, 6299);
+    			add_location(button1, file$3, 201, 3, 6391);
     		},
     		m: function mount(target, anchor) {
     			if (if_block0) if_block0.m(target, anchor);
@@ -4450,7 +4450,7 @@ var app = (function () {
     			h3.textContent = "Check settings...";
     			attr_dev(h3, "id", "secret-hint");
     			attr_dev(h3, "class", "svelte-1d0j5jl");
-    			add_location(h3, file$3, 199, 28, 6104);
+    			add_location(h3, file$3, 199, 28, 6196);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h3, anchor);
@@ -4486,7 +4486,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text("%");
     			set_style(span, "color", "#ddd");
-    			add_location(span, file$3, 204, 26, 6521);
+    			add_location(span, file$3, 204, 26, 6613);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -4555,7 +4555,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text("%");
     			set_style(span, "color", "#B8E986");
-    			add_location(span, file$3, 206, 26, 6664);
+    			add_location(span, file$3, 206, 26, 6756);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -4624,7 +4624,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text("%");
     			set_style(span, "color", "#48BAFF");
-    			add_location(span, file$3, 208, 26, 6811);
+    			add_location(span, file$3, 208, 26, 6903);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -4658,7 +4658,7 @@ var app = (function () {
     	const block = {
     		c: function create() {
     			br = element("br");
-    			add_location(br, file$3, 209, 46, 6920);
+    			add_location(br, file$3, 209, 46, 7012);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, br, anchor);
@@ -4721,7 +4721,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text("%");
     			set_style(span, "color", "#F8E71C");
-    			add_location(span, file$3, 211, 26, 7031);
+    			add_location(span, file$3, 211, 26, 7123);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -4758,7 +4758,7 @@ var app = (function () {
     			button.textContent = "?";
     			button.disabled = true;
     			attr_dev(button, "class", "svelte-1d0j5jl");
-    			add_location(button, file$3, 235, 10, 7952);
+    			add_location(button, file$3, 235, 10, 8044);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -4815,16 +4815,16 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "Sell";
     			attr_dev(p, "class", "stat svelte-1d0j5jl");
-    			add_location(p, file$3, 229, 3, 7688);
+    			add_location(p, file$3, 229, 3, 7780);
     			attr_dev(button0, "class", "buy-sell svelte-1d0j5jl");
-    			add_location(button0, file$3, 231, 4, 7770);
+    			add_location(button0, file$3, 231, 4, 7862);
     			attr_dev(button1, "class", "buy-sell svelte-1d0j5jl");
-    			add_location(button1, file$3, 232, 4, 7859);
+    			add_location(button1, file$3, 232, 4, 7951);
     			attr_dev(div, "class", "orb-info svelte-1d0j5jl");
-    			add_location(div, file$3, 230, 3, 7743);
+    			add_location(div, file$3, 230, 3, 7835);
     			attr_dev(button2, "class", "trade-btn svelte-1d0j5jl");
     			attr_dev(button2, "id", "light-btn");
-    			add_location(button2, file$3, 228, 2, 7638);
+    			add_location(button2, file$3, 228, 2, 7730);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button2, anchor);
@@ -4886,10 +4886,10 @@ var app = (function () {
     			button1.textContent = "?";
     			button0.disabled = true;
     			attr_dev(button0, "class", "svelte-1d0j5jl");
-    			add_location(button0, file$3, 252, 2, 8634);
+    			add_location(button0, file$3, 252, 2, 8726);
     			button1.disabled = true;
     			attr_dev(button1, "class", "svelte-1d0j5jl");
-    			add_location(button1, file$3, 253, 2, 8664);
+    			add_location(button1, file$3, 253, 2, 8756);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button0, anchor);
@@ -4983,27 +4983,27 @@ var app = (function () {
     			button4 = element("button");
     			button4.textContent = "Sell";
     			attr_dev(p0, "class", "stat svelte-1d0j5jl");
-    			add_location(p0, file$3, 238, 3, 8058);
+    			add_location(p0, file$3, 238, 3, 8150);
     			attr_dev(button0, "class", "buy-sell svelte-1d0j5jl");
-    			add_location(button0, file$3, 240, 4, 8141);
+    			add_location(button0, file$3, 240, 4, 8233);
     			attr_dev(button1, "class", "buy-sell svelte-1d0j5jl");
-    			add_location(button1, file$3, 241, 4, 8232);
+    			add_location(button1, file$3, 241, 4, 8324);
     			attr_dev(div0, "class", "orb-info svelte-1d0j5jl");
-    			add_location(div0, file$3, 239, 3, 8114);
+    			add_location(div0, file$3, 239, 3, 8206);
     			attr_dev(button2, "class", "trade-btn svelte-1d0j5jl");
     			attr_dev(button2, "id", "homing-btn");
-    			add_location(button2, file$3, 237, 2, 8006);
+    			add_location(button2, file$3, 237, 2, 8098);
     			attr_dev(p1, "class", "stat svelte-1d0j5jl");
-    			add_location(p1, file$3, 245, 3, 8368);
+    			add_location(p1, file$3, 245, 3, 8460);
     			attr_dev(button3, "class", "buy-sell svelte-1d0j5jl");
-    			add_location(button3, file$3, 247, 4, 8450);
+    			add_location(button3, file$3, 247, 4, 8542);
     			attr_dev(button4, "class", "buy-sell svelte-1d0j5jl");
-    			add_location(button4, file$3, 248, 4, 8539);
+    			add_location(button4, file$3, 248, 4, 8631);
     			attr_dev(div1, "class", "orb-info svelte-1d0j5jl");
-    			add_location(div1, file$3, 246, 3, 8423);
+    			add_location(div1, file$3, 246, 3, 8515);
     			attr_dev(button5, "class", "trade-btn svelte-1d0j5jl");
     			attr_dev(button5, "id", "spore-btn");
-    			add_location(button5, file$3, 244, 2, 8318);
+    			add_location(button5, file$3, 244, 2, 8410);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button2, anchor);
@@ -5081,7 +5081,7 @@ var app = (function () {
     			button.textContent = "?";
     			button.disabled = true;
     			attr_dev(button, "class", "svelte-1d0j5jl");
-    			add_location(button, file$3, 263, 10, 9039);
+    			add_location(button, file$3, 263, 10, 9131);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -5140,16 +5140,16 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "Sell";
     			attr_dev(p, "class", "stat svelte-1d0j5jl");
-    			add_location(p, file$3, 257, 3, 8775);
+    			add_location(p, file$3, 257, 3, 8867);
     			attr_dev(button0, "class", "buy-sell svelte-1d0j5jl");
-    			add_location(button0, file$3, 259, 4, 8857);
+    			add_location(button0, file$3, 259, 4, 8949);
     			attr_dev(button1, "class", "buy-sell svelte-1d0j5jl");
-    			add_location(button1, file$3, 260, 4, 8946);
+    			add_location(button1, file$3, 260, 4, 9038);
     			attr_dev(div, "class", "orb-info svelte-1d0j5jl");
-    			add_location(div, file$3, 258, 3, 8830);
+    			add_location(div, file$3, 258, 3, 8922);
     			attr_dev(button2, "class", "trade-btn svelte-1d0j5jl");
     			attr_dev(button2, "id", "titan-btn");
-    			add_location(button2, file$3, 256, 2, 8725);
+    			add_location(button2, file$3, 256, 2, 8817);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button2, anchor);
@@ -5212,8 +5212,8 @@ var app = (function () {
     			t1 = text(t1_value);
     			br = element("br");
     			set_style(span, "color", "#00cccc");
-    			add_location(span, file$3, 274, 3, 9998);
-    			add_location(br, file$3, 274, 77, 10072);
+    			add_location(span, file$3, 274, 3, 10090);
+    			add_location(br, file$3, 274, 77, 10164);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -5267,11 +5267,11 @@ var app = (function () {
     			t4 = text(t4_value);
     			br1 = element("br");
     			set_style(span0, "color", "#cccc00");
-    			add_location(span0, file$3, 277, 3, 10106);
-    			add_location(br0, file$3, 277, 79, 10182);
+    			add_location(span0, file$3, 277, 3, 10198);
+    			add_location(br0, file$3, 277, 79, 10274);
     			set_style(span1, "color", "#ffaa00");
-    			add_location(span1, file$3, 278, 3, 10190);
-    			add_location(br1, file$3, 278, 77, 10264);
+    			add_location(span1, file$3, 278, 3, 10282);
+    			add_location(br1, file$3, 278, 77, 10356);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span0, anchor);
@@ -5321,7 +5321,7 @@ var app = (function () {
     			t0 = text("Titan Orbs: ");
     			t1 = text(t1_value);
     			set_style(span, "color", "#e170d8");
-    			add_location(span, file$3, 281, 2, 10302);
+    			add_location(span, file$3, 281, 2, 10394);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -5535,64 +5535,64 @@ var app = (function () {
     			a = element("a");
     			a.textContent = "Buy me a coffee!";
     			set_style(span0, "font-weight", "normal");
-    			add_location(span0, file$3, 196, 20, 5962);
+    			add_location(span0, file$3, 196, 20, 6054);
     			attr_dev(h30, "id", "mana");
     			attr_dev(h30, "class", "svelte-1d0j5jl");
-    			add_location(h30, file$3, 196, 1, 5943);
+    			add_location(h30, file$3, 196, 1, 6035);
     			attr_dev(div0, "id", "hold-btn");
     			attr_dev(div0, "class", "svelte-1d0j5jl");
-    			add_location(div0, file$3, 197, 1, 6029);
+    			add_location(div0, file$3, 197, 1, 6121);
     			attr_dev(p, "class", "stat svelte-1d0j5jl");
-    			add_location(p, file$3, 221, 3, 7353);
+    			add_location(p, file$3, 221, 3, 7445);
     			attr_dev(button0, "class", "buy-sell svelte-1d0j5jl");
-    			add_location(button0, file$3, 223, 4, 7435);
+    			add_location(button0, file$3, 223, 4, 7527);
     			attr_dev(button1, "class", "buy-sell svelte-1d0j5jl");
-    			add_location(button1, file$3, 224, 4, 7524);
+    			add_location(button1, file$3, 224, 4, 7616);
     			attr_dev(div1, "class", "orb-info svelte-1d0j5jl");
-    			add_location(div1, file$3, 222, 3, 7408);
+    			add_location(div1, file$3, 222, 3, 7500);
     			attr_dev(button2, "class", "trade-btn svelte-1d0j5jl");
     			attr_dev(button2, "id", "basic-btn");
-    			add_location(button2, file$3, 220, 2, 7303);
-    			add_location(br0, file$3, 264, 55, 9128);
-    			add_location(em, file$3, 264, 67, 9140);
+    			add_location(button2, file$3, 220, 2, 7395);
+    			add_location(br0, file$3, 264, 55, 9220);
+    			add_location(em, file$3, 264, 67, 9232);
     			attr_dev(h31, "id", "basic-info");
     			attr_dev(h31, "class", "svelte-1d0j5jl");
-    			add_location(h31, file$3, 264, 2, 9075);
-    			add_location(br1, file$3, 265, 61, 9224);
+    			add_location(h31, file$3, 264, 2, 9167);
+    			add_location(br1, file$3, 265, 61, 9316);
     			attr_dev(h32, "id", "light-info");
     			attr_dev(h32, "class", "svelte-1d0j5jl");
-    			add_location(h32, file$3, 265, 2, 9165);
-    			add_location(br2, file$3, 266, 50, 9319);
+    			add_location(h32, file$3, 265, 2, 9257);
+    			add_location(br2, file$3, 266, 50, 9411);
     			attr_dev(h33, "id", "homing-info");
     			attr_dev(h33, "class", "svelte-1d0j5jl");
-    			add_location(h33, file$3, 266, 2, 9271);
+    			add_location(h33, file$3, 266, 2, 9363);
     			attr_dev(h34, "id", "spore-info");
     			attr_dev(h34, "class", "svelte-1d0j5jl");
-    			add_location(h34, file$3, 267, 2, 9399);
+    			add_location(h34, file$3, 267, 2, 9491);
     			attr_dev(h35, "id", "titan-info");
     			attr_dev(h35, "class", "svelte-1d0j5jl");
-    			add_location(h35, file$3, 268, 2, 9531);
-    			add_location(br3, file$3, 269, 116, 9806);
+    			add_location(h35, file$3, 268, 2, 9623);
+    			add_location(br3, file$3, 269, 116, 9898);
     			attr_dev(h36, "id", "fight-info");
     			set_style(h36, "display", /*hover_fight*/ ctx[12] ? "block" : "");
     			attr_dev(h36, "class", "svelte-1d0j5jl");
-    			add_location(h36, file$3, 269, 2, 9692);
+    			add_location(h36, file$3, 269, 2, 9784);
     			attr_dev(div2, "id", "orb-row");
     			attr_dev(div2, "class", "svelte-1d0j5jl");
-    			add_location(div2, file$3, 219, 1, 7282);
+    			add_location(div2, file$3, 219, 1, 7374);
     			set_style(span1, "color", "#ccc");
-    			add_location(span1, file$3, 272, 2, 9890);
-    			add_location(br4, file$3, 272, 73, 9961);
+    			add_location(span1, file$3, 272, 2, 9982);
+    			add_location(br4, file$3, 272, 73, 10053);
     			attr_dev(h37, "id", "orb-stats");
     			attr_dev(h37, "class", "svelte-1d0j5jl");
-    			add_location(h37, file$3, 271, 1, 9868);
+    			add_location(h37, file$3, 271, 1, 9960);
     			attr_dev(a, "id", "support");
     			attr_dev(a, "href", "https://www.buymeacoffee.com/JacobyY");
     			attr_dev(a, "target", "_blank");
     			attr_dev(a, "class", "svelte-1d0j5jl");
-    			add_location(a, file$3, 285, 1, 10394);
+    			add_location(a, file$3, 285, 1, 10486);
     			attr_dev(main, "class", "svelte-1d0j5jl");
-    			add_location(main, file$3, 195, 0, 5935);
+    			add_location(main, file$3, 195, 0, 6027);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -5885,7 +5885,7 @@ var app = (function () {
     	const buy_basic = () => {
     		if ($cash < $basic_orb.cost) return;
     		set_store_value(cash, $cash -= $basic_orb.cost, $cash);
-    		basic_orb.update(v => (v.cost += 10, v.amount++, v));
+    		basic_orb.update(v => (v.cost += v.amount < 1000 ? 10 : 25, v.amount++, v));
 
     		// basic_orb.update( v => (v.cost = Math.floor(v.cost*1.1), v.amount++, v) );
     		if ($buy_amount == 3) {
@@ -5897,7 +5897,7 @@ var app = (function () {
 
     	const sell_basic = () => {
     		if (total_orbs <= 1 || $basic_orb.amount <= 0) return;
-    		basic_orb.update(v => (v.cost -= 10, v.amount--, v));
+    		basic_orb.update(v => (v.cost -= v.amount < 1000 ? 10 : 25, v.amount--, v));
     		set_store_value(cash, $cash += Math.floor($basic_orb.cost / 2), $cash);
     	}; // basic_orb.update( v => (v.cost = Math.ceil(v.cost/1.2), v.amount--, v) );
 
@@ -5906,7 +5906,7 @@ var app = (function () {
     	const buy_light = () => {
     		if ($cash < $light_orb.cost) return;
     		set_store_value(cash, $cash -= $light_orb.cost, $cash);
-    		light_orb.update(v => (v.cost += 15, v.amount++, v));
+    		light_orb.update(v => (v.cost += v.amount < 1000 ? 15 : 30, v.amount++, v));
 
     		if ($buy_amount == 3) {
     			const res = spend_cash_add($cash, $light_orb.cost, 15);
@@ -5918,7 +5918,7 @@ var app = (function () {
     	const sell_light = () => {
     		if (total_orbs <= 1 || $light_orb.amount <= 0) return;
     		set_store_value(cash, $cash += Math.floor($light_orb.cost / 2.2), $cash);
-    		light_orb.update(v => (v.cost -= 15, v.amount--, v));
+    		light_orb.update(v => (v.cost -= v.amount < 1000 ? 15 : 30, v.amount--, v));
     	};
 
     	//#endregion
@@ -6391,7 +6391,7 @@ var app = (function () {
     			t43 = text("In this fresh start, called \"New Game+\", \n\t\t\tyou will unlock the elusive ");
     			em = element("em");
     			em.textContent = "5th Orb";
-    			t45 = text(", \n\t\t\tartifacts, more events (like those shadow orbs), and more monsters.\n\t\t\t");
+    			t45 = text(", \n\t\t\tmore events (like those shadow orbs), and more monsters.\n\t\t\t");
     			br1 = element("br");
     			br2 = element("br");
     			t46 = text("\"That's cool and all, but what's the catch?\" I here you say. \n\t\t\tWell, the game is twice as hard.");
@@ -6497,19 +6497,19 @@ var app = (function () {
     			attr_dev(hr3, "class", "svelte-1f79egq");
     			add_location(hr3, file$2, 53, 2, 2534);
     			add_location(em, file$2, 56, 31, 2621);
-    			add_location(br1, file$2, 58, 3, 2714);
-    			add_location(br2, file$2, 58, 7, 2718);
-    			add_location(br3, file$2, 59, 35, 2819);
-    			add_location(br4, file$2, 59, 39, 2823);
-    			add_location(b, file$2, 60, 3, 2831);
+    			add_location(br1, file$2, 58, 3, 2703);
+    			add_location(br2, file$2, 58, 7, 2707);
+    			add_location(br3, file$2, 59, 35, 2808);
+    			add_location(br4, file$2, 59, 39, 2812);
+    			add_location(b, file$2, 60, 3, 2820);
     			attr_dev(p1, "class", "svelte-1f79egq");
     			add_location(p1, file$2, 54, 2, 2541);
     			attr_dev(button11, "class", "svelte-1f79egq");
-    			add_location(button11, file$2, 63, 3, 2875);
+    			add_location(button11, file$2, 63, 3, 2864);
     			attr_dev(button12, "class", "svelte-1f79egq");
-    			add_location(button12, file$2, 64, 3, 2970);
+    			add_location(button12, file$2, 64, 3, 2959);
     			attr_dev(div7, "class", "svelte-1f79egq");
-    			add_location(div7, file$2, 62, 2, 2866);
+    			add_location(div7, file$2, 62, 2, 2855);
     			attr_dev(div8, "id", "secret");
     			attr_dev(div8, "class", "svelte-1f79egq");
     			toggle_class(div8, "show-secret", /*show_secret*/ ctx[5]);

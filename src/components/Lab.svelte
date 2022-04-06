@@ -265,8 +265,8 @@
 		<h3 id="basic-info">Normal gravity, drag, value, etc.<br>Just... <em>Average</em>.</h3>
 		<h3 id="light-info">Low gravity and drag, but normal value.<br>Like an aerodynamic ping pong ball!</h3>
 		<h3 id="homing-info">Likes to follow you around.<br>Double {on_mobile === true ? "tap" : "click"} to lock orbit position</h3>
-		<h3 id="spore-info">Normal gravity, drag, and value. Spawns smaller, lower value orbs that despawn after a few seconds.</h3>
-		<h3 id="titan-info">Heavy and slow, but has high value and does bonus damage to monsters. Additionally, this orb requires 1 of each other orb.</h3>
+		<h3 id="spore-info">Normal gravity, drag, and high value. Spawns smaller, lower value orbs that despawn after a few seconds.</h3>
+		<h3 id="titan-info">Heavier and slower, but has a very high value and does bonus damage to monsters. Additionally, this orb requires 1 of each other orb.</h3>
 		<h3 id="fight-info" style="display: {hover_fight ? "block" : ""};">Use your orbs in The Monster Tower to get Mana.<br>An orb's damage is equal to its cash value.</h3>
 	</div>
 	<h3 id="orb-stats">
@@ -283,7 +283,8 @@
 		{/if}
 	</h3>
 
-	<Artifacts />
+	<a id="support" href="https://www.buymeacoffee.com/JacobyY" target="_blank">Buy me a coffee!</a>
+	<!-- <Artifacts /> -->
 </main>
 
 <style>
@@ -434,7 +435,7 @@
 	#homing-btn:hover ~ #homing-info { display: block; }
 	#spore-btn:hover ~ #spore-info { display: block; }
 	#titan-btn:hover ~ #titan-info { display: block; }
-	/* #fight-btn:hover, #fight-info { display: block; } */
+	/* #fight-btn:hover, #fight-info { display: block; }  */
 	/* #basic-btn:hover ~ #basic-info { display: block; } */
 
 	#secret-hint {
@@ -444,4 +445,13 @@
 		transform: translate(-50%, 0);
 		color: #547375aa;
 	}
+
+	#support {
+		position: absolute;
+		right: 0.7rem; bottom: 0.5rem;
+		/* padding: 0.5rem 0.7rem; */
+		color: aqua;
+		text-decoration: underline;
+	}
+	#support:hover { color: #00d9ff; }
 </style>

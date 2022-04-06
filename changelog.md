@@ -1,3 +1,10 @@
+## v0.10.3
+- Fixed some text
+- Fixed buy amount system
+- Added 1000 to buy amount
+- Made orb multiplier cheeper 
+- Linked a way to support me
+
 ## v0.10.2
 - Changed up some text
 - Added ability to lock homing orbit position in place

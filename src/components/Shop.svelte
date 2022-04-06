@@ -3,9 +3,11 @@
 	import { cash, mana, buy_amount, basic_orb, light_orb, homing_orb, spore_orb, titan_orb, prestige, starting_cash, bounce, got_mana, orb_mult, orb_mult_cost, get_orb_bonus, canvas_toggled } from "../stores.js";
 	import { fnum, run_n, spend_cash_mult } from "../utils/functions.js";
 
+	// $: console.log($bounce.power);
+
 	//#region | Buy Bounce Power
 	const buy_bounce_power = ()=>{
-		if ($cash < $bounce.power_cost) return;
+		if ($cash < $bounce.power_cost || $bounce.power >= 70) return;
 		$cash -= $bounce.power_cost;
 		$bounce.power += 2.5;
 		$bounce.power_cost = Math.floor($bounce.power_cost * 1.5);
@@ -29,8 +31,7 @@
 		$cash -= $bounce.size_cost;
 		$bounce.size_cost *= 2;
 		$bounce.size += 25;
-		if ($buy_amount == 3) increase_bounce_area();
-		if ($buy_amount == 1) run_n(increase_bounce_area, 9);
+		if ($buy_amount != 0) increase_bounce_area();
 		$bounce = $bounce;
 	}
 	//#endregion
@@ -115,12 +116,12 @@
 	<h3 id="cash">Cash: {fnum($cash)}</h3>
 	<h3 id="max-buy-hint" on:click={()=> void($buy_amount = ($buy_amount+1)%4)}>Buy {$buy_amount < 3 ? 1*(10**$buy_amount) : "Max"}</h3>
 	<hr id="top-hr">
-	<button on:click={buy_bounce_power}>Increase Bounce Power <b>${fnum($bounce.power_cost)}</b></button>
+	<button on:click={buy_bounce_power}>Increase Bounce Power <b>{#if $bounce.power < 70}${fnum($bounce.power_cost)} {:else} Max! {/if}</b> </button>
 	<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$bounce.auto_unlocked ? "Unlocked!" : `$${fnum($bounce.auto_cost)}`}</b></button>
 	<button on:click={increase_bounce_area}>Increase Bounce Area <b> {#if $bounce.size < 275} ${fnum($bounce.size_cost)} {:else} Max! {/if} </b></button>
 	<button on:click={buy_starting_cash}>Starting Cash +1 (${fnum($starting_cash.amount)}) <b>${fnum($starting_cash.cost)}</b></button>
 	<!-- {#if $got_mana} <button on:click={double_values}>Double All Orb Values <b>{fnum($orb_double.cost)}₪</b></button> -->
-	{#if $got_mana} <button on:click={click_orb_mult}>Increase Orb Value +1% <b>5₪</b></button>
+	{#if $got_mana} <button on:click={click_orb_mult}>Increase Orb Value +1% <b>{orb_mult_cost}₪</b></button>
 	{:else} <div></div> {/if}
 	<div style="position: relative;">
 		<button id="back-to-game" on:click={()=> void($canvas_toggled = true)}>Back to game</button>

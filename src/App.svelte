@@ -4,7 +4,7 @@
 	import Main from "./components/Main.svelte";
 	import { cash, prestige } from "./stores.js";
 
-	let intro1, intro2, intro3, main;
+	let intro1, intro2, intro3, to_dad, main;
 	let gaming = false;
 
 	$: {
@@ -19,7 +19,7 @@
 	cinemachine.push([ ()=> intro2.style.opacity = 1, 1000 ]);
 	cinemachine.push([ ()=> intro2.style.opacity = 0, 3000 ]);
 	cinemachine.push([ ()=> intro3.style.opacity = 1, 1000 ]);
-	cinemachine.push([ ()=> intro3.style.opacity = 0, 3000 ]);
+	cinemachine.push([ ()=>{ intro3.style.opacity = 0; to_dad.style.opacity = 0; }, 3000 ]);
 	cinemachine.push([ ()=> gaming = true, 3000 ]);
 
 	let timeout = null;
@@ -58,6 +58,7 @@
 		<h1 class="intro-txt" bind:this={intro1}>Jacoby Y presents</h1>
 		<h1 class="intro-txt" bind:this={intro2}>The sequel nobody asked for</h1>
 		<h1 class="intro-txt" bind:this={intro3}>Idle Orbs 2</h1>
+		<h3 id="to-dad" bind:this={to_dad}>(This game is dedicated to you, Dad)</h3>
 	{/if}
 </main>
 
@@ -84,5 +85,14 @@
 		font-size: 3rem;
 		width: max-content;
 		/* transition-timing-function: linear; */
+	}
+	#to-dad {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		color: #aaa;
+		padding: 0.7rem 0.5rem;
+		font-weight: normal;
+		transition-duration: 3s;
 	}
 </style>

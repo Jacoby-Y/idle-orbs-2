@@ -928,7 +928,8 @@
 		else if (k == "Tab" && $bounce.auto_unlocked) bounce.update((v)=>(v.auto_on=!v.auto_on,v));// ($bounce.auto_on = !$bounce.auto_on, $bounce = $bounce);
 		else if (k == "o") console.log(orbs.basic);
 		else if (k == "r") reset_orbs();
-		else if (k == "Shift") $buy_amount = last_buy_amount;
+		// else if (k == "Shift") $buy_amount == last_buy_amount ? $buy_amount = 0 : $buy_amount = last_buy_amount;
+		else if (k == "Shift") $buy_amount = ($buy_amount+1)%4;
 		// else if (k == "Shift") $shifting = false;
 		// else if (k == "Control") $ctrling = false;
 		if (!debug) return;
@@ -967,7 +968,7 @@
 		const k = e.key;
 		// if (k == "Shift") $shifting = true;
 		// else if (k == "Control") $ctrling = true;
-		if (k == "Shift") (last_buy_amount = $buy_amount, $buy_amount = 3);
+		// if (k == "Shift") (last_buy_amount = $buy_amount, $buy_amount = 3);
 		if (!debug) return;
 		if (k == "c") $cash += 1e5;
 		else if (k == "C") $cash += 1e12;
@@ -980,6 +981,7 @@
 		// $shifting = $ctrling = false; 
 		blur_time = Date.now();
 		blur_cash = $cash;
+		$buy_amount = 0;
 	}
 	window.onfocus = ()=>{
 		if ($fighting) return;
@@ -1152,7 +1154,9 @@
 			ctx.fillRect(this.pt1.x+10, this.pt2.y-30, (this.pt2.x-this.pt1.x-20)*(Math.max(0, this.hp)/this.max_hp), 20);
 			// Kill Index bar
 			ctx.fillStyle = "#ffffff66";
-			ctx.fillRect(this.pt1.x+1, this.pt1.y+1, (this.pt2.x-this.pt1.x)*((this.kill_index+1)/10)-2, 5);
+			const kill_i_perc = (this.pt2.x-this.pt1.x)*Math.min(1, (this.kill_index+Math.abs(1-this.hp/this.max_hp))/10);
+			//  + (this.pt2.x-this.pt1.x)*((this.kill_index)/10)*(1-this.hp/this.max_hp)
+			ctx.fillRect(this.pt1.x+1, this.pt1.y+1, kill_i_perc-2, 5);
 			// Timer bar
 			ctx.fillStyle = "#00ffff66";
 			ctx.fillRect(this.pt1.x+1, this.pt1.y+6, (this.pt2.x-this.pt1.x)*(this.tick/this.total_ticks)-2, 5);

@@ -68,7 +68,7 @@ export const starting_cash = w({
 // 	value: 0,
 // });
 export const orb_mult = w(0);
-export const orb_mult_cost = 5;
+export const orb_mult_cost = 3;
 //#endregion
 //#region | Orbs
 export const basic_orb = w({

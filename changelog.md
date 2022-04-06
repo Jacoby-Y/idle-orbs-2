@@ -1,3 +1,7 @@
+## v0.10.4
+- Fixed text
+- Nerfed orb multiplier, again lol
+
 ## v0.10.3
 - Fixed some text
 - Fixed buy amount system

@@ -55,7 +55,7 @@
 		<p>
 			In this fresh start, called "New Game+", 
 			you will unlock the elusive <em>5th Orb</em>, 
-			artifacts, more events (like those shadow orbs), and more monsters.
+			more events (like those shadow orbs), and more monsters.
 			<br><br>"That's cool and all, but what's the catch?" I here you say. 
 			Well, the game is twice as hard.<br><br>
 			<b>So, what'll it be?</b>

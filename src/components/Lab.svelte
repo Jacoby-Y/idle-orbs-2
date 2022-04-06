@@ -79,7 +79,7 @@
 	const buy_basic = ()=>{
 		if ($cash < $basic_orb.cost) return;
 		$cash -= $basic_orb.cost;
-		basic_orb.update( v => (v.cost += 10, v.amount++, v) );
+		basic_orb.update( v => (v.cost += v.amount < 1000 ? 10 : 25, v.amount++, v) );
 		// basic_orb.update( v => (v.cost = Math.floor(v.cost*1.1), v.amount++, v) );
 		if ($buy_amount == 3) {
 			const res = spend_cash_add($cash, $basic_orb.cost, 10);
@@ -91,7 +91,7 @@
 	};
 	const sell_basic = ()=>{
 		if (total_orbs <= 1 || $basic_orb.amount <= 0) return;
-		basic_orb.update( v => (v.cost -= 10, v.amount--, v) );
+		basic_orb.update( v => (v.cost -= v.amount < 1000 ? 10 : 25, v.amount--, v) );
 		$cash += Math.floor($basic_orb.cost/2);
 		// basic_orb.update( v => (v.cost = Math.ceil(v.cost/1.2), v.amount--, v) );
 	}
@@ -100,7 +100,7 @@
 	const buy_light = ()=>{
 		if ($cash < $light_orb.cost) return;
 		$cash -= $light_orb.cost;
-		light_orb.update( v => (v.cost += 15, v.amount++, v) );
+		light_orb.update( v => (v.cost += v.amount < 1000 ? 15 : 30, v.amount++, v) );
 		if ($buy_amount == 3) {
 			const res = spend_cash_add($cash, $light_orb.cost, 15);
 			$cash = res.cash;
@@ -113,7 +113,7 @@
 	const sell_light = ()=>{
 		if (total_orbs <= 1 || $light_orb.amount <= 0) return;
 		$cash += Math.floor($light_orb.cost/2.2);
-		light_orb.update( v => (v.cost -= 15, v.amount--, v) );
+		light_orb.update( v => (v.cost -= v.amount < 1000 ? 15 : 30, v.amount--, v) );
 	}
 	//#endregion
 	//#region | Homing Orb

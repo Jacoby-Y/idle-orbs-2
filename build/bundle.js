@@ -735,7 +735,7 @@ var app = (function () {
     // 	value: 0,
     // });
     const orb_mult = w(0);
-    const orb_mult_cost = 5;
+    const orb_mult_cost = 3;
     //#endregion
     //#region | Orbs
     const basic_orb = w({
@@ -896,7 +896,7 @@ var app = (function () {
 
     const file$6 = "src/components/Canvas.svelte";
 
-    // (1324:2) {#if debug}
+    // (1328:2) {#if debug}
     function create_if_block_3$1(ctx) {
     	let t0;
     	let t1_value = fnum(/*cps*/ ctx[8]) + "";
@@ -938,10 +938,10 @@ var app = (function () {
     			t11 = text(t11_value);
     			t12 = space();
     			br3 = element("br");
-    			add_location(br0, file$6, 1324, 22, 39322);
-    			add_location(br1, file$6, 1325, 32, 39360);
-    			add_location(br2, file$6, 1326, 30, 39396);
-    			add_location(br3, file$6, 1327, 34, 39436);
+    			add_location(br0, file$6, 1328, 22, 39613);
+    			add_location(br1, file$6, 1329, 32, 39651);
+    			add_location(br2, file$6, 1330, 30, 39687);
+    			add_location(br3, file$6, 1331, 34, 39727);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, t0, anchor);
@@ -994,15 +994,15 @@ var app = (function () {
     		block,
     		id: create_if_block_3$1.name,
     		type: "if",
-    		source: "(1324:2) {#if debug}",
+    		source: "(1328:2) {#if debug}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (1331:1) {#if $bounce.auto_unlocked}
-    function create_if_block_2$1(ctx) {
+    // (1335:1) {#if $bounce.auto_unlocked}
+    function create_if_block_2$2(ctx) {
     	let h3;
     	let t0_value = (/*$on_mobile*/ ctx[17] ? "Tap" : "Press \"Tab\"") + "";
     	let t0;
@@ -1024,7 +1024,7 @@ var app = (function () {
     			set_style(h3, "bottom", /*$bounce*/ ctx[3].size + "px");
     			attr_dev(h3, "class", "svelte-1415m0o");
     			toggle_class(h3, "no-click", !/*$toggled*/ ctx[5]);
-    			add_location(h3, file$6, 1331, 2, 39671);
+    			add_location(h3, file$6, 1335, 2, 39962);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h3, anchor);
@@ -1059,16 +1059,16 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block_2$1.name,
+    		id: create_if_block_2$2.name,
     		type: "if",
-    		source: "(1331:1) {#if $bounce.auto_unlocked}",
+    		source: "(1335:1) {#if $bounce.auto_unlocked}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (1334:1) {#if $fighting}
+    // (1338:1) {#if $fighting}
     function create_if_block_1$2(ctx) {
     	let button;
     	let t1;
@@ -1102,26 +1102,26 @@ var app = (function () {
     			img = element("img");
     			attr_dev(button, "id", "quit");
     			attr_dev(button, "class", "svelte-1415m0o");
-    			add_location(button, file$6, 1334, 2, 39946);
+    			add_location(button, file$6, 1338, 2, 40237);
     			attr_dev(h30, "id", "lvl");
     			attr_dev(h30, "class", "svelte-1415m0o");
-    			add_location(h30, file$6, 1342, 3, 40276);
+    			add_location(h30, file$6, 1346, 3, 40567);
     			attr_dev(h31, "id", "name");
     			attr_dev(h31, "class", "svelte-1415m0o");
-    			add_location(h31, file$6, 1343, 3, 40336);
+    			add_location(h31, file$6, 1347, 3, 40627);
     			if (!src_url_equal(img.src, img_src_value = /*monster_manager*/ ctx[11].src)) attr_dev(img, "src", img_src_value);
     			attr_dev(img, "alt", "monster Icon");
     			set_style(img, "width", (/*monster_manager*/ ctx[11].pt2.y - /*monster_manager*/ ctx[11].pt1.y) / 2 + "px");
     			set_style(img, "height", (/*monster_manager*/ ctx[11].pt2.y - /*monster_manager*/ ctx[11].pt1.y) / 2 + "px");
     			attr_dev(img, "class", "svelte-1415m0o");
-    			add_location(img, file$6, 1344, 3, 40381);
+    			add_location(img, file$6, 1348, 3, 40672);
     			attr_dev(div, "id", "monster-info");
     			set_style(div, "left", /*monster_manager*/ ctx[11].pt1.x + "px");
     			set_style(div, "top", /*monster_manager*/ ctx[11].pt1.y + "px");
     			set_style(div, "width", /*monster_manager*/ ctx[11].pt2.x - /*monster_manager*/ ctx[11].pt1.x + "px");
     			set_style(div, "height", /*monster_manager*/ ctx[11].pt2.y - /*monster_manager*/ ctx[11].pt1.y + "px");
     			attr_dev(div, "class", "svelte-1415m0o");
-    			add_location(div, file$6, 1335, 2, 40038);
+    			add_location(div, file$6, 1339, 2, 40329);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1186,14 +1186,14 @@ var app = (function () {
     		block,
     		id: create_if_block_1$2.name,
     		type: "if",
-    		source: "(1334:1) {#if $fighting}",
+    		source: "(1338:1) {#if $fighting}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (1348:1) {#if show_earnings}
+    // (1352:1) {#if show_earnings}
     function create_if_block$3(ctx) {
     	let div;
     	let h3;
@@ -1212,10 +1212,10 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text(" while offline");
     			attr_dev(h3, "class", "svelte-1415m0o");
-    			add_location(h3, file$6, 1349, 3, 40663);
+    			add_location(h3, file$6, 1353, 3, 40954);
     			attr_dev(div, "id", "offline");
     			attr_dev(div, "class", "svelte-1415m0o");
-    			add_location(div, file$6, 1348, 2, 40602);
+    			add_location(div, file$6, 1352, 2, 40893);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -1243,7 +1243,7 @@ var app = (function () {
     		block,
     		id: create_if_block$3.name,
     		type: "if",
-    		source: "(1348:1) {#if show_earnings}",
+    		source: "(1352:1) {#if show_earnings}",
     		ctx
     	});
 
@@ -1273,7 +1273,7 @@ var app = (function () {
     	let mounted;
     	let dispose;
     	let if_block0 = /*debug*/ ctx[13] && create_if_block_3$1(ctx);
-    	let if_block1 = /*$bounce*/ ctx[3].auto_unlocked && create_if_block_2$1(ctx);
+    	let if_block1 = /*$bounce*/ ctx[3].auto_unlocked && create_if_block_2$2(ctx);
     	let if_block2 = /*$fighting*/ ctx[4] && create_if_block_1$2(ctx);
     	let if_block3 = /*show_earnings*/ ctx[7] && create_if_block$3(ctx);
 
@@ -1300,21 +1300,21 @@ var app = (function () {
     			t10 = space();
     			if (if_block3) if_block3.c();
     			attr_dev(canvas_1, "class", "svelte-1415m0o");
-    			add_location(canvas_1, file$6, 1319, 1, 39148);
-    			add_location(br, file$6, 1322, 22, 39279);
+    			add_location(canvas_1, file$6, 1323, 1, 39439);
+    			add_location(br, file$6, 1326, 22, 39570);
     			attr_dev(h30, "id", "cash");
     			attr_dev(h30, "style", h30_style_value = /*debug*/ ctx[13] ? "background-color: #000000bb;" : "");
     			attr_dev(h30, "class", "svelte-1415m0o");
-    			add_location(h30, file$6, 1321, 1, 39188);
+    			add_location(h30, file$6, 1325, 1, 39479);
     			attr_dev(h31, "id", "toggle-txt");
     			set_style(h31, "bottom", /*$bounce*/ ctx[3].size + "px");
     			attr_dev(h31, "class", "svelte-1415m0o");
     			toggle_class(h31, "no-click", !/*$toggled*/ ctx[5]);
-    			add_location(h31, file$6, 1329, 1, 39457);
+    			add_location(h31, file$6, 1333, 1, 39748);
     			set_style(main_1, "opacity", /*$toggled*/ ctx[5] ? "1" : "0");
     			set_style(main_1, "pointer-events", /*$toggled*/ ctx[5] ? "all" : "none");
     			attr_dev(main_1, "class", "svelte-1415m0o");
-    			add_location(main_1, file$6, 1318, 0, 39037);
+    			add_location(main_1, file$6, 1322, 0, 39328);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1382,7 +1382,7 @@ var app = (function () {
     				if (if_block1) {
     					if_block1.p(ctx, dirty);
     				} else {
-    					if_block1 = create_if_block_2$1(ctx);
+    					if_block1 = create_if_block_2$2(ctx);
     					if_block1.c();
     					if_block1.m(main_1, t9);
     				}
@@ -1493,39 +1493,39 @@ var app = (function () {
     	validate_store(fighting, 'fighting');
     	component_subscribe($$self, fighting, $$value => $$invalidate(4, $fighting = $$value));
     	validate_store(new_game_plus, 'new_game_plus');
-    	component_subscribe($$self, new_game_plus, $$value => $$invalidate(56, $new_game_plus = $$value));
+    	component_subscribe($$self, new_game_plus, $$value => $$invalidate(55, $new_game_plus = $$value));
     	validate_store(fight_cost, 'fight_cost');
-    	component_subscribe($$self, fight_cost, $$value => $$invalidate(57, $fight_cost = $$value));
+    	component_subscribe($$self, fight_cost, $$value => $$invalidate(56, $fight_cost = $$value));
     	validate_store(cash, 'cash');
     	component_subscribe($$self, cash, $$value => $$invalidate(14, $cash = $$value));
     	validate_store(auto_fight, 'auto_fight');
     	component_subscribe($$self, auto_fight, $$value => $$invalidate(15, $auto_fight = $$value));
     	validate_store(afford_fight, 'afford_fight');
-    	component_subscribe($$self, afford_fight, $$value => $$invalidate(58, $afford_fight = $$value));
+    	component_subscribe($$self, afford_fight, $$value => $$invalidate(57, $afford_fight = $$value));
     	validate_store(next_tower_lvl, 'next_tower_lvl');
     	component_subscribe($$self, next_tower_lvl, $$value => $$invalidate(16, $next_tower_lvl = $$value));
     	validate_store(mana, 'mana');
-    	component_subscribe($$self, mana, $$value => $$invalidate(59, $mana = $$value));
+    	component_subscribe($$self, mana, $$value => $$invalidate(58, $mana = $$value));
     	validate_store(rarities, 'rarities');
-    	component_subscribe($$self, rarities, $$value => $$invalidate(60, $rarities = $$value));
+    	component_subscribe($$self, rarities, $$value => $$invalidate(59, $rarities = $$value));
     	validate_store(canvas_toggled, 'toggled');
     	component_subscribe($$self, canvas_toggled, $$value => $$invalidate(5, $toggled = $$value));
     	validate_store(buy_amount, 'buy_amount');
-    	component_subscribe($$self, buy_amount, $$value => $$invalidate(61, $buy_amount = $$value));
+    	component_subscribe($$self, buy_amount, $$value => $$invalidate(60, $buy_amount = $$value));
     	validate_store(render_mode, 'render_mode');
-    	component_subscribe($$self, render_mode, $$value => $$invalidate(62, $render_mode = $$value));
+    	component_subscribe($$self, render_mode, $$value => $$invalidate(61, $render_mode = $$value));
     	validate_store(render_mod, 'render_mod');
-    	component_subscribe($$self, render_mod, $$value => $$invalidate(63, $render_mod = $$value));
+    	component_subscribe($$self, render_mod, $$value => $$invalidate(62, $render_mod = $$value));
     	validate_store(offline_time, 'offline_time');
-    	component_subscribe($$self, offline_time, $$value => $$invalidate(64, $offline_time = $$value));
+    	component_subscribe($$self, offline_time, $$value => $$invalidate(63, $offline_time = $$value));
     	validate_store(titan_orb, 'titan_orb');
     	component_subscribe($$self, titan_orb, $$value => $$invalidate(24, $titan_orb = $$value));
     	validate_store(collector_pos, 'collector_pos');
-    	component_subscribe($$self, collector_pos, $$value => $$invalidate(65, $collector_pos = $$value));
+    	component_subscribe($$self, collector_pos, $$value => $$invalidate(64, $collector_pos = $$value));
     	validate_store(timer, 'timer');
-    	component_subscribe($$self, timer, $$value => $$invalidate(66, $timer = $$value));
+    	component_subscribe($$self, timer, $$value => $$invalidate(65, $timer = $$value));
     	validate_store(max_render, 'max_render');
-    	component_subscribe($$self, max_render, $$value => $$invalidate(67, $max_render = $$value));
+    	component_subscribe($$self, max_render, $$value => $$invalidate(66, $max_render = $$value));
     	validate_store(orb_mult, 'orb_mult');
     	component_subscribe($$self, orb_mult, $$value => $$invalidate(25, $orb_mult = $$value));
     	validate_store(prestige, 'prestige');
@@ -2517,7 +2517,9 @@ var app = (function () {
 
     	const key_up = e => {
     		const k = e.key;
-    		if (k == "d") $$invalidate(13, debug = !debug); else if (k == "Escape") set_store_value(canvas_toggled, $toggled = !$toggled, $toggled); else if (k == "Tab" && $bounce.auto_unlocked) bounce.update(v => (v.auto_on = !v.auto_on, v)); else if (k == "o") console.log(orbs.basic); else if (k == "r") reset_orbs(); else if (k == "Shift") set_store_value(buy_amount, $buy_amount = last_buy_amount, $buy_amount); // ($bounce.auto_on = !$bounce.auto_on, $bounce = $bounce);
+
+    		if (k == "d") $$invalidate(13, debug = !debug); else if (k == "Escape") set_store_value(canvas_toggled, $toggled = !$toggled, $toggled); else if (k == "Tab" && $bounce.auto_unlocked) bounce.update(v => (v.auto_on = !v.auto_on, v)); else if (k == "o") console.log(orbs.basic); else if (k == "r") reset_orbs(); else // else if (k == "Shift") $buy_amount == last_buy_amount ? $buy_amount = 0 : $buy_amount = last_buy_amount;
+    		if (k == "Shift") set_store_value(buy_amount, $buy_amount = ($buy_amount + 1) % 4, $buy_amount); // ($bounce.auto_on = !$bounce.auto_on, $bounce = $bounce);
 
     		// else if (k == "Shift") $shifting = false;
     		// else if (k == "Control") $ctrling = false;
@@ -2539,9 +2541,9 @@ var app = (function () {
 
     		// if (k == "Shift") $shifting = true;
     		// else if (k == "Control") $ctrling = true;
-    		if (k == "Shift") (last_buy_amount = $buy_amount, set_store_value(buy_amount, $buy_amount = 3, $buy_amount));
-
+    		// if (k == "Shift") (last_buy_amount = $buy_amount, $buy_amount = 3);
     		if (!debug) return;
+
     		if (k == "c") set_store_value(cash, $cash += 1e5, $cash); else if (k == "C") set_store_value(cash, $cash += 1e12, $cash);
     	};
 
@@ -2556,6 +2558,7 @@ var app = (function () {
     		blur_time = Date.now();
 
     		blur_cash = $cash;
+    		set_store_value(buy_amount, $buy_amount = 0, $buy_amount);
     	};
 
     	window.onfocus = () => {
@@ -2742,7 +2745,10 @@ var app = (function () {
     			// Kill Index bar
     			ctx.fillStyle = "#ffffff66";
 
-    			ctx.fillRect(this.pt1.x + 1, this.pt1.y + 1, (this.pt2.x - this.pt1.x) * ((this.kill_index + 1) / 10) - 2, 5);
+    			const kill_i_perc = (this.pt2.x - this.pt1.x) * Math.min(1, (this.kill_index + Math.abs(1 - this.hp / this.max_hp)) / 10);
+
+    			//  + (this.pt2.x-this.pt1.x)*((this.kill_index)/10)*(1-this.hp/this.max_hp)
+    			ctx.fillRect(this.pt1.x + 1, this.pt1.y + 1, kill_i_perc - 2, 5);
 
     			// Timer bar
     			ctx.fillStyle = "#00ffff66";
@@ -3246,7 +3252,70 @@ var app = (function () {
     /* src/components/Shop.svelte generated by Svelte v3.46.4 */
     const file$5 = "src/components/Shop.svelte";
 
-    // (120:118) {:else}
+    // (119:114) {:else}
+    function create_else_block_2$1(ctx) {
+    	let t;
+
+    	const block = {
+    		c: function create() {
+    			t = text("Max!");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, t, anchor);
+    		},
+    		p: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block_2$1.name,
+    		type: "else",
+    		source: "(119:114) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (119:62) {#if $bounce.power < 70}
+    function create_if_block_2$1(ctx) {
+    	let t0;
+    	let t1_value = fnum(/*$bounce*/ ctx[6].power_cost) + "";
+    	let t1;
+
+    	const block = {
+    		c: function create() {
+    			t0 = text("$");
+    			t1 = text(t1_value);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, t0, anchor);
+    			insert_dev(target, t1, anchor);
+    		},
+    		p: function update(ctx, dirty) {
+    			if (dirty & /*$bounce*/ 64 && t1_value !== (t1_value = fnum(/*$bounce*/ ctx[6].power_cost) + "")) set_data_dev(t1, t1_value);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(t0);
+    			if (detaching) detach_dev(t1);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_2$1.name,
+    		type: "if",
+    		source: "(119:62) {#if $bounce.power < 70}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (121:118) {:else}
     function create_else_block_1$1(ctx) {
     	let t;
 
@@ -3267,14 +3336,14 @@ var app = (function () {
     		block,
     		id: create_else_block_1$1.name,
     		type: "else",
-    		source: "(120:118) {:else}",
+    		source: "(121:118) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (120:66) {#if $bounce.size < 275}
+    // (121:66) {#if $bounce.size < 275}
     function create_if_block_1$1(ctx) {
     	let t0;
     	let t1_value = fnum(/*$bounce*/ ctx[6].size_cost) + "";
@@ -3302,21 +3371,21 @@ var app = (function () {
     		block,
     		id: create_if_block_1$1.name,
     		type: "if",
-    		source: "(120:66) {#if $bounce.size < 275}",
+    		source: "(121:66) {#if $bounce.size < 275}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (124:1) {:else}
+    // (125:1) {:else}
     function create_else_block$2(ctx) {
     	let div;
 
     	const block = {
     		c: function create() {
     			div = element("div");
-    			add_location(div, file$5, 123, 9, 4619);
+    			add_location(div, file$5, 124, 9, 4680);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div, anchor);
@@ -3331,14 +3400,14 @@ var app = (function () {
     		block,
     		id: create_else_block$2.name,
     		type: "else",
-    		source: "(124:1) {:else}",
+    		source: "(125:1) {:else}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (123:1) {#if $got_mana}
+    // (124:1) {#if $got_mana}
     function create_if_block$2(ctx) {
     	let button;
     	let t0;
@@ -3351,11 +3420,11 @@ var app = (function () {
     			button = element("button");
     			t0 = text("Increase Orb Value +1% ");
     			b = element("b");
-    			b.textContent = "5₪";
+    			b.textContent = `${orb_mult_cost}₪`;
     			attr_dev(b, "class", "svelte-ma6d6q");
-    			add_location(b, file$5, 122, 74, 4591);
+    			add_location(b, file$5, 123, 74, 4638);
     			attr_dev(button, "class", "svelte-ma6d6q");
-    			add_location(button, file$5, 122, 17, 4534);
+    			add_location(button, file$5, 123, 17, 4581);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -3379,7 +3448,7 @@ var app = (function () {
     		block,
     		id: create_if_block$2.name,
     		type: "if",
-    		source: "(123:1) {#if $got_mana}",
+    		source: "(124:1) {#if $got_mana}",
     		ctx
     	});
 
@@ -3408,69 +3477,74 @@ var app = (function () {
     	let t7;
     	let b0;
     	let t8;
-    	let t9_value = fnum(/*$bounce*/ ctx[6].power_cost) + "";
-    	let t9;
-    	let t10;
     	let button1;
-    	let t11;
+    	let t9;
     	let b1;
 
-    	let t12_value = (/*$bounce*/ ctx[6].auto_unlocked
+    	let t10_value = (/*$bounce*/ ctx[6].auto_unlocked
     	? "Unlocked!"
     	: `$${fnum(/*$bounce*/ ctx[6].auto_cost)}`) + "";
 
-    	let t12;
-    	let t13;
+    	let t10;
+    	let t11;
     	let button2;
-    	let t14;
+    	let t12;
     	let b2;
-    	let t15;
+    	let t13;
     	let button3;
+    	let t14;
+    	let t15_value = fnum(/*$starting_cash*/ ctx[4].amount) + "";
+    	let t15;
     	let t16;
-    	let t17_value = fnum(/*$starting_cash*/ ctx[4].amount) + "";
-    	let t17;
-    	let t18;
     	let b3;
+    	let t17;
+    	let t18_value = fnum(/*$starting_cash*/ ctx[4].cost) + "";
+    	let t18;
     	let t19;
-    	let t20_value = fnum(/*$starting_cash*/ ctx[4].cost) + "";
     	let t20;
-    	let t21;
-    	let t22;
     	let div;
     	let button4;
-    	let t24;
+    	let t22;
     	let h32;
+    	let t23;
+    	let t24_value = (/*$prestige*/ ctx[7], /*$orb_mult*/ ctx[2], fnum(get_orb_bonus() * 100 - 100)) + "";
+    	let t24;
     	let t25;
-    	let t26_value = (/*$prestige*/ ctx[7], /*$orb_mult*/ ctx[2], fnum(get_orb_bonus() * 100 - 100)) + "";
+    	let t26_value = (/*prest_hover*/ ctx[1] ? "(Increases per prestige)" : "") + "";
     	let t26;
     	let t27;
-    	let t28_value = (/*prest_hover*/ ctx[1] ? "(Increases per prestige)" : "") + "";
-    	let t28;
-    	let t29;
     	let button5;
-    	let t30;
+    	let t28;
     	let b4;
-    	let t31;
-    	let t32_value = fnum(/*$prestige*/ ctx[7].cost) + "";
-    	let t32;
+    	let t29;
+    	let t30_value = fnum(/*$prestige*/ ctx[7].cost) + "";
+    	let t30;
     	let mounted;
     	let dispose;
 
     	function select_block_type(ctx, dirty) {
-    		if (/*$bounce*/ ctx[6].size < 275) return create_if_block_1$1;
-    		return create_else_block_1$1;
+    		if (/*$bounce*/ ctx[6].power < 70) return create_if_block_2$1;
+    		return create_else_block_2$1;
     	}
 
     	let current_block_type = select_block_type(ctx);
     	let if_block0 = current_block_type(ctx);
 
     	function select_block_type_1(ctx, dirty) {
-    		if (/*$got_mana*/ ctx[8]) return create_if_block$2;
-    		return create_else_block$2;
+    		if (/*$bounce*/ ctx[6].size < 275) return create_if_block_1$1;
+    		return create_else_block_1$1;
     	}
 
     	let current_block_type_1 = select_block_type_1(ctx);
     	let if_block1 = current_block_type_1(ctx);
+
+    	function select_block_type_2(ctx, dirty) {
+    		if (/*$got_mana*/ ctx[8]) return create_if_block$2;
+    		return create_else_block$2;
+    	}
+
+    	let current_block_type_2 = select_block_type_2(ctx);
+    	let if_block2 = current_block_type_2(ctx);
 
     	const block = {
     		c: function create() {
@@ -3488,84 +3562,83 @@ var app = (function () {
     			button0 = element("button");
     			t7 = text("Increase Bounce Power ");
     			b0 = element("b");
-    			t8 = text("$");
-    			t9 = text(t9_value);
-    			t10 = space();
-    			button1 = element("button");
-    			t11 = text("Unlock Auto Bounce ");
-    			b1 = element("b");
-    			t12 = text(t12_value);
-    			t13 = space();
-    			button2 = element("button");
-    			t14 = text("Increase Bounce Area ");
-    			b2 = element("b");
     			if_block0.c();
-    			t15 = space();
-    			button3 = element("button");
-    			t16 = text("Starting Cash +1 ($");
-    			t17 = text(t17_value);
-    			t18 = text(") ");
-    			b3 = element("b");
-    			t19 = text("$");
-    			t20 = text(t20_value);
-    			t21 = space();
+    			t8 = space();
+    			button1 = element("button");
+    			t9 = text("Unlock Auto Bounce ");
+    			b1 = element("b");
+    			t10 = text(t10_value);
+    			t11 = space();
+    			button2 = element("button");
+    			t12 = text("Increase Bounce Area ");
+    			b2 = element("b");
     			if_block1.c();
-    			t22 = space();
+    			t13 = space();
+    			button3 = element("button");
+    			t14 = text("Starting Cash +1 ($");
+    			t15 = text(t15_value);
+    			t16 = text(") ");
+    			b3 = element("b");
+    			t17 = text("$");
+    			t18 = text(t18_value);
+    			t19 = space();
+    			if_block2.c();
+    			t20 = space();
     			div = element("div");
     			button4 = element("button");
     			button4.textContent = "Back to game";
-    			t24 = space();
+    			t22 = space();
     			h32 = element("h3");
-    			t25 = text("Orb Value Bonus: +");
+    			t23 = text("Orb Value Bonus: +");
+    			t24 = text(t24_value);
+    			t25 = text("% ");
     			t26 = text(t26_value);
-    			t27 = text("% ");
-    			t28 = text(t28_value);
-    			t29 = space();
+    			t27 = space();
     			button5 = element("button");
-    			t30 = text("Prestige ");
+    			t28 = text("Prestige ");
     			b4 = element("b");
-    			t31 = text("$");
-    			t32 = text(t32_value);
+    			t29 = text("$");
+    			t30 = text(t30_value);
     			attr_dev(h30, "id", "cash");
     			attr_dev(h30, "class", "svelte-ma6d6q");
-    			add_location(h30, file$5, 114, 1, 3675);
+    			add_location(h30, file$5, 115, 1, 3678);
     			attr_dev(h31, "id", "max-buy-hint");
     			attr_dev(h31, "class", "svelte-ma6d6q");
-    			add_location(h31, file$5, 115, 1, 3715);
+    			add_location(h31, file$5, 116, 1, 3718);
     			attr_dev(hr, "id", "top-hr");
     			attr_dev(hr, "class", "svelte-ma6d6q");
-    			add_location(hr, file$5, 116, 1, 3849);
+    			add_location(hr, file$5, 117, 1, 3852);
     			attr_dev(b0, "class", "svelte-ma6d6q");
-    			add_location(b0, file$5, 117, 59, 3925);
+    			add_location(b0, file$5, 118, 59, 3928);
     			attr_dev(button0, "class", "svelte-ma6d6q");
-    			add_location(button0, file$5, 117, 1, 3867);
+    			add_location(button0, file$5, 118, 1, 3870);
     			attr_dev(b1, "class", "svelte-ma6d6q");
-    			add_location(b1, file$5, 118, 55, 4024);
+    			add_location(b1, file$5, 119, 55, 4071);
     			attr_dev(button1, "class", "svelte-ma6d6q");
-    			add_location(button1, file$5, 118, 1, 3970);
+    			add_location(button1, file$5, 119, 1, 4017);
     			attr_dev(b2, "class", "svelte-ma6d6q");
-    			add_location(b2, file$5, 119, 62, 4172);
+    			add_location(b2, file$5, 120, 62, 4219);
     			attr_dev(button2, "class", "svelte-ma6d6q");
-    			add_location(button2, file$5, 119, 1, 4111);
+    			add_location(button2, file$5, 120, 1, 4158);
     			attr_dev(b3, "class", "svelte-ma6d6q");
-    			add_location(b3, file$5, 120, 88, 4349);
+    			add_location(b3, file$5, 121, 88, 4396);
     			attr_dev(button3, "class", "svelte-ma6d6q");
-    			add_location(button3, file$5, 120, 1, 4262);
+    			add_location(button3, file$5, 121, 1, 4309);
     			attr_dev(button4, "id", "back-to-game");
     			attr_dev(button4, "class", "svelte-ma6d6q");
-    			add_location(button4, file$5, 125, 2, 4674);
+    			add_location(button4, file$5, 126, 2, 4735);
     			set_style(div, "position", "relative");
-    			add_location(div, file$5, 124, 1, 4638);
+    			add_location(div, file$5, 125, 1, 4699);
     			attr_dev(h32, "id", "orb-info");
     			attr_dev(h32, "class", "svelte-ma6d6q");
-    			add_location(h32, file$5, 127, 1, 4776);
+    			add_location(h32, file$5, 128, 1, 4837);
     			attr_dev(b4, "class", "svelte-ma6d6q");
-    			add_location(b4, file$5, 128, 63, 4985);
+    			add_location(b4, file$5, 129, 63, 5046);
     			attr_dev(button5, "class", "svelte-ma6d6q");
-    			add_location(button5, file$5, 128, 1, 4923);
+    			add_location(button5, file$5, 129, 1, 4984);
     			attr_dev(main, "id", "main-shop");
     			attr_dev(main, "class", "svelte-ma6d6q");
-    			add_location(main, file$5, 113, 0, 3652);
+    			add_location(main, file$5, 114, 0, 3655);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -3585,43 +3658,42 @@ var app = (function () {
     			append_dev(main, button0);
     			append_dev(button0, t7);
     			append_dev(button0, b0);
-    			append_dev(b0, t8);
-    			append_dev(b0, t9);
-    			append_dev(main, t10);
+    			if_block0.m(b0, null);
+    			append_dev(main, t8);
     			append_dev(main, button1);
-    			append_dev(button1, t11);
+    			append_dev(button1, t9);
     			append_dev(button1, b1);
-    			append_dev(b1, t12);
-    			append_dev(main, t13);
+    			append_dev(b1, t10);
+    			append_dev(main, t11);
     			append_dev(main, button2);
-    			append_dev(button2, t14);
+    			append_dev(button2, t12);
     			append_dev(button2, b2);
-    			if_block0.m(b2, null);
-    			append_dev(main, t15);
+    			if_block1.m(b2, null);
+    			append_dev(main, t13);
     			append_dev(main, button3);
+    			append_dev(button3, t14);
+    			append_dev(button3, t15);
     			append_dev(button3, t16);
-    			append_dev(button3, t17);
-    			append_dev(button3, t18);
     			append_dev(button3, b3);
-    			append_dev(b3, t19);
-    			append_dev(b3, t20);
-    			append_dev(main, t21);
-    			if_block1.m(main, null);
-    			append_dev(main, t22);
+    			append_dev(b3, t17);
+    			append_dev(b3, t18);
+    			append_dev(main, t19);
+    			if_block2.m(main, null);
+    			append_dev(main, t20);
     			append_dev(main, div);
     			append_dev(div, button4);
-    			append_dev(main, t24);
+    			append_dev(main, t22);
     			append_dev(main, h32);
+    			append_dev(h32, t23);
+    			append_dev(h32, t24);
     			append_dev(h32, t25);
     			append_dev(h32, t26);
-    			append_dev(h32, t27);
-    			append_dev(h32, t28);
-    			append_dev(main, t29);
+    			append_dev(main, t27);
     			append_dev(main, button5);
-    			append_dev(button5, t30);
+    			append_dev(button5, t28);
     			append_dev(button5, b4);
-    			append_dev(b4, t31);
-    			append_dev(b4, t32);
+    			append_dev(b4, t29);
+    			append_dev(b4, t30);
     			/*button5_binding*/ ctx[18](button5);
 
     			if (!mounted) {
@@ -3645,12 +3717,6 @@ var app = (function () {
     			? 1 * 10 ** /*$buy_amount*/ ctx[3]
     			: "Max") + "")) set_data_dev(t4, t4_value);
 
-    			if (dirty & /*$bounce*/ 64 && t9_value !== (t9_value = fnum(/*$bounce*/ ctx[6].power_cost) + "")) set_data_dev(t9, t9_value);
-
-    			if (dirty & /*$bounce*/ 64 && t12_value !== (t12_value = (/*$bounce*/ ctx[6].auto_unlocked
-    			? "Unlocked!"
-    			: `$${fnum(/*$bounce*/ ctx[6].auto_cost)}`) + "")) set_data_dev(t12, t12_value);
-
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block0) {
     				if_block0.p(ctx, dirty);
     			} else {
@@ -3659,12 +3725,13 @@ var app = (function () {
 
     				if (if_block0) {
     					if_block0.c();
-    					if_block0.m(b2, null);
+    					if_block0.m(b0, null);
     				}
     			}
 
-    			if (dirty & /*$starting_cash*/ 16 && t17_value !== (t17_value = fnum(/*$starting_cash*/ ctx[4].amount) + "")) set_data_dev(t17, t17_value);
-    			if (dirty & /*$starting_cash*/ 16 && t20_value !== (t20_value = fnum(/*$starting_cash*/ ctx[4].cost) + "")) set_data_dev(t20, t20_value);
+    			if (dirty & /*$bounce*/ 64 && t10_value !== (t10_value = (/*$bounce*/ ctx[6].auto_unlocked
+    			? "Unlocked!"
+    			: `$${fnum(/*$bounce*/ ctx[6].auto_cost)}`) + "")) set_data_dev(t10, t10_value);
 
     			if (current_block_type_1 === (current_block_type_1 = select_block_type_1(ctx)) && if_block1) {
     				if_block1.p(ctx, dirty);
@@ -3674,13 +3741,28 @@ var app = (function () {
 
     				if (if_block1) {
     					if_block1.c();
-    					if_block1.m(main, t22);
+    					if_block1.m(b2, null);
     				}
     			}
 
-    			if (dirty & /*$prestige, $orb_mult*/ 132 && t26_value !== (t26_value = (/*$prestige*/ ctx[7], /*$orb_mult*/ ctx[2], fnum(get_orb_bonus() * 100 - 100)) + "")) set_data_dev(t26, t26_value);
-    			if (dirty & /*prest_hover*/ 2 && t28_value !== (t28_value = (/*prest_hover*/ ctx[1] ? "(Increases per prestige)" : "") + "")) set_data_dev(t28, t28_value);
-    			if (dirty & /*$prestige*/ 128 && t32_value !== (t32_value = fnum(/*$prestige*/ ctx[7].cost) + "")) set_data_dev(t32, t32_value);
+    			if (dirty & /*$starting_cash*/ 16 && t15_value !== (t15_value = fnum(/*$starting_cash*/ ctx[4].amount) + "")) set_data_dev(t15, t15_value);
+    			if (dirty & /*$starting_cash*/ 16 && t18_value !== (t18_value = fnum(/*$starting_cash*/ ctx[4].cost) + "")) set_data_dev(t18, t18_value);
+
+    			if (current_block_type_2 === (current_block_type_2 = select_block_type_2(ctx)) && if_block2) {
+    				if_block2.p(ctx, dirty);
+    			} else {
+    				if_block2.d(1);
+    				if_block2 = current_block_type_2(ctx);
+
+    				if (if_block2) {
+    					if_block2.c();
+    					if_block2.m(main, t20);
+    				}
+    			}
+
+    			if (dirty & /*$prestige, $orb_mult*/ 132 && t24_value !== (t24_value = (/*$prestige*/ ctx[7], /*$orb_mult*/ ctx[2], fnum(get_orb_bonus() * 100 - 100)) + "")) set_data_dev(t24, t24_value);
+    			if (dirty & /*prest_hover*/ 2 && t26_value !== (t26_value = (/*prest_hover*/ ctx[1] ? "(Increases per prestige)" : "") + "")) set_data_dev(t26, t26_value);
+    			if (dirty & /*$prestige*/ 128 && t30_value !== (t30_value = fnum(/*$prestige*/ ctx[7].cost) + "")) set_data_dev(t30, t30_value);
     		},
     		i: noop,
     		o: noop,
@@ -3688,6 +3770,7 @@ var app = (function () {
     			if (detaching) detach_dev(main);
     			if_block0.d();
     			if_block1.d();
+    			if_block2.d();
     			/*button5_binding*/ ctx[18](null);
     			mounted = false;
     			run_all(dispose);
@@ -3746,7 +3829,7 @@ var app = (function () {
     	validate_slots('Shop', slots, []);
 
     	const buy_bounce_power = () => {
-    		if ($cash < $bounce.power_cost) return;
+    		if ($cash < $bounce.power_cost || $bounce.power >= 70) return;
     		set_store_value(cash, $cash -= $bounce.power_cost, $cash);
     		set_store_value(bounce, $bounce.power += 2.5, $bounce);
     		set_store_value(bounce, $bounce.power_cost = Math.floor($bounce.power_cost * 1.5), $bounce);
@@ -3770,8 +3853,7 @@ var app = (function () {
     		set_store_value(cash, $cash -= $bounce.size_cost, $cash);
     		set_store_value(bounce, $bounce.size_cost *= 2, $bounce);
     		set_store_value(bounce, $bounce.size += 25, $bounce);
-    		if ($buy_amount == 3) increase_bounce_area();
-    		if ($buy_amount == 1) run_n(increase_bounce_area, 9);
+    		if ($buy_amount != 0) increase_bounce_area();
     		bounce.set($bounce);
     	};
 
@@ -4059,7 +4141,7 @@ var app = (function () {
     			t1 = text(t1_value);
     			t2 = text(" Prestiges");
     			attr_dev(h3, "id", "info");
-    			attr_dev(h3, "class", "svelte-e9esbp");
+    			attr_dev(h3, "class", "svelte-1d0j5jl");
     			add_location(h3, file$3, 216, 3, 7203);
     		},
     		m: function mount(target, anchor) {
@@ -4156,14 +4238,14 @@ var app = (function () {
     			if (if_block8) if_block8.c();
     			attr_dev(button0, "id", "auto-fight");
     			attr_dev(button0, "style", button0_style_value = /*$auto_fight*/ ctx[8] ? "border-color: lime;" : "");
-    			attr_dev(button0, "class", "svelte-e9esbp");
+    			attr_dev(button0, "class", "svelte-1d0j5jl");
     			add_location(button0, file$3, 200, 3, 6157);
     			add_location(b, file$3, 202, 42, 6444);
     			attr_dev(h3, "id", "rarities");
-    			attr_dev(h3, "class", "svelte-e9esbp");
+    			attr_dev(h3, "class", "svelte-1d0j5jl");
     			add_location(h3, file$3, 203, 4, 6476);
     			attr_dev(button1, "id", "fight-btn");
-    			attr_dev(button1, "class", "svelte-e9esbp");
+    			attr_dev(button1, "class", "svelte-1d0j5jl");
     			toggle_class(button1, "disabled", /*$fighting*/ ctx[13]);
     			add_location(button1, file$3, 201, 3, 6299);
     		},
@@ -4367,7 +4449,7 @@ var app = (function () {
     			h3 = element("h3");
     			h3.textContent = "Check settings...";
     			attr_dev(h3, "id", "secret-hint");
-    			attr_dev(h3, "class", "svelte-e9esbp");
+    			attr_dev(h3, "class", "svelte-1d0j5jl");
     			add_location(h3, file$3, 199, 28, 6104);
     		},
     		m: function mount(target, anchor) {
@@ -4675,7 +4757,7 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "?";
     			button.disabled = true;
-    			attr_dev(button, "class", "svelte-e9esbp");
+    			attr_dev(button, "class", "svelte-1d0j5jl");
     			add_location(button, file$3, 235, 10, 7952);
     		},
     		m: function mount(target, anchor) {
@@ -4732,15 +4814,15 @@ var app = (function () {
     			t6 = space();
     			button1 = element("button");
     			button1.textContent = "Sell";
-    			attr_dev(p, "class", "stat svelte-e9esbp");
+    			attr_dev(p, "class", "stat svelte-1d0j5jl");
     			add_location(p, file$3, 229, 3, 7688);
-    			attr_dev(button0, "class", "buy-sell svelte-e9esbp");
+    			attr_dev(button0, "class", "buy-sell svelte-1d0j5jl");
     			add_location(button0, file$3, 231, 4, 7770);
-    			attr_dev(button1, "class", "buy-sell svelte-e9esbp");
+    			attr_dev(button1, "class", "buy-sell svelte-1d0j5jl");
     			add_location(button1, file$3, 232, 4, 7859);
-    			attr_dev(div, "class", "orb-info svelte-e9esbp");
+    			attr_dev(div, "class", "orb-info svelte-1d0j5jl");
     			add_location(div, file$3, 230, 3, 7743);
-    			attr_dev(button2, "class", "trade-btn svelte-e9esbp");
+    			attr_dev(button2, "class", "trade-btn svelte-1d0j5jl");
     			attr_dev(button2, "id", "light-btn");
     			add_location(button2, file$3, 228, 2, 7638);
     		},
@@ -4803,10 +4885,10 @@ var app = (function () {
     			button1 = element("button");
     			button1.textContent = "?";
     			button0.disabled = true;
-    			attr_dev(button0, "class", "svelte-e9esbp");
+    			attr_dev(button0, "class", "svelte-1d0j5jl");
     			add_location(button0, file$3, 252, 2, 8634);
     			button1.disabled = true;
-    			attr_dev(button1, "class", "svelte-e9esbp");
+    			attr_dev(button1, "class", "svelte-1d0j5jl");
     			add_location(button1, file$3, 253, 2, 8664);
     		},
     		m: function mount(target, anchor) {
@@ -4900,26 +4982,26 @@ var app = (function () {
     			t17 = space();
     			button4 = element("button");
     			button4.textContent = "Sell";
-    			attr_dev(p0, "class", "stat svelte-e9esbp");
+    			attr_dev(p0, "class", "stat svelte-1d0j5jl");
     			add_location(p0, file$3, 238, 3, 8058);
-    			attr_dev(button0, "class", "buy-sell svelte-e9esbp");
+    			attr_dev(button0, "class", "buy-sell svelte-1d0j5jl");
     			add_location(button0, file$3, 240, 4, 8141);
-    			attr_dev(button1, "class", "buy-sell svelte-e9esbp");
+    			attr_dev(button1, "class", "buy-sell svelte-1d0j5jl");
     			add_location(button1, file$3, 241, 4, 8232);
-    			attr_dev(div0, "class", "orb-info svelte-e9esbp");
+    			attr_dev(div0, "class", "orb-info svelte-1d0j5jl");
     			add_location(div0, file$3, 239, 3, 8114);
-    			attr_dev(button2, "class", "trade-btn svelte-e9esbp");
+    			attr_dev(button2, "class", "trade-btn svelte-1d0j5jl");
     			attr_dev(button2, "id", "homing-btn");
     			add_location(button2, file$3, 237, 2, 8006);
-    			attr_dev(p1, "class", "stat svelte-e9esbp");
+    			attr_dev(p1, "class", "stat svelte-1d0j5jl");
     			add_location(p1, file$3, 245, 3, 8368);
-    			attr_dev(button3, "class", "buy-sell svelte-e9esbp");
+    			attr_dev(button3, "class", "buy-sell svelte-1d0j5jl");
     			add_location(button3, file$3, 247, 4, 8450);
-    			attr_dev(button4, "class", "buy-sell svelte-e9esbp");
+    			attr_dev(button4, "class", "buy-sell svelte-1d0j5jl");
     			add_location(button4, file$3, 248, 4, 8539);
-    			attr_dev(div1, "class", "orb-info svelte-e9esbp");
+    			attr_dev(div1, "class", "orb-info svelte-1d0j5jl");
     			add_location(div1, file$3, 246, 3, 8423);
-    			attr_dev(button5, "class", "trade-btn svelte-e9esbp");
+    			attr_dev(button5, "class", "trade-btn svelte-1d0j5jl");
     			attr_dev(button5, "id", "spore-btn");
     			add_location(button5, file$3, 244, 2, 8318);
     		},
@@ -4998,7 +5080,7 @@ var app = (function () {
     			button = element("button");
     			button.textContent = "?";
     			button.disabled = true;
-    			attr_dev(button, "class", "svelte-e9esbp");
+    			attr_dev(button, "class", "svelte-1d0j5jl");
     			add_location(button, file$3, 263, 10, 9039);
     		},
     		m: function mount(target, anchor) {
@@ -5057,15 +5139,15 @@ var app = (function () {
     			t7 = space();
     			button1 = element("button");
     			button1.textContent = "Sell";
-    			attr_dev(p, "class", "stat svelte-e9esbp");
+    			attr_dev(p, "class", "stat svelte-1d0j5jl");
     			add_location(p, file$3, 257, 3, 8775);
-    			attr_dev(button0, "class", "buy-sell svelte-e9esbp");
+    			attr_dev(button0, "class", "buy-sell svelte-1d0j5jl");
     			add_location(button0, file$3, 259, 4, 8857);
-    			attr_dev(button1, "class", "buy-sell svelte-e9esbp");
+    			attr_dev(button1, "class", "buy-sell svelte-1d0j5jl");
     			add_location(button1, file$3, 260, 4, 8946);
-    			attr_dev(div, "class", "orb-info svelte-e9esbp");
+    			attr_dev(div, "class", "orb-info svelte-1d0j5jl");
     			add_location(div, file$3, 258, 3, 8830);
-    			attr_dev(button2, "class", "trade-btn svelte-e9esbp");
+    			attr_dev(button2, "class", "trade-btn svelte-1d0j5jl");
     			attr_dev(button2, "id", "titan-btn");
     			add_location(button2, file$3, 256, 2, 8725);
     		},
@@ -5130,8 +5212,8 @@ var app = (function () {
     			t1 = text(t1_value);
     			br = element("br");
     			set_style(span, "color", "#00cccc");
-    			add_location(span, file$3, 274, 3, 9982);
-    			add_location(br, file$3, 274, 77, 10056);
+    			add_location(span, file$3, 274, 3, 9998);
+    			add_location(br, file$3, 274, 77, 10072);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -5185,11 +5267,11 @@ var app = (function () {
     			t4 = text(t4_value);
     			br1 = element("br");
     			set_style(span0, "color", "#cccc00");
-    			add_location(span0, file$3, 277, 3, 10090);
-    			add_location(br0, file$3, 277, 79, 10166);
+    			add_location(span0, file$3, 277, 3, 10106);
+    			add_location(br0, file$3, 277, 79, 10182);
     			set_style(span1, "color", "#ffaa00");
-    			add_location(span1, file$3, 278, 3, 10174);
-    			add_location(br1, file$3, 278, 77, 10248);
+    			add_location(span1, file$3, 278, 3, 10190);
+    			add_location(br1, file$3, 278, 77, 10264);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span0, anchor);
@@ -5239,7 +5321,7 @@ var app = (function () {
     			t0 = text("Titan Orbs: ");
     			t1 = text(t1_value);
     			set_style(span, "color", "#e170d8");
-    			add_location(span, file$3, 281, 2, 10286);
+    			add_location(span, file$3, 281, 2, 10302);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, span, anchor);
@@ -5334,8 +5416,7 @@ var app = (function () {
     	let t41;
     	let t42;
     	let t43;
-    	let artifacts;
-    	let current;
+    	let a;
     	let mounted;
     	let dispose;
 
@@ -5373,7 +5454,6 @@ var app = (function () {
     	let if_block4 = /*$prestige*/ ctx[11].times >= 1 && create_if_block_2(ctx);
     	let if_block5 = /*$got_mana*/ ctx[9] && create_if_block_1(ctx);
     	let if_block6 = /*$new_game_plus*/ ctx[16] && create_if_block$1(ctx);
-    	artifacts = new Artifacts({ $$inline: true });
 
     	const block = {
     		c: function create() {
@@ -5430,10 +5510,10 @@ var app = (function () {
     			t29 = text(" to lock orbit position");
     			t30 = space();
     			h34 = element("h3");
-    			h34.textContent = "Normal gravity, drag, and value. Spawns smaller, lower value orbs that despawn after a few seconds.";
+    			h34.textContent = "Normal gravity, drag, and high value. Spawns smaller, lower value orbs that despawn after a few seconds.";
     			t32 = space();
     			h35 = element("h3");
-    			h35.textContent = "Heavy and slow, but has high value and does bonus damage to monsters. Additionally, this orb requires 1 of each other orb.";
+    			h35.textContent = "Heavier and slower, but has a very high value and does bonus damage to monsters. Additionally, this orb requires 1 of each other orb.";
     			t34 = space();
     			h36 = element("h3");
     			t35 = text("Use your orbs in The Monster Tower to get Mana.");
@@ -5452,60 +5532,66 @@ var app = (function () {
     			t42 = space();
     			if (if_block6) if_block6.c();
     			t43 = space();
-    			create_component(artifacts.$$.fragment);
+    			a = element("a");
+    			a.textContent = "Buy me a coffee!";
     			set_style(span0, "font-weight", "normal");
     			add_location(span0, file$3, 196, 20, 5962);
     			attr_dev(h30, "id", "mana");
-    			attr_dev(h30, "class", "svelte-e9esbp");
+    			attr_dev(h30, "class", "svelte-1d0j5jl");
     			add_location(h30, file$3, 196, 1, 5943);
     			attr_dev(div0, "id", "hold-btn");
-    			attr_dev(div0, "class", "svelte-e9esbp");
+    			attr_dev(div0, "class", "svelte-1d0j5jl");
     			add_location(div0, file$3, 197, 1, 6029);
-    			attr_dev(p, "class", "stat svelte-e9esbp");
+    			attr_dev(p, "class", "stat svelte-1d0j5jl");
     			add_location(p, file$3, 221, 3, 7353);
-    			attr_dev(button0, "class", "buy-sell svelte-e9esbp");
+    			attr_dev(button0, "class", "buy-sell svelte-1d0j5jl");
     			add_location(button0, file$3, 223, 4, 7435);
-    			attr_dev(button1, "class", "buy-sell svelte-e9esbp");
+    			attr_dev(button1, "class", "buy-sell svelte-1d0j5jl");
     			add_location(button1, file$3, 224, 4, 7524);
-    			attr_dev(div1, "class", "orb-info svelte-e9esbp");
+    			attr_dev(div1, "class", "orb-info svelte-1d0j5jl");
     			add_location(div1, file$3, 222, 3, 7408);
-    			attr_dev(button2, "class", "trade-btn svelte-e9esbp");
+    			attr_dev(button2, "class", "trade-btn svelte-1d0j5jl");
     			attr_dev(button2, "id", "basic-btn");
     			add_location(button2, file$3, 220, 2, 7303);
     			add_location(br0, file$3, 264, 55, 9128);
     			add_location(em, file$3, 264, 67, 9140);
     			attr_dev(h31, "id", "basic-info");
-    			attr_dev(h31, "class", "svelte-e9esbp");
+    			attr_dev(h31, "class", "svelte-1d0j5jl");
     			add_location(h31, file$3, 264, 2, 9075);
     			add_location(br1, file$3, 265, 61, 9224);
     			attr_dev(h32, "id", "light-info");
-    			attr_dev(h32, "class", "svelte-e9esbp");
+    			attr_dev(h32, "class", "svelte-1d0j5jl");
     			add_location(h32, file$3, 265, 2, 9165);
     			add_location(br2, file$3, 266, 50, 9319);
     			attr_dev(h33, "id", "homing-info");
-    			attr_dev(h33, "class", "svelte-e9esbp");
+    			attr_dev(h33, "class", "svelte-1d0j5jl");
     			add_location(h33, file$3, 266, 2, 9271);
     			attr_dev(h34, "id", "spore-info");
-    			attr_dev(h34, "class", "svelte-e9esbp");
+    			attr_dev(h34, "class", "svelte-1d0j5jl");
     			add_location(h34, file$3, 267, 2, 9399);
     			attr_dev(h35, "id", "titan-info");
-    			attr_dev(h35, "class", "svelte-e9esbp");
-    			add_location(h35, file$3, 268, 2, 9526);
-    			add_location(br3, file$3, 269, 116, 9790);
+    			attr_dev(h35, "class", "svelte-1d0j5jl");
+    			add_location(h35, file$3, 268, 2, 9531);
+    			add_location(br3, file$3, 269, 116, 9806);
     			attr_dev(h36, "id", "fight-info");
     			set_style(h36, "display", /*hover_fight*/ ctx[12] ? "block" : "");
-    			attr_dev(h36, "class", "svelte-e9esbp");
-    			add_location(h36, file$3, 269, 2, 9676);
+    			attr_dev(h36, "class", "svelte-1d0j5jl");
+    			add_location(h36, file$3, 269, 2, 9692);
     			attr_dev(div2, "id", "orb-row");
-    			attr_dev(div2, "class", "svelte-e9esbp");
+    			attr_dev(div2, "class", "svelte-1d0j5jl");
     			add_location(div2, file$3, 219, 1, 7282);
     			set_style(span1, "color", "#ccc");
-    			add_location(span1, file$3, 272, 2, 9874);
-    			add_location(br4, file$3, 272, 73, 9945);
+    			add_location(span1, file$3, 272, 2, 9890);
+    			add_location(br4, file$3, 272, 73, 9961);
     			attr_dev(h37, "id", "orb-stats");
-    			attr_dev(h37, "class", "svelte-e9esbp");
-    			add_location(h37, file$3, 271, 1, 9852);
-    			attr_dev(main, "class", "svelte-e9esbp");
+    			attr_dev(h37, "class", "svelte-1d0j5jl");
+    			add_location(h37, file$3, 271, 1, 9868);
+    			attr_dev(a, "id", "support");
+    			attr_dev(a, "href", "https://www.buymeacoffee.com/JacobyY");
+    			attr_dev(a, "target", "_blank");
+    			attr_dev(a, "class", "svelte-1d0j5jl");
+    			add_location(a, file$3, 285, 1, 10394);
+    			attr_dev(main, "class", "svelte-1d0j5jl");
     			add_location(main, file$3, 195, 0, 5935);
     		},
     		l: function claim(nodes) {
@@ -5582,8 +5668,7 @@ var app = (function () {
     			append_dev(h37, t42);
     			if (if_block6) if_block6.m(h37, null);
     			append_dev(main, t43);
-    			mount_component(artifacts, main, null);
-    			current = true;
+    			append_dev(main, a);
 
     			if (!mounted) {
     				dispose = [
@@ -5595,7 +5680,7 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, dirty) {
-    			if ((!current || dirty[0] & /*$mana*/ 64) && t3_value !== (t3_value = fnum(/*$mana*/ ctx[6]) + "")) set_data_dev(t3, t3_value);
+    			if (dirty[0] & /*$mana*/ 64 && t3_value !== (t3_value = fnum(/*$mana*/ ctx[6]) + "")) set_data_dev(t3, t3_value);
 
     			if (current_block_type === (current_block_type = select_block_type(ctx)) && if_block0) {
     				if_block0.p(ctx, dirty);
@@ -5609,8 +5694,8 @@ var app = (function () {
     				}
     			}
 
-    			if ((!current || dirty[0] & /*$basic_orb*/ 32) && t8_value !== (t8_value = fnum(/*$basic_orb*/ ctx[5].value) + "")) set_data_dev(t8, t8_value);
-    			if ((!current || dirty[0] & /*$basic_orb*/ 32) && t11_value !== (t11_value = fnum(/*$basic_orb*/ ctx[5].cost) + "")) set_data_dev(t11, t11_value);
+    			if (dirty[0] & /*$basic_orb*/ 32 && t8_value !== (t8_value = fnum(/*$basic_orb*/ ctx[5].value) + "")) set_data_dev(t8, t8_value);
+    			if (dirty[0] & /*$basic_orb*/ 32 && t11_value !== (t11_value = fnum(/*$basic_orb*/ ctx[5].cost) + "")) set_data_dev(t11, t11_value);
 
     			if (current_block_type_1 === (current_block_type_1 = select_block_type_1(ctx)) && if_block1) {
     				if_block1.p(ctx, dirty);
@@ -5648,11 +5733,11 @@ var app = (function () {
     				}
     			}
 
-    			if (!current || dirty[0] & /*hover_fight*/ 4096) {
+    			if (dirty[0] & /*hover_fight*/ 4096) {
     				set_style(h36, "display", /*hover_fight*/ ctx[12] ? "block" : "");
     			}
 
-    			if ((!current || dirty[0] & /*$basic_orb*/ 32) && t39_value !== (t39_value = fnum(/*$basic_orb*/ ctx[5].amount) + "")) set_data_dev(t39, t39_value);
+    			if (dirty[0] & /*$basic_orb*/ 32 && t39_value !== (t39_value = fnum(/*$basic_orb*/ ctx[5].amount) + "")) set_data_dev(t39, t39_value);
 
     			if (/*$prestige*/ ctx[11].times >= 1) {
     				if (if_block4) {
@@ -5693,15 +5778,8 @@ var app = (function () {
     				if_block6 = null;
     			}
     		},
-    		i: function intro(local) {
-    			if (current) return;
-    			transition_in(artifacts.$$.fragment, local);
-    			current = true;
-    		},
-    		o: function outro(local) {
-    			transition_out(artifacts.$$.fragment, local);
-    			current = false;
-    		},
+    		i: noop,
+    		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main);
     			if_block0.d();
@@ -5711,7 +5789,6 @@ var app = (function () {
     			if (if_block4) if_block4.d();
     			if (if_block5) if_block5.d();
     			if (if_block6) if_block6.d();
-    			destroy_component(artifacts);
     			mounted = false;
     			run_all(dispose);
     		}
@@ -7053,6 +7130,8 @@ var app = (function () {
     	let h11;
     	let t3;
     	let h12;
+    	let t5;
+    	let h3;
 
     	const block = {
     		c: function create() {
@@ -7064,35 +7143,47 @@ var app = (function () {
     			t3 = space();
     			h12 = element("h1");
     			h12.textContent = "Idle Orbs 2";
-    			attr_dev(h10, "class", "intro-txt svelte-ade6d3");
-    			add_location(h10, file, 57, 2, 1522);
-    			attr_dev(h11, "class", "intro-txt svelte-ade6d3");
-    			add_location(h11, file, 58, 2, 1588);
-    			attr_dev(h12, "class", "intro-txt svelte-ade6d3");
-    			add_location(h12, file, 59, 2, 1664);
+    			t5 = space();
+    			h3 = element("h3");
+    			h3.textContent = "(This game is dedicated to you, Dad)";
+    			attr_dev(h10, "class", "intro-txt svelte-aio6bl");
+    			add_location(h10, file, 57, 2, 1560);
+    			attr_dev(h11, "class", "intro-txt svelte-aio6bl");
+    			add_location(h11, file, 58, 2, 1626);
+    			attr_dev(h12, "class", "intro-txt svelte-aio6bl");
+    			add_location(h12, file, 59, 2, 1702);
+    			attr_dev(h3, "id", "to-dad");
+    			attr_dev(h3, "class", "svelte-aio6bl");
+    			add_location(h3, file, 60, 2, 1762);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, h10, anchor);
-    			/*h10_binding*/ ctx[6](h10);
+    			/*h10_binding*/ ctx[7](h10);
     			insert_dev(target, t1, anchor);
     			insert_dev(target, h11, anchor);
-    			/*h11_binding*/ ctx[7](h11);
+    			/*h11_binding*/ ctx[8](h11);
     			insert_dev(target, t3, anchor);
     			insert_dev(target, h12, anchor);
-    			/*h12_binding*/ ctx[8](h12);
+    			/*h12_binding*/ ctx[9](h12);
+    			insert_dev(target, t5, anchor);
+    			insert_dev(target, h3, anchor);
+    			/*h3_binding*/ ctx[10](h3);
     		},
     		p: noop,
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(h10);
-    			/*h10_binding*/ ctx[6](null);
+    			/*h10_binding*/ ctx[7](null);
     			if (detaching) detach_dev(t1);
     			if (detaching) detach_dev(h11);
-    			/*h11_binding*/ ctx[7](null);
+    			/*h11_binding*/ ctx[8](null);
     			if (detaching) detach_dev(t3);
     			if (detaching) detach_dev(h12);
-    			/*h12_binding*/ ctx[8](null);
+    			/*h12_binding*/ ctx[9](null);
+    			if (detaching) detach_dev(t5);
+    			if (detaching) detach_dev(h3);
+    			/*h3_binding*/ ctx[10](null);
     		}
     	};
 
@@ -7180,8 +7271,8 @@ var app = (function () {
     		c: function create() {
     			main_1 = element("main");
     			if_block.c();
-    			attr_dev(main_1, "class", "svelte-ade6d3");
-    			add_location(main_1, file, 52, 0, 1423);
+    			attr_dev(main_1, "class", "svelte-aio6bl");
+    			add_location(main_1, file, 52, 0, 1461);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -7189,11 +7280,11 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, main_1, anchor);
     			if_blocks[current_block_type_index].m(main_1, null);
-    			/*main_1_binding*/ ctx[9](main_1);
+    			/*main_1_binding*/ ctx[11](main_1);
     			current = true;
 
     			if (!mounted) {
-    				dispose = listen_dev(main_1, "click", /*click_handler*/ ctx[10], false, false, false);
+    				dispose = listen_dev(main_1, "click", /*click_handler*/ ctx[12], false, false, false);
     				mounted = true;
     			}
     		},
@@ -7236,7 +7327,7 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(main_1);
     			if_blocks[current_block_type_index].d();
-    			/*main_1_binding*/ ctx[9](null);
+    			/*main_1_binding*/ ctx[11](null);
     			mounted = false;
     			dispose();
     		}
@@ -7257,12 +7348,12 @@ var app = (function () {
     	let $prestige;
     	let $cash;
     	validate_store(prestige, 'prestige');
-    	component_subscribe($$self, prestige, $$value => $$invalidate(11, $prestige = $$value));
+    	component_subscribe($$self, prestige, $$value => $$invalidate(13, $prestige = $$value));
     	validate_store(cash, 'cash');
-    	component_subscribe($$self, cash, $$value => $$invalidate(12, $cash = $$value));
+    	component_subscribe($$self, cash, $$value => $$invalidate(14, $cash = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('App', slots, []);
-    	let intro1, intro2, intro3, main;
+    	let intro1, intro2, intro3, to_dad, main;
     	let gaming = false;
     	const cinemachine = [];
     	cinemachine.push([() => $$invalidate(1, intro1.style.opacity = 1, intro1), 500]);
@@ -7270,13 +7361,21 @@ var app = (function () {
     	cinemachine.push([() => $$invalidate(2, intro2.style.opacity = 1, intro2), 1000]);
     	cinemachine.push([() => $$invalidate(2, intro2.style.opacity = 0, intro2), 3000]);
     	cinemachine.push([() => $$invalidate(3, intro3.style.opacity = 1, intro3), 1000]);
-    	cinemachine.push([() => $$invalidate(3, intro3.style.opacity = 0, intro3), 3000]);
+
+    	cinemachine.push([
+    		() => {
+    			$$invalidate(3, intro3.style.opacity = 0, intro3);
+    			$$invalidate(4, to_dad.style.opacity = 0, to_dad);
+    		},
+    		3000
+    	]);
+
     	cinemachine.push([() => $$invalidate(0, gaming = true), 3000]);
     	let timeout = null;
 
     	const run_cine = i => {
     		if (i >= cinemachine.length) return;
-    		$$invalidate(5, timeout = setTimeout(() => (cinemachine[i][0](), run_cine(i + 1)), cinemachine[i][1]));
+    		$$invalidate(6, timeout = setTimeout(() => (cinemachine[i][0](), run_cine(i + 1)), cinemachine[i][1]));
     	};
 
     	onMount(() => {
@@ -7297,7 +7396,7 @@ var app = (function () {
     		const w = document.body.clientWidth;
     		const h = document.body.clientHeight;
     		if (w * 0.6 >= h) scale = h / 600; else scale = w / 1000;
-    		$$invalidate(4, main.style.transform = `translate(-50%, -50%) scale(${scale - 0.02}, ${scale - 0.02})`, main);
+    		$$invalidate(5, main.style.transform = `translate(-50%, -50%) scale(${scale - 0.02}, ${scale - 0.02})`, main);
     	};
 
     	const writable_props = [];
@@ -7327,10 +7426,17 @@ var app = (function () {
     		});
     	}
 
+    	function h3_binding($$value) {
+    		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
+    			to_dad = $$value;
+    			$$invalidate(4, to_dad);
+    		});
+    	}
+
     	function main_1_binding($$value) {
     		binding_callbacks[$$value ? 'unshift' : 'push'](() => {
     			main = $$value;
-    			$$invalidate(4, main);
+    			$$invalidate(5, main);
     		});
     	}
 
@@ -7345,6 +7451,7 @@ var app = (function () {
     		intro1,
     		intro2,
     		intro3,
+    		to_dad,
     		main,
     		gaming,
     		cinemachine,
@@ -7358,9 +7465,10 @@ var app = (function () {
     		if ('intro1' in $$props) $$invalidate(1, intro1 = $$props.intro1);
     		if ('intro2' in $$props) $$invalidate(2, intro2 = $$props.intro2);
     		if ('intro3' in $$props) $$invalidate(3, intro3 = $$props.intro3);
-    		if ('main' in $$props) $$invalidate(4, main = $$props.main);
+    		if ('to_dad' in $$props) $$invalidate(4, to_dad = $$props.to_dad);
+    		if ('main' in $$props) $$invalidate(5, main = $$props.main);
     		if ('gaming' in $$props) $$invalidate(0, gaming = $$props.gaming);
-    		if ('timeout' in $$props) $$invalidate(5, timeout = $$props.timeout);
+    		if ('timeout' in $$props) $$invalidate(6, timeout = $$props.timeout);
     	};
 
     	if ($$props && "$$inject" in $$props) {
@@ -7368,7 +7476,7 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*gaming, timeout*/ 33) {
+    		if ($$self.$$.dirty & /*gaming, timeout*/ 65) {
     			{
     				if (gaming && timeout != null) {
     					window.clearTimeout(timeout);
@@ -7382,11 +7490,13 @@ var app = (function () {
     		intro1,
     		intro2,
     		intro3,
+    		to_dad,
     		main,
     		timeout,
     		h10_binding,
     		h11_binding,
     		h12_binding,
+    		h3_binding,
     		main_1_binding,
     		click_handler
     	];

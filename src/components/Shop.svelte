@@ -65,7 +65,7 @@
 			auto_on: true,
 		};
 
-		prestige.update( v => (v.times++, v.cost += (25000*v.times), v) );
+		prestige.update( v => (v.times++, v.cost += (25000*(v.times ** Math.max(1, v.times/12))), v) );
 	}
 	//#endregion
 	//#region | Starting Cash
@@ -126,7 +126,7 @@
 	<div style="position: relative;">
 		<button id="back-to-game" on:click={()=> void($canvas_toggled = true)}>Back to game</button>
 	</div>
-	<h3 id="orb-info">Orb Value Bonus: +{($prestige, $orb_mult, fnum(get_orb_bonus()*100-100))}% {prest_hover ? "(Increases per prestige)" : ""}</h3>
+	<h3 id="orb-info">Orb Value Bonus: +{($prestige, $orb_mult, fnum(Math.round(get_orb_bonus()*100-100)))}% {prest_hover ? "(Increases per prestige)" : ""}</h3>
 	<button bind:this={prest_btn} on:click={do_prestige}>Prestige <b>${fnum($prestige.cost)}</b></button>
 </main>
 

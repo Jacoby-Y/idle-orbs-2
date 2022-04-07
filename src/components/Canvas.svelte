@@ -107,6 +107,9 @@
 		reset_orbs();
 		set_orb_values();
 	}
+
+	$: { $prestige; show_earnings = false; }
+
 	//#endregion
 	//#region | Canvas
 	/** <main> holding all html of the game (not shop) */
@@ -1096,7 +1099,8 @@
 		const r = $rarities.c + $rarities.u + $rarities.r;
 
 		const set_monster = (name, hp, worth)=>{
-			monster_manager.max_hp = hp*(1 + 0.5*($next_tower_lvl-1));
+			// cost = 1e3 * Math.max(1.02**($next_tower_lvl-1), 0);
+			monster_manager.max_hp = hp*(1.016**($next_tower_lvl-1));
 			monster_manager.hp = monster_manager.max_hp;
 			monster_manager.name = name;
 			monster_manager.src = `./assets/${name.toLowerCase().replaceAll(" ", "_")}.svg`;
@@ -1154,7 +1158,7 @@
 			ctx.fillRect(this.pt1.x+10, this.pt2.y-30, (this.pt2.x-this.pt1.x-20)*(Math.max(0, this.hp)/this.max_hp), 20);
 			// Kill Index bar
 			ctx.fillStyle = "#ffffff66";
-			const kill_i_perc = (this.pt2.x-this.pt1.x)*Math.min(1, (this.kill_index+Math.abs(1-this.hp/this.max_hp))/10);
+			const kill_i_perc = (this.pt2.x-this.pt1.x)*(this.is_boss ? 1 : Math.min(1, (this.kill_index+Math.abs(1-this.hp/this.max_hp))/10));
 			//  + (this.pt2.x-this.pt1.x)*((this.kill_index)/10)*(1-this.hp/this.max_hp)
 			ctx.fillRect(this.pt1.x+1, this.pt1.y+1, kill_i_perc-2, 5);
 			// Timer bar
@@ -1175,7 +1179,7 @@
 					this.total_health += this.max_hp;
 					// console.log([this.max_hp, this.total_health]);
 				};
-				$mana += Math.round(this.worth*(1 + 0.05*$next_tower_lvl));
+				$mana += Math.round(this.worth*(1 + 0.1*$next_tower_lvl));
 				this.kill_index++;
 				if (this.kill_index >= 10) {
 					// console.log(($next_tower_lvl) % 5, ($next_tower_lvl) > 0, this.is_boss == false);

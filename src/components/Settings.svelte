@@ -1,5 +1,5 @@
 <script>
-	import { render_mode, get_data, load_data, max_render, render_mod, clear_storage, store_to_local, rarities, set_new_game_plus } from "../stores.js";
+	import { render_mode, get_data, load_data, max_render, render_mod, clear_storage, store_to_local, rarities, set_new_game_plus, new_game_plus, next_tower_lvl } from "../stores.js";
 	export let open;
 	export let settings = undefined;
 
@@ -46,7 +46,10 @@
 	<div class="sect" id="btn-trio">
 		<button on:click={store_to_local}>Save Locally</button> 
 		<button on:click={clear_storage}>Clear Game Data</button> 
-		<button disabled={$rarities.l < 100} on:click={()=> void(show_secret=true)}>*Secret*</button> 
+		<button disabled={$next_tower_lvl < 1000 || $new_game_plus} on:click={()=> void(show_secret=true)}>
+			{#if $new_game_plus} *Unlocked*
+			{:else} *Secret* {/if}
+		</button> 
 	</div>
 
 	<div id="secret" class:show-secret={show_secret}>

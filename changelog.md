@@ -1,3 +1,7 @@
+## v0.10.5
+- Fixed bugs
+- Nerfed prestige
+
 ## v0.10.4
 - Fixed text
 - Nerfed orb multiplier, again lol

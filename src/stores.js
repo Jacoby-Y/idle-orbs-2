@@ -10,7 +10,7 @@ const get_or = (k, v)=> is_nullish(loaded[k]) ? v : loaded[k];
 let w_index = 0;
 const w = (v)=>{
 	let k = `_${w_index}`;
-	default_vals[k] = (typeof v == "object" ? {...v} : v);
+	default_vals[k] = JSON.stringify(v); /// (typeof v == "object" ? Object.assign({}, v) : v);
 	// store_keys.push(k);
 	writables[k] = writable(get_or(k, v));
 	w_index++;
@@ -36,6 +36,10 @@ const timer_loop = setInterval(() => {
 let deci = 0;
 export const cash = w(0);
 cash.subscribe((v)=>{
+	if (v < 0) {
+		cash.set(0);
+		return;
+	}
 	if (Math.floor(v) != v) {
 		deci += v - Math.floor(v);
 		if (deci >= 1) {
@@ -138,7 +142,7 @@ export const get_orb_bonus = ()=>{
 	const pt = get(prestige).times;
 	const mult = get(orb_mult);
 	const prest = (((pt-1)/2*pt)* 0.5) + (pt > 0 ? 0.5 : 0);
-	return 1 + prest + (mult/100)
+	return (1 + prest + (mult/100))
 }
 
 
@@ -147,13 +151,15 @@ export const clear_storage = ()=>{
 	localStorage.clear();
 	location.reload();
 };
+
 window.clear_storage = clear_storage;
+window.default_vals = default_vals;
 
 export const set_to_default = ()=>{
 	// load_data(`0Zb9q.Z8"cZ:mtlbdZ80ZnmudpZ8{"cZnmudpabmqrZ81}"cZqgxdZ8(}cZqgxdabmqrZ8}""cZ9trmabmqrZ8{}"cZ9trmatljmbid_Z8,9jqdcZ9trmamlZ8rptd2cZqr9prglfab9q.Z80ZbmqrZ81}cZ9kmtlrZ8"2cZmp:aktjrZ8"cZ:9qgbamp:Z80Z9kmtlrZ8'cZbmqrZ8}"cZy9jtdZ8'2cZjgf.ramp:Z80Z9kmtlrZ8"cZbmqrZ8'""cZy9jtdZ8'2cZ.mkglfamp:Z80Z9kmtlrZ8"cZbmqrZ8(cZy9jtdZ832cZqnmpdamp:Z80Z9kmtlrZ8"cZbmqrZ8'"cZy9jtdZ85cZqt:ay9jtdZ8"e}2cZnpdqrgfdZ80ZbmqrZ8'"""""cZrgkdqZ8"2cZldvrarmudpajyjZ8'cZ,gf.rabmqrZ8'"""cZfmrak9l9Z8,9jqdcZk9l9Z8"cZpdl_dpakm_dZ8'cZk9vapdl_dpZ8'""cZpdl_dpakm_Z8'cZtljm9_argkdZ8'537)}7"))2`);
 	for (const k in default_vals) {
 		if (!Object.hasOwnProperty.call(default_vals, k)) continue;
-		const v = default_vals[k];
+		const v = JSON.parse(default_vals[k]);
 		writables[k].set(v);
 	}
 };
@@ -161,6 +167,9 @@ export const set_new_game_plus = ()=>{
 	set_to_default();
 	new_game_plus.set(true);
 	fighting.set(false);
+	
+	console.log(get(prestige));
+	console.log(get(orb_mult));
 }
 
 export const reset_orbs = writable(()=>{});

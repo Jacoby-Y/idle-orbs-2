@@ -15,6 +15,7 @@
 	}}
 
 	$: if (!$unlocked_fighting && $prestige.times >= 3) $unlocked_fighting = true;
+	$: if ($unlocked_fighting && $prestige.times < 3) $unlocked_fighting = false;
 	$: if (!$got_mana && $mana > 0) $got_mana = true;
 	$: {
 		const L = $next_tower_lvl-1;
@@ -23,7 +24,8 @@
 			rarities.update( v => (
 				v.c = 100 - t*5,
 				v.u = t*4,
-				v.r = t, v
+				v.r = t, 
+				v.l = 0, v
 			));
 		} else if (t < 40) {
 			rarities.update( v => (
@@ -62,7 +64,8 @@
 	$afford_fight = ()=> $cash >= $fight_cost;
 	//#endregion
 	//#region | Fight Button
-	$: $fight_cost = 1e3 * (1 + 1.2 * ($next_tower_lvl-1));
+	// $: $fight_cost = 1e3 * (1 + 1.2 * ($next_tower_lvl-1));
+	$: $fight_cost = 1e3 * Math.max(1.02**($next_tower_lvl-1), 0);
 
 	const click_fight = ()=>{
 		if ($cash < $fight_cost) return;
@@ -197,7 +200,7 @@
 	<h3 id="mana">Mana <span style="font-weight: normal;">(₪)</span>: {fnum($mana)}</h3>
 	<div id="hold-btn">
 		{#if $unlocked_fighting}
-			{#if $rarities.l >= 100} <h3 id="secret-hint">Check settings...</h3> {/if}
+			{#if $next_tower_lvl >= 1000 && !$new_game_plus} <h3 id="secret-hint">Check settings...</h3> {/if}
 			<button id="auto-fight" style="{$auto_fight ? "border-color: lime;" : ""}" on:click={()=> $auto_fight = !$auto_fight}>Auto Fight?</button>
 			<button on:click={()=> click_fight()} class:disabled={$fighting} id="fight-btn" bind:this={fight_btn}>
 				Monster Tower Lvl {$next_tower_lvl} | <b>${fnum($fight_cost)}</b>

@@ -333,6 +333,10 @@
 								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
 								ctx.fillRect(x, y, 20, 20);
 								break;
+							case 4:
+								ctx.strokeStyle = "#e3ffcf"
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.stroke(); 
+								break;
 						}
 					}
 
@@ -375,6 +379,10 @@
 								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
 								ctx.fillRect(x, y, 20, 20);
 								ctx.fillRect(x+2, y+2, 16, 16);
+								break;
+							case 4:
+								ctx.strokeStyle = "#aae8e0";
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.stroke(); 
 								break;
 						}
 					}
@@ -422,6 +430,12 @@
 								ctx.fillStyle = "#73bd4599";
 								ctx.fillRect(x+7.5, y+5, 5 , 10); 
 								ctx.fillRect(x+5, y+7.5, 10, 5 ); 
+								break;
+							case 4:
+								ctx.strokeStyle = "#c7fda5";
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.stroke();
+								ctx.strokeStyle = "#73bd45";
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 3, 0, 2 * Math.PI); ctx.stroke();
 								break;
 						}
 					}
@@ -474,6 +488,10 @@
 								ctx.fillRect(x, y, 20, 20);
 								ctx.fillRect(x+2, y+2, 16, 16);
 								break;
+							case 4:
+								ctx.strokeStyle = "#dfac33";
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.stroke(); 
+								break;
 						}
 					}
 
@@ -510,6 +528,10 @@
 							case 3:
 								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
 								ctx.fillRect(x+5, y+5, 10, 10);
+								break;
+							case 4:
+								ctx.strokeStyle = "#dfac33"; 
+								ctx.beginPath(); ctx.arc(orb.x+5, orb.y+5, 5, 0, 2 * Math.PI); ctx.stroke(); 
 								break;
 						}
 					}
@@ -554,6 +576,10 @@
 								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
 								ctx.fillRect(x, y, 20, 20);
 								break;
+							case 4:
+								ctx.strokeStyle = "#000044";
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.stroke(); 
+								break;
 						}
 					}
 
@@ -594,6 +620,10 @@
 								let [x, y] = [Math.floor(orb.x/20)*20, Math.floor(orb.y/20)*20];
 								ctx.fillRect(x, y, 20, 20);
 								ctx.strokeRect(x, y, 20, 20);
+								break;
+							case 4:
+								ctx.strokeStyle = "#700368";
+								ctx.beginPath(); ctx.arc(orb.x+10, orb.y+10, 10, 0, 2 * Math.PI); ctx.stroke(); 
 								break;
 						}
 					}
@@ -926,15 +956,12 @@
 	let last_buy_amount = $buy_amount;
 	const key_up = (e)=>{
 		const k = e.key;
-		if (k == "d") debug = !debug;
+		if (k == "d" && location.hostname == "localhost") debug = !debug;
 		else if (k == "Escape") $toggled = !$toggled;
 		else if (k == "Tab" && $bounce.auto_unlocked) bounce.update((v)=>(v.auto_on=!v.auto_on,v));// ($bounce.auto_on = !$bounce.auto_on, $bounce = $bounce);
 		else if (k == "o") console.log(orbs.basic);
 		else if (k == "r") reset_orbs();
-		// else if (k == "Shift") $buy_amount == last_buy_amount ? $buy_amount = 0 : $buy_amount = last_buy_amount;
-		else if (k == "Shift") $buy_amount = ($buy_amount+1)%4;
-		// else if (k == "Shift") $shifting = false;
-		// else if (k == "Control") $ctrling = false;
+		else if (k == "Shift") $buy_amount = ($buy_amount+1)%5;
 		if (!debug) return;
 		if (k == "s") step = !step;
 		else if (k == " ") pause = !pause;
@@ -948,6 +975,7 @@
 		else if (k == "2") light_orb.update( v => (v.amount++, v));  
 		else if (k == "3") homing_orb.update( v => (v.amount++, v)); 
 		else if (k == "4") spore_orb.update( v => (v.amount++, v));
+		else if (k == "5") titan_orb.update( v => (v.amount++, v));
 		else if (k == "!") basic_orb.update( v => (v.amount > 0 ? v.amount-- : 0, v)); 
 		else if (k == "@") light_orb.update( v => (v.amount > 0 ? v.amount-- : 0, v)); 
 		else if (k == "#") homing_orb.update( v => (v.amount > 0 ? v.amount-- : 0, v));
@@ -984,7 +1012,7 @@
 		// $shifting = $ctrling = false; 
 		blur_time = Date.now();
 		blur_cash = $cash;
-		$buy_amount = 0;
+		// $buy_amount = 0;
 	}
 	window.onfocus = ()=>{
 		if ($fighting) return;
@@ -1350,7 +1378,7 @@
 				height: {monster_manager.pt2.y-monster_manager.pt1.y}px;">
 			<h3 id="lvl">Monster Tower: Level {$next_tower_lvl}</h3>
 			<h3 id="name">{monster_manager.name}</h3>
-			<img src="{monster_manager.src}" alt="monster Icon" style="width: {(monster_manager.pt2.y-monster_manager.pt1.y)/2}px; height: {(monster_manager.pt2.y-monster_manager.pt1.y)/2}px;">
+			<img src="{monster_manager.src}" alt="{monster_manager.name}" style="width: {(monster_manager.pt2.y-monster_manager.pt1.y)/2}px; height: {(monster_manager.pt2.y-monster_manager.pt1.y)/2}px;">
 		</div>
 	{/if}
 	{#if show_earnings}

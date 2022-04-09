@@ -1,3 +1,10 @@
+## v1.0
+- You can now buy 1000
+- Fixed bugs
+- Added "Wireframe" rendering mode
+- Uglified/minified my code
+- Changed favicon
+
 ## v0.10.5
 - Fixed bugs
 - Nerfed prestige

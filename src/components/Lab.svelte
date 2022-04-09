@@ -84,13 +84,14 @@
 		$cash -= $basic_orb.cost;
 		basic_orb.update( v => (v.cost += v.amount < 1000 ? 10 : 25, v.amount++, v) );
 		// basic_orb.update( v => (v.cost = Math.floor(v.cost*1.1), v.amount++, v) );
-		if ($buy_amount == 3) {
+		if ($buy_amount == 4) {
 			const res = spend_cash_add($cash, $basic_orb.cost, 10);
 			$cash = res.cash;
 			basic_orb.update( v => (v.cost = res.cost, v.amount += res.i, v) );
 		}
 		else if ($buy_amount == 1) run_n(buy_basic, 9);
 		else if ($buy_amount == 2) run_n(buy_basic, 99);
+		else if ($buy_amount == 3) run_n(buy_basic, 999);
 	};
 	const sell_basic = ()=>{
 		if (total_orbs <= 1 || $basic_orb.amount <= 0) return;
@@ -104,13 +105,14 @@
 		if ($cash < $light_orb.cost) return;
 		$cash -= $light_orb.cost;
 		light_orb.update( v => (v.cost += v.amount < 1000 ? 15 : 30, v.amount++, v) );
-		if ($buy_amount == 3) {
+		if ($buy_amount == 4) {
 			const res = spend_cash_add($cash, $light_orb.cost, 15);
 			$cash = res.cash;
 			light_orb.update( v => (v.cost = res.cost, v.amount += res.i, v) );
 		}
 		else if ($buy_amount == 1) run_n(buy_light, 9);
 		else if ($buy_amount == 2) run_n(buy_light, 99);
+		else if ($buy_amount == 3) run_n(buy_light, 999);
 
 	};
 	const sell_light = ()=>{
@@ -125,7 +127,7 @@
 		$mana -= $homing_orb.cost;
 		$homing_orb.cost++;
 		homing_orb.update( v => ( v.amount++, v) );
-		if ($buy_amount == 3) {
+		if ($buy_amount == 4) {
 			const res = spend_cash_add($mana, $homing_orb.cost, 1);
 			$mana = res.cash;
 			$homing_orb.cost = res.cost;
@@ -133,6 +135,7 @@
 		}
 		else if ($buy_amount == 1) run_n(buy_homing, 9);
 		else if ($buy_amount == 2) run_n(buy_homing, 99);
+		else if ($buy_amount == 3) run_n(buy_homing, 999);
 	}
 	const sell_homing = ()=>{
 		if (total_orbs <= 1 || $homing_orb.amount <= 0) return;
@@ -147,7 +150,7 @@
 		$mana -= $spore_orb.cost;
 		$spore_orb.cost++;
 		spore_orb.update( v => ( v.amount++, v) );
-		if ($buy_amount == 3) {
+		if ($buy_amount == 4) {
 			const res = spend_cash_add($mana, $spore_orb.cost, 1);
 			$mana = res.cash;
 			$spore_orb.cost = res.cost;
@@ -155,6 +158,7 @@
 		}
 		else if ($buy_amount == 1) run_n(buy_spore, 9);
 		else if ($buy_amount == 2) run_n(buy_spore, 99);
+		else if ($buy_amount == 3) run_n(buy_spore, 999);
 	};
 	const sell_spore = ()=>{
 		if (total_orbs <= 1 || $spore_orb.amount <= 0) return;
@@ -173,7 +177,7 @@
 		$spore_orb.amount--; 
 		$titan_orb.cost++;
 		titan_orb.update( v => ( v.amount++, v) );
-		if ($buy_amount == 3) {
+		if ($buy_amount == 4) {
 			const res = spend_cash_add($mana, $titan_orb.cost, 1);
 			$mana = res.cash;
 			$titan_orb.cost = res.cost;
@@ -181,6 +185,7 @@
 		}
 		else if ($buy_amount == 1) run_n(buy_titan, 9);
 		else if ($buy_amount == 2) run_n(buy_titan, 99);
+		else if ($buy_amount == 3) run_n(buy_titan, 999);
 		$basic_orb = $basic_orb; $light_orb = $light_orb; $homing_orb = $homing_orb; $spore_orb = $spore_orb;
 	}
 	const sell_titan = ()=>{

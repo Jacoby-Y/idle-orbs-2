@@ -12,17 +12,33 @@
 		get_data_str = get_data();
 		navigator.clipboard.writeText(get_data_str);
 	}
+
+	let ren_row;
+	$: { if (ren_row != undefined) {
+		/** @type HTMLElement[] */
+		const rens = ren_row.children;
+		let width = 0;
+		for (const ren of rens) {
+			width += ren.clientWidth;
+		}
+		const fill = ren_row.clientWidth-5;
+		const padding = (fill-width)/12;
+		for (const ren of rens) {
+			ren.style.paddingLeft = ren.style.paddingRight = `${Math.round(padding*10)/10}px`;
+		}
+	}}
 </script>
 
 <main class:open id="settings" bind:this={settings}>
 	<div class="sect">
 		<h3 class="sect-title" style="padding-top: .3rem; padding-bottom: .7rem;">Rendering Mode</h3>
-		<div class="rendering-row">
+		<div class="rendering-row" bind:this={ren_row}>
 			<button class:selected={$render_mode == 1} on:click={()=> $render_mode = 1}>Circles</button>
 			<button class:selected={$render_mode == 0} on:click={()=> $render_mode = 0}>Squares</button>
 			<button class:selected={$render_mode == 2} on:click={()=> $render_mode = 2}>Sand</button>
 			<button class:selected={$render_mode == 3} on:click={()=> $render_mode = 3}>Pixelated</button>
-			<button class:selected={$render_mode == 4} on:click={()=> $render_mode = 4}>None</button>
+			<button class:selected={$render_mode == 4} on:click={()=> $render_mode = 4}>Wireframe</button>
+			<button class:selected={$render_mode == 5} on:click={()=> $render_mode = 5}>None</button>
 		</div>
 	</div>
 	<hr>
@@ -106,7 +122,8 @@
 
 	.rendering-row {
 		display: grid;
-		grid-template-columns: repeat(5, 1fr);
+		grid-template-columns: repeat(6, max-content);
+		gap: 1px;
 	}
 	.rendering-row button, #btn-trio button {
 		background: #444;
@@ -114,6 +131,9 @@
 		border: none;
 		border-radius: 0;
 		margin: 0;
+	}
+	.rendering-row button {
+		padding: 0.5rem 0px;
 	}
 	.rendering-row .selected {
 		background-color: #555;

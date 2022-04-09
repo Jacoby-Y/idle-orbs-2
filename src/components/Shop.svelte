@@ -11,9 +11,10 @@
 		$cash -= $bounce.power_cost;
 		$bounce.power += 2.5;
 		$bounce.power_cost = Math.floor($bounce.power_cost * 1.5);
-		if ($buy_amount == 3) buy_bounce_power();
+		if ($buy_amount == 4) buy_bounce_power();
 		else if ($buy_amount == 1) run_n(buy_bounce_power, 9);
 		else if ($buy_amount == 2) run_n(buy_bounce_power, 99);
+		else if ($buy_amount == 3) run_n(buy_bounce_power, 999);
 		$bounce = $bounce;
 	}
 	//#endregion
@@ -71,7 +72,7 @@
 	//#region | Starting Cash
 	const buy_starting_cash = ()=>{
 		if ($cash < $starting_cash.cost) return;
-		if ($buy_amount == 3) {
+		if ($buy_amount == 4) {
 			const total = Math.floor($cash/$starting_cash.cost);
 			$cash -= $starting_cash.cost*total;
 			starting_cash.update( v => (v.amount += total, v));
@@ -83,6 +84,10 @@
 			if ($cash < $starting_cash.cost*100) return
 			$cash -= $starting_cash.cost*100;
 			starting_cash.update( v => (v.amount += 100, v));
+		} else if ($buy_amount == 3) {
+			if ($cash < $starting_cash.cost*1000) return
+			$cash -= $starting_cash.cost*1000;
+			starting_cash.update( v => (v.amount += 1000, v));
 		} else {
 			$cash -= $starting_cash.cost;
 			starting_cash.update( v => (v.amount++, v));
@@ -92,7 +97,7 @@
 	//#region | Orb Value Mult
 	const click_orb_mult = ()=>{
 		if ($mana < orb_mult_cost) return;
-		if ($buy_amount == 3) {
+		if ($buy_amount == 4) {
 			const total = Math.floor($mana / orb_mult_cost);
 			$orb_mult += total;
 			$mana -= orb_mult_cost*total;
@@ -104,6 +109,10 @@
 			if ($mana < 100*orb_mult_cost) return;
 			$mana -= 100*orb_mult_cost;
 			$orb_mult += 100;
+		} else if ($buy_amount == 3) {
+			if ($mana < 1000*orb_mult_cost) return;
+			$mana -= 1000*orb_mult_cost;
+			$orb_mult += 1000;
 		} else {
 			$mana -= orb_mult_cost;
 			$orb_mult++;
@@ -114,7 +123,7 @@
 
 <main id="main-shop">
 	<h3 id="cash">Cash: {fnum($cash)}</h3>
-	<h3 id="max-buy-hint" on:click={()=> void($buy_amount = ($buy_amount+1)%4)}>Buy {$buy_amount < 3 ? 1*(10**$buy_amount) : "Max"}</h3>
+	<h3 id="max-buy-hint" on:click={()=> void($buy_amount = ($buy_amount+1)%5)}>Buy {$buy_amount < 4 ? 1*(10**$buy_amount) : "Max"}</h3>
 	<hr id="top-hr">
 	<button on:click={buy_bounce_power}>Increase Bounce Power <b>{#if $bounce.power < 70}${fnum($bounce.power_cost)} {:else} Max! {/if}</b> </button>
 	<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$bounce.auto_unlocked ? "Unlocked!" : `$${fnum($bounce.auto_cost)}`}</b></button>

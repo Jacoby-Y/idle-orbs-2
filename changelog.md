@@ -1,3 +1,6 @@
+## v1.0.1
+- Press "E" instead of "Escape" to toggled shop
+
 ## v1.0
 - You can now buy 1000
 - Fixed bugs

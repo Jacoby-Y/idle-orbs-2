@@ -957,7 +957,7 @@
 	const key_up = (e)=>{
 		const k = e.key;
 		if (k == "d" && location.hostname == "localhost") debug = !debug;
-		else if (k == "Escape") $toggled = !$toggled;
+		else if (k == "e" || k == "E") $toggled = !$toggled;
 		else if (k == "Tab" && $bounce.auto_unlocked) bounce.update((v)=>(v.auto_on=!v.auto_on,v));// ($bounce.auto_on = !$bounce.auto_on, $bounce = $bounce);
 		else if (k == "o") console.log(orbs.basic);
 		else if (k == "r") reset_orbs();
@@ -985,7 +985,6 @@
 		else if (k == "h") monster_manager.hit(1e10);
 		else if (k == "R") set_to_default();
 		else if (k == "f") min_fps = 1000;
-		else if (k == "e") console.log(event_manager);
 		else if (k == "n") $new_game_plus = true;
 		// else if (k == "f") (console.log("Collecting orbs..."), collect_freq());
 		else if (k == "S") {
@@ -1363,7 +1362,7 @@
 			FPS: {fps} | Min: {min_fps}<br> 
 			Total Orbs: {fnum(total_orbs)} <br> {/if}
 	</h3>  
-	<h3 id="toggle-txt" style="bottom: {$bounce.size}px;" class:no-click={!$toggled} on:click={()=> void($toggled = !$toggled)}>{$on_mobile ? "Tap" : "Press \"Esc\""} to toggle shop</h3>
+	<h3 id="toggle-txt" style="bottom: {$bounce.size}px;" class:no-click={!$toggled} on:click={()=> void($toggled = !$toggled)}>{$on_mobile ? "Tap" : "Press \"E\""} to toggle shop</h3>
 	{#if $bounce.auto_unlocked}
 		<h3 id="toggle-bounce" style="bottom: {$bounce.size}px;" class:no-click={!$toggled} on:click={()=> void bounce.update((v)=>(v.auto_on=!v.auto_on,v))}>{$on_mobile ? "Tap" : "Press \"Tab\""} to turn {$bounce.auto_on ? "off" : "on"} auto bounce</h3>
 		{/if}

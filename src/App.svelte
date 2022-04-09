@@ -45,7 +45,7 @@
 		if (w*0.6 >= h) scale = h/600;
 		else scale = w/1000;
 		
-		main.style.transform = `translate(-50%, -50%) scale(${scale-0.02}, ${scale-0.02})`;
+		main.style.transform = `translate(-50%, -50%) scale(${scale}, ${scale})`;
 	}
 
 </script>
@@ -64,7 +64,7 @@
 
 <style>
 	main {
-		border: 1px dashed white;
+		/* border: 1px dashed white; */
 		width: 1000px;
 		height: 600px;
 		position: absolute;

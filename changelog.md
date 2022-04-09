@@ -1,3 +1,6 @@
+## v1.0.2
+- Made game scale to full screen size
+
 ## v1.0.1
 - Press "E" instead of "Escape" to toggled shop
 

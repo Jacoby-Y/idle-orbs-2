@@ -188,37 +188,37 @@
 			orb.vy += Math.sin(ang) * mult;
 		}
 		const collide_monster = (orb)=>{
-				// c1 = 400, 200 / c2 = 600, 300
-				const pt1 = monster_manager.pt1;
-				const pt2 = monster_manager.pt2;
-				if (orb.y >= pt1.y-20 && orb.y <= pt2.y) {
-					// console.log("in horz area");
-					if (orb.lx+20 < pt1.x && orb.x+20 >= pt1.x) {
-						orb.vx = Math.abs(orb.vx) * -1;
-						orb.x = pt1.x-21;
-						return true;
-					} else if (orb.lx > pt2.x && orb.x <= pt2.x) {
-						orb.vx = Math.abs(orb.vx);
-						orb.x = pt2.x+1;
-						return true;
-					}
+			// c1 = 400, 200 / c2 = 600, 300
+			const pt1 = monster_manager.pt1;
+			const pt2 = monster_manager.pt2;
+			if (orb.y >= pt1.y-20 && orb.y <= pt2.y) {
+				// console.log("in horz area");
+				if (orb.lx+20 < pt1.x && orb.x+20 >= pt1.x) {
+					orb.vx = Math.abs(orb.vx) * -1;
+					orb.x = pt1.x-21;
+					return true;
+				} else if (orb.lx > pt2.x && orb.x <= pt2.x) {
+					orb.vx = Math.abs(orb.vx);
+					orb.x = pt2.x+1;
+					return true;
 				}
-				if (orb.x >= pt1.x-20 && orb.x <= pt2.x) {
-					// console.log("in vert area");
-					if (orb.ly+20 < pt1.y && orb.y+20 >= pt1.y) {
-						orb.vy = Math.abs(orb.vy) * -1;
-						orb.y = pt1.y-21;
-						if (Math.abs(orb.vx) < 0.1) orb.vx = 1;
-						orb.vx *= 1.5;
-						return true;
-					} else if (orb.ly > pt2.y && orb.y <= pt2.y) {
-						orb.vy = Math.abs(orb.vy);
-						orb.y = pt2.y+1;
-						return true;
-					}
+			}
+			if (orb.x >= pt1.x-20 && orb.x <= pt2.x) {
+				// console.log("in vert area");
+				if (orb.ly+20 < pt1.y && orb.y+20 >= pt1.y) {
+					orb.vy = Math.abs(orb.vy) * -1;
+					orb.y = pt1.y-21;
+					if (Math.abs(orb.vx) < 0.1) orb.vx = 1;
+					orb.vx *= 1.5;
+					return true;
+				} else if (orb.ly > pt2.y && orb.y <= pt2.y) {
+					orb.vy = Math.abs(orb.vy);
+					orb.y = pt2.y+1;
+					return true;
 				}
-				return false;
-			};
+			}
+			return false;
+		};
 
 		return {
 			new: {

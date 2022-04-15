@@ -1,3 +1,7 @@
+## v1.0.3
+- Give back more mana when prestiging
+- Built production ready product
+
 ## v1.0.2
 - Made game scale to full screen size
 

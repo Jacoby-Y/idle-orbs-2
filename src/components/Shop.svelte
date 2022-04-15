@@ -52,7 +52,7 @@
 		$cash = $starting_cash.amount;
 		basic_orb.update( v => (v.amount = 1, v.cost = 50, v));
 		light_orb.update( v => (v.amount = 0, v.cost = 100, v));
-		$mana += $homing_orb.amount + $spore_orb.amount + $titan_orb.amount*5;
+		$mana += $homing_orb.amount*7 + $spore_orb.amount*10 + $titan_orb.amount*5;
 		homing_orb.update( v => (v.cost = 7, v.amount = 0, v));
 		spore_orb.update( v => (v.cost = 10, v.amount = 0, v));
 		titan_orb.update( v => (v.cost = 10, v.amount = 0, v));

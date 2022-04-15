@@ -4,7 +4,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import css from 'rollup-plugin-css-only';
-import { uglify } from "rollup-plugin-uglify";
+// import { uglify } from "rollup-plugin-uglify";
 
 const production = !process.env.ROLLUP_WATCH;
 
@@ -71,7 +71,7 @@ export default {
 		// instead of npm run dev), minify
 		production && terser(),
 
-		uglify(),
+		// uglify(),
 	],
 	watch: {
 		clearScreen: false

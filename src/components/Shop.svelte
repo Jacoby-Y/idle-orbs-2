@@ -67,6 +67,11 @@
 		};
 
 		prestige.update( v => (v.times++, v.cost += (25000*(v.times ** Math.max(1, v.times/12))), v) );
+
+		if ($buy_amount == 1) run_n(do_prestige, 9);
+		else if ($buy_amount == 2) run_n(do_prestige, 99);
+		else if ($buy_amount == 3) run_n(do_prestige, 999);
+		else if ($buy_amount == 4) do_prestige();
 	}
 	//#endregion
 	//#region | Starting Cash
@@ -125,18 +130,20 @@
 	<h3 id="cash">Cash: {fnum($cash)}</h3>
 	<h3 id="max-buy-hint" on:click={()=> void($buy_amount = ($buy_amount+1)%5)}>Buy {$buy_amount < 4 ? 1*(10**$buy_amount) : "Max"}</h3>
 	<hr id="top-hr">
-	<button on:click={buy_bounce_power}>Increase Bounce Power <b>{#if $bounce.power < 70}${fnum($bounce.power_cost)} {:else} Max! {/if}</b> </button>
+	<button on:click={buy_bounce_power}>Increase Bounce Power {#if $bounce.power < 70}[{$bounce.power} &rarr; {$bounce.power + 2.5}] <b>${fnum($bounce.power_cost)}</b> {:else}[{$bounce.power}] <b>Max!</b> {/if} </button>
 	<button on:click={buy_auto_bounce}>Unlock Auto Bounce <b>{$bounce.auto_unlocked ? "Unlocked!" : `$${fnum($bounce.auto_cost)}`}</b></button>
-	<button on:click={increase_bounce_area}>Increase Bounce Area <b> {#if $bounce.size < 275} ${fnum($bounce.size_cost)} {:else} Max! {/if} </b></button>
-	<button on:click={buy_starting_cash}>Starting Cash +1 (${fnum($starting_cash.amount)}) <b>${fnum($starting_cash.cost)}</b></button>
-	<!-- {#if $got_mana} <button on:click={double_values}>Double All Orb Values <b>{fnum($orb_double.cost)}₪</b></button> -->
+	<button on:click={increase_bounce_area}>Increase Bounce Area  {#if $bounce.size < 275}[{$bounce.size} &rarr; {$bounce.size + 25}] <b>${fnum($bounce.size_cost)}</b> {:else}[{$bounce.size}] <b>Max!</b> {/if} </button>
+	<button on:click={buy_starting_cash}>Starting Cash +1 [Prestige and start with ${fnum($starting_cash.amount)}] <b>${fnum($starting_cash.cost)}</b></button>
 	{#if $got_mana} <button on:click={click_orb_mult}>Increase Orb Value +1% <b>{orb_mult_cost}₪</b></button>
 	{:else} <div></div> {/if}
 	<div style="position: relative;">
 		<button id="back-to-game" on:click={()=> void($canvas_toggled = true)}>Back to game</button>
 	</div>
 	<h3 id="orb-info">Orb Value Bonus: +{($prestige, $orb_mult, fnum(Math.round(get_orb_bonus()*100-100)))}% {prest_hover ? "(Increases per prestige)" : ""}</h3>
-	<button bind:this={prest_btn} on:click={do_prestige}>Prestige <b>${fnum($prestige.cost)}</b></button>
+	<button bind:this={prest_btn} on:click={do_prestige}>
+		Prestige {#if $buy_amount == 0} once {:else if $buy_amount > 0 && $buy_amount < 4} {1*(10**$buy_amount)} times {:else} as much as possible {/if}
+		<b>${fnum($prestige.cost)}</b>
+	</button>
 </main>
 
 <style>

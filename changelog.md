@@ -1,3 +1,11 @@
+## v1.0.4
+- Press space or e to toggle shop (says to "press space")
+- Press b to toggle auto bounce
+- Added shop upgrade info
+- Added hint of where you can buy orbs
+- Prestige multiple times at once
+- Can also re-click settings cog to close settings component
+
 ## v1.0.3
 - Give back more mana when prestiging
 - Built production ready product

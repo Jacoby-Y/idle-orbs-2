@@ -957,14 +957,14 @@
 	const key_up = (e)=>{
 		const k = e.key;
 		if (k == "d" && location.hostname == "localhost") debug = !debug;
-		else if (k == "e" || k == "E") $toggled = !$toggled;
-		else if (k == "Tab" && $bounce.auto_unlocked) bounce.update((v)=>(v.auto_on=!v.auto_on,v));// ($bounce.auto_on = !$bounce.auto_on, $bounce = $bounce);
+		else if (k == " " || k.toLowerCase() == "e") $toggled = !$toggled;
+		else if (k.toLowerCase() == "b" && $bounce.auto_unlocked) bounce.update((v)=>(v.auto_on=!v.auto_on,v));// ($bounce.auto_on = !$bounce.auto_on, $bounce = $bounce);
 		else if (k == "o") console.log(orbs.basic);
 		else if (k == "r") reset_orbs();
 		else if (k == "Shift") $buy_amount = ($buy_amount+1)%5;
 		if (!debug) return;
 		if (k == "s") step = !step;
-		else if (k == " ") pause = !pause;
+		else if (k == "p") pause = !pause;
 		// else if (k == "l") console.log(orbs.list.length + orbs.homing.length);
 		else if (k == "a") console.log(monster_manager);
 		// else if (k == "c") $cash += 10000;
@@ -1362,9 +1362,9 @@
 			FPS: {fps} | Min: {min_fps}<br> 
 			Total Orbs: {fnum(total_orbs)} <br> {/if}
 	</h3>  
-	<h3 id="toggle-txt" style="bottom: {$bounce.size}px;" class:no-click={!$toggled} on:click={()=> void($toggled = !$toggled)}>{$on_mobile ? "Tap" : "Press \"E\""} to toggle shop</h3>
+	<h3 id="toggle-txt" style="bottom: {$bounce.size}px;" class:no-click={!$toggled} on:click={()=> void($toggled = !$toggled)}>{$on_mobile ? "Tap" : "Press \"Space\""} to toggle shop</h3>
 	{#if $bounce.auto_unlocked}
-		<h3 id="toggle-bounce" style="bottom: {$bounce.size}px;" class:no-click={!$toggled} on:click={()=> void bounce.update((v)=>(v.auto_on=!v.auto_on,v))}>{$on_mobile ? "Tap" : "Press \"Tab\""} to turn {$bounce.auto_on ? "off" : "on"} auto bounce</h3>
+		<h3 id="toggle-bounce" style="bottom: {$bounce.size}px;" class:no-click={!$toggled} on:click={()=> void bounce.update((v)=>(v.auto_on=!v.auto_on,v))}>{$on_mobile ? "Tap" : "Press \"B\""} to turn {$bounce.auto_on ? "off" : "on"} auto bounce</h3>
 		{/if}
 	{#if $fighting} 
 		<button id="quit" on:click={()=> ($fighting = false, $auto_fight = false)}>Quit</button> 

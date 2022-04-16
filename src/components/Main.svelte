@@ -4,12 +4,13 @@
 	import Settings from "./Settings.svelte";
 
 	let settings_open = false;
-		/** @type {HTMLElement} */
+	/** @type {HTMLElement} */
 	let settings;
 
 	const click = (e)=>{
 		/** @type {HTMLElement} */
 		const t = e.target;
+		t.id == "settings" && settings_open && (callback = ()=>{});
 		if (!settings.contains(t)) settings_open = false;
 		callback(); callback = ()=>{};
 	}

@@ -270,6 +270,7 @@
 			</div>
 		</button>
 		{:else} <button disabled>?</button> {/if}
+		<h3 id="orb-buy-hint">&uarr; Buy orbs here! &uarr;</h3>
 		<h3 id="basic-info">Normal gravity, drag, value, etc.<br>Just... <em>Average</em>.</h3>
 		<h3 id="light-info">Low gravity and drag, but normal value.<br>Like an aerodynamic ping pong ball!</h3>
 		<h3 id="homing-info">Likes to follow you around.<br>Double {on_mobile === true ? "tap" : "click"} to lock orbit position</h3>
@@ -423,7 +424,7 @@
 		opacity: 0.8;
 	}
 
-	#orb-row [id$="-info"] {
+	#orb-row [id$="-info"], #orb-buy-hint {
 		position: absolute;
 		bottom: 33%;
 		left: 50%;
@@ -433,6 +434,10 @@
 		width: max-content;
 		display: none;
 		width: 90%;
+		background-color: #343f46;
+	}
+	#orb-buy-hint {
+		display: block;
 	}
 	/* #orb-info h3 {
 		display: none;
